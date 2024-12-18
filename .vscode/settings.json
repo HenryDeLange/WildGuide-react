@@ -1,0 +1,24 @@
+{
+    "editor.codeActionsOnSave": [
+        "source.addMissingImports",
+        "source.organizeImports"
+    ],
+    "files.exclude": {
+        "**/node_modules": true
+    },
+    "files.watcherExclude": {
+        "**/dist": true
+    },
+    "cSpell.words": [
+        "Chakra",
+        "codegen",
+        "geoprivacy",
+        "iNat",
+        "iNaturalist",
+        "iucn",
+        "languagedetector",
+        "precache",
+        "revparse",
+        "WildGuide"
+    ]
+}

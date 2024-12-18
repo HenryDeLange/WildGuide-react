@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Website Info -->
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <title>WildGuide</title>
+    <meta name="WildGuide" content="A wildlife field guide for species observed on iNaturalist." />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+
+    <!-- Offline Warning -->
+    <style>
+        #offline {
+            display: none;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(105, 100, 99);
+            color: white;
+            text-align: center;
+        }
+    </style>
+    <script>
+        async function checkServerConnection() {
+            const offlineDiv = document.getElementById('offline');
+            try {
+                const response = await fetch('/config.json');
+                if (response.ok) {
+                    offlineDiv.style.display = 'none';
+                }
+                else {
+                    offlineDiv.style.display = 'block';
+                }
+            }
+            catch (error) {
+                offlineDiv.style.display = 'block';
+            }
+        }
+
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                checkServerConnection();
+            } else {
+                document.getElementById('offline').style.display = 'block';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        window.addEventListener('load', updateOnlineStatus);
+
+        // Periodically check server connection
+        // setInterval(checkServerConnection, 30000); // Check every 30 seconds
+    </script>
+
+</head>
+
+<body>
+    <div id="offline">
+        <h1>Unable to contact the server! ⛓️‍💥</h1>
+        <h2>You might be offline 😵</h2>
+        <h2>Please check your internet connection... </h2>
+        <button onclick="location.reload()">Refresh Page</button>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

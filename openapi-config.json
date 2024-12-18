@@ -1,0 +1,9 @@
+{
+    "schemaFile": "http://localhost:8080/v3/api-docs",
+    "apiFile": "./src/redux/api/wildguideBaseApi.ts",
+    "apiImport": "wildguideBaseApi",
+    "outputFile": "./src/redux/api/wildguideApi.ts",
+    "exportName": "wildguideApi",
+    "hooks": true,
+    "tag": true
+}

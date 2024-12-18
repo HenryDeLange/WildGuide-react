@@ -1,0 +1,58 @@
+{
+    "name": "WildGuide",
+    "short_name": "WildGuide",
+    "description": "Online field guide, integrated with iNaturalist.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "launch_handler": {
+        "client_mode": [
+            "focus-existing",
+            "auto"
+        ]
+    },
+    "background_color": "#6E6F25",
+    "theme_color": "#95A83B",
+    "icons": [
+        {
+            "src": "pwa/192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "pwa/512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "pwa/intro-small.png",
+            "sizes": "459x320",
+            "type": "image/png",
+            "label": "WildGuide Banner"
+        },
+        {
+            "src": "pwa/intro-large.png",
+            "sizes": "1296x904",
+            "type": "image/png",
+            "label": "WildGuide Banner",
+            "form_factor": "wide"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "WildGuide",
+            "description": "View all guides.",
+            "icons": [
+                {
+                    "src": "pwa/96.png",
+                    "type": "image/png",
+                    "sizes": "96x96",
+                    "purpose": "maskable"
+                }
+            ],
+            "url": "/"
+        }
+    ]
+}
