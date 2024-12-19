@@ -1,12 +1,21 @@
 import { Provider as DefaultChakraProvider } from '@/components/ui/provider';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Provider } from 'react-redux';
-import { App } from './App.tsx';
 import './i18n/i18n';
+import './main.css';
 import { PwaProvider } from './pwa/PwaProvider.tsx';
 import { store } from './redux/store.ts';
+import { routeTree } from './routeTree.gen';
+
+const router = createRouter({ routeTree });
+declare module '@tanstack/react-router' {
+    interface Register {
+        router: typeof router
+    }
+};
 
 createRoot(document.getElementById('root')!).render(
     <ErrorBoundary fallback={
@@ -23,7 +32,7 @@ createRoot(document.getElementById('root')!).render(
             <PwaProvider>
                 <Provider store={store}>
                     <DefaultChakraProvider>
-                        <App />
+                        <RouterProvider router={router} />
                     </DefaultChakraProvider>
                 </Provider>
             </PwaProvider>
