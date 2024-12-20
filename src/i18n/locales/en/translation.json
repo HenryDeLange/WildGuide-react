@@ -1,4 +1,6 @@
 {
     "appTitle": "WildGuide",
-    "welcome": "Welcome"
+    "about": "About",
+    "login": "Sign In",
+    "logout": "Sign Out"
 }

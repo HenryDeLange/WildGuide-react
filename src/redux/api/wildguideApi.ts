@@ -259,7 +259,7 @@ export type Guide = {
   description?: string;
   visibility: "PUBLIC" | "PRIVATE";
   inaturalistCriteria?: string;
-  id?: number;
+  id: number;
 };
 export type GuideBase = {
   name: string;
@@ -272,8 +272,8 @@ export type Entry = {
   summary?: string;
   description?: string;
   inaturalistTaxon?: number;
-  id?: number;
-  guideId?: number;
+  id: number;
+  guideId: number;
 };
 export type EntryBase = {
   name: string;
@@ -309,8 +309,9 @@ export type PagedEntry = {
 };
 export type Version = {
   appVersion: string;
-  commitId: string;
   branch: string;
+  commitId: string;
+  commitTime: string;
   buildTime: string;
 };
 export const {
