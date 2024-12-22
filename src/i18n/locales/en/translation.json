@@ -1,6 +1,24 @@
 {
     "appTitle": "WildGuide",
     "about": "About",
+    "register": "Register",
     "login": "Sign In",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "loginFormTitle": "Sign in to WildGuide",
+    "loginFormTitleRegister": "Register a WildGuide account",
+    "loginFormDescription": "Sign in using your existing account.",
+    "loginFormDescriptionRegister": "Create a new account.",
+    "loginFormLogin": "Sign in with an existing account",
+    "loginFormRegister": "Register a new account",
+    "loginFormError": "Incorrect WildGuide account credentials provided.",
+    "loginFormUsername": "Username",
+    "loginFormUsernameRequired": "Username is required.",
+    "loginFormUsernameInvalid": "Username is invalid.",
+    "loginFormUsernamePlaceholder": "WildGuide Username",
+    "loginFormPassword": "Password",
+    "loginFormPasswordRequired": "Password is required.",
+    "loginFormPasswordInvalid": "Password is invalid.",
+    "loginFormPasswordPlaceholder": "WildGuide Password",
+    "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
+    "loginFormPasswordConfirmInvalid": "Confirm Password is invalid."
 }
