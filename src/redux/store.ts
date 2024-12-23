@@ -1,6 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { loadAuthData, REFRESH_TOKEN, storeAuthData } from '@/auth/authStorage';
+import { configureStore, createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import authReducer from '../auth/authSlice';
+import authReducer, { authLogin, authLogout, authRefresh, authSetRefreshToken } from '../auth/authSlice';
 import { inatApi } from './api/inatApi';
 import { wildguideApi } from './api/wildguideApi';
 
@@ -36,29 +37,36 @@ import { wildguideApi } from './api/wildguideApi';
 //     return next(action);
 // }
 
-// // Special middleware to persist the theme mode (light/dark) to LocalStorage
-// const listenerMiddleware = createListenerMiddleware();
-// listenerMiddleware.startListening({
-//     matcher: isAnyOf(setThemeMode, setZoom),
-//     effect: (action, listenerApi) => {
-//         switch (action.type) {
-//             case 'ui/setThemeMode':
-//                 saveUITheme((listenerApi.getState() as RootState).ui.themeMode);
-//                 break;
-//             case 'ui/setZoom':
-//                 saveUIZoom((listenerApi.getState() as RootState).ui.zoom);
-//                 break;
-//         }
-//     }
-// });
+const listenerMiddleware = createListenerMiddleware();
+listenerMiddleware.startListening({
+    matcher: isAnyOf(authLogin, authRefresh, authSetRefreshToken, authLogout),
+    effect: (action, listenerApi) => {
+        switch (action.type) {
+            case 'auth/authLogin':
+                storeAuthData(REFRESH_TOKEN, (listenerApi.getState() as AppRootState).auth.refreshToken ?? '');
+                break;
+            case 'auth/authRefresh':
+                storeAuthData(REFRESH_TOKEN, (listenerApi.getState() as AppRootState).auth.refreshToken ?? '');
+                break;
+            case 'auth/authSetRefreshToken':
+                storeAuthData(REFRESH_TOKEN, '');
+                break;
+            case 'auth/authLogout':
+                storeAuthData(REFRESH_TOKEN, '');
+                break;
+        }
+    }
+});
 
 export const store = configureStore({
-    // preloadedState: {
-    //     ui: {
-    //         themeMode: loadUITheme(),
-    //         zoom: loadUIZoom()
-    //     }
-    // },
+    preloadedState: {
+        auth: {
+            userId: null,
+            username: null,
+            accessToken: null,
+            refreshToken: await loadAuthData(REFRESH_TOKEN) ?? null
+        }
+    },
     reducer: {
         // ui: themeReducer,
         auth: authReducer,
@@ -66,7 +74,7 @@ export const store = configureStore({
         wildguideApi: wildguideApi.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
-        // listenerMiddleware.middleware,
+        listenerMiddleware.middleware,
         inatApi.middleware,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         wildguideApi.middleware as any,

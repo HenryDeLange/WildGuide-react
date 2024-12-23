@@ -1,6 +1,6 @@
 export const REFRESH_TOKEN = 'auth-refresh-token';
 
-export async function saveData(key: string, value: string) {
+export async function storeAuthData(key: string, value: string) {
     try {
         localStorage.setItem(key, value);
     }
@@ -9,7 +9,7 @@ export async function saveData(key: string, value: string) {
     }
 };
 
-export async function loadData(key: string) {
+export async function loadAuthData(key: string) {
     try {
         return localStorage.getItem(key);
     }

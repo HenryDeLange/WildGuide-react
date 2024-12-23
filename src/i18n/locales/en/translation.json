@@ -20,5 +20,7 @@
     "loginFormPasswordInvalid": "Password is invalid.",
     "loginFormPasswordPlaceholder": "WildGuide Password",
     "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
-    "loginFormPasswordConfirmInvalid": "Confirm Password is invalid."
+    "loginFormPasswordConfirmInvalid": "Confirm Password is invalid.",
+    "faq": "FAQ",
+    "newGuide": "New Guide"
 }

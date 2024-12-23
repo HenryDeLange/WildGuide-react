@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as NewGuideImport } from './routes/new-guide'
 import { Route as LoginImport } from './routes/login'
 import { Route as GuideImport } from './routes/guide'
 import { Route as FaqImport } from './routes/faq'
@@ -18,6 +19,12 @@ import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const NewGuideRoute = NewGuideImport.update({
+  id: '/new-guide',
+  path: '/new-guide',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginRoute = LoginImport.update({
   id: '/login',
@@ -88,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/new-guide': {
+      id: '/new-guide'
+      path: '/new-guide'
+      fullPath: '/new-guide'
+      preLoaderRoute: typeof NewGuideImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -99,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
+  '/new-guide': typeof NewGuideRoute
 }
 
 export interface FileRoutesByTo {
@@ -107,6 +122,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
+  '/new-guide': typeof NewGuideRoute
 }
 
 export interface FileRoutesById {
@@ -116,14 +132,15 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
+  '/new-guide': typeof NewGuideRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/faq' | '/guide' | '/login'
+  fullPaths: '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/faq' | '/guide' | '/login'
-  id: '__root__' | '/' | '/about' | '/faq' | '/guide' | '/login'
+  to: '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
+  id: '__root__' | '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
   fileRoutesById: FileRoutesById
 }
 
@@ -133,6 +150,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GuideRoute: typeof GuideRoute
   LoginRoute: typeof LoginRoute
+  NewGuideRoute: typeof NewGuideRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -141,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GuideRoute: GuideRoute,
   LoginRoute: LoginRoute,
+  NewGuideRoute: NewGuideRoute,
 }
 
 export const routeTree = rootRoute
@@ -157,7 +176,8 @@ export const routeTree = rootRoute
         "/about",
         "/faq",
         "/guide",
-        "/login"
+        "/login",
+        "/new-guide"
       ]
     },
     "/": {
@@ -174,6 +194,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/new-guide": {
+      "filePath": "new-guide.tsx"
     }
   }
 }

@@ -2,10 +2,10 @@ import { AppAbout } from '@/components/wildguide/AppAbout';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/about')({
-    component: About
+    component: Component
 });
 
-function About() {
+function Component() {
     return (
         <AppAbout />
     );

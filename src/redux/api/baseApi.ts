@@ -1,6 +1,5 @@
 import { authLogout, authRefresh, authReplaceAccessToken } from '@/auth/authSlice';
-import { REFRESH_TOKEN, saveData } from '@/auth/authStorage';
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, retry } from '@reduxjs/toolkit/query/react';
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, QueryReturnValue, retry } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
 import i18n from 'i18next';
 import { AppRootState } from '../store';
@@ -31,7 +30,8 @@ const dynamicUrlBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                 error: {
                     status: 400,
                     statusText: 'Bad Request',
-                    data: 'No Base URL configured!'
+                    data: 'No Base URL configured!',
+                    meta: undefined
                 }
             };
         }
@@ -49,8 +49,12 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     async (args, api, extraOptions) => {
         // Wait until the mutex is available without locking it
         await mutex.waitForUnlock();
-        let result = await dynamicUrlBaseQuery(args, api, extraOptions);
-        if (result.error && result.error.status === 401) {
+        const isRefresh = (args as FetchArgs).url === '/users/refresh';
+        let result: QueryReturnValue<unknown, FetchBaseQueryError, unknown> | undefined;
+        if (!isRefresh) {
+            result = await dynamicUrlBaseQuery(args, api, extraOptions);
+        }
+        if (!result || (result.error && result.error.status === 401)) {
             // Checking whether the mutex is locked
             if (!mutex.isLocked()) {
                 const release = await mutex.acquire();
@@ -67,14 +71,17 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                             accessToken: tokens.accessToken,
                             refreshToken: tokens.refreshToken
                         }));
-                        saveData(REFRESH_TOKEN, tokens.refreshToken);
                         // Retry the initial query
-                        result = await dynamicUrlBaseQuery(args, api, extraOptions);
+                        if (!isRefresh) {
+                            return await dynamicUrlBaseQuery(args, api, extraOptions);
+                        }
+                        else {
+                            return refreshResult;
+                        }
                     }
                     else {
                         // Logout (clear the tokens)
                         api.dispatch(authLogout());
-                        saveData(REFRESH_TOKEN, '');
                     }
                 }
                 finally {
@@ -85,10 +92,11 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
             else {
                 // Wait until the mutex is available without locking it
                 await mutex.waitForUnlock();
-                result = await dynamicUrlBaseQuery(args, api, extraOptions);
+                return await dynamicUrlBaseQuery(args, api, extraOptions);
             }
         }
-        return result;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return result as any;
     };
 
 // Retry requests

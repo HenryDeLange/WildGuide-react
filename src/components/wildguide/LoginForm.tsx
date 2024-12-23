@@ -40,7 +40,6 @@ export function LoginForm() {
 
     const onSubmit = handleSubmit(async (data) => {
         const hashedPassword = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Base64);
-        console.log(hashedPassword)
         const user = { ...data, password: hashedPassword };
         if (mode === 'register') {
             doUserRegister({ user })
