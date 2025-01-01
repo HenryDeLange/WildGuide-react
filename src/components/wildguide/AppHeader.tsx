@@ -1,5 +1,7 @@
+import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import logo from '@/assets/images/wildguide/logo.png';
 import { authLogout, selectAuthRefreshToken, selectAuthUserId } from '@/auth/authSlice';
+import { ChangeLanguage } from '@/i18n/ChangeLanguage';
 import { useRefreshMutation } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Flex, Heading, IconButton, Image, Show, Stack } from '@chakra-ui/react';
@@ -12,7 +14,7 @@ import { LuPlus } from 'react-icons/lu';
 import { NavLink } from '../custom/NavLink';
 import { ColorModeButton } from '../ui/color-mode';
 
-export const AppHeader = () => {
+export function AppHeader() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -59,6 +61,23 @@ export const AppHeader = () => {
                 <Stack direction='row' gap={{ base: 2, sm: 6, md: 12 }} alignItems='center'>
                     <Stack direction='row' gap={{ base: 1, sm: 2, md: 4 }} alignItems='center'>
                         <a
+                            aria-label='iNaturalist'
+                            href='https://www.inaturalist.org'
+                            target='_blank'
+                            rel='noopener'
+                        >
+                            <IconButton variant='ghost'>
+                                <Image
+                                    src={inatLogo}
+                                    alt='iNaturalist'
+                                    boxSize={6}
+                                    borderRadius='full'
+                                    fit='cover'
+                                    loading='lazy'
+                                />
+                            </IconButton>
+                        </a>
+                        <a
                             aria-label='GitHub'
                             href='https://github.com/HenryDeLange/WildGuide-react'
                             target='_blank'
@@ -68,6 +87,7 @@ export const AppHeader = () => {
                                 <FaGithub />
                             </IconButton>
                         </a>
+                        <ChangeLanguage />
                         <ColorModeButton />
                     </Stack>
                     <Show when={userId === null}>
@@ -87,4 +107,4 @@ export const AppHeader = () => {
             </Flex>
         </Box>
     );
-};
+}

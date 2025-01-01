@@ -10,6 +10,7 @@
         "**/dist": true
     },
     "cSpell.words": [
+        "autoresize",
         "Chakra",
         "codegen",
         "geoprivacy",

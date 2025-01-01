@@ -1,16 +1,35 @@
-import { Button } from '@/components/ui/button';
-import { Box } from '@chakra-ui/react';
+import { createListCollection, SelectContent, SelectItem, SelectRoot, SelectTrigger, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
+const languages = createListCollection({
+    items: [
+        { label: 'languageEN', value: 'en' },
+        { label: 'languageAF', value: 'af' }
+    ]
+});
+
 export function ChangeLanguage() {
-    const { i18n } = useTranslation();
-    const changeLanguage = (lng: string) => {
-        i18n.changeLanguage(lng);
-    };
+    const { t, i18n } = useTranslation();
     return (
-        <Box textAlign='center' fontSize='xl'>
-            <Button onClick={() => changeLanguage('en')}>English</Button>
-            <Button onClick={() => changeLanguage('af')}>Afrikaans</Button>
-        </Box>
+        <SelectRoot
+            collection={languages}
+            value={[i18n.language]}
+            onValueChange={(event) => i18n.changeLanguage(event.value[0])}
+            variant='subtle'
+            size='xs'
+        >
+            <SelectTrigger>
+                <Text cursor='pointer' fontWeight='semibold'>
+                    {i18n.language.toUpperCase()}
+                </Text>
+            </SelectTrigger>
+            <SelectContent position='absolute'>
+                {languages.items.map((language) => (
+                    <SelectItem key={language.value} item={language}>
+                        {t(language.label)}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </SelectRoot>
     );
 }

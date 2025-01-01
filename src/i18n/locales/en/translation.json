@@ -1,4 +1,6 @@
 {
+    "languageEN": "English",
+    "languageAF": "Afrikaans",
     "appTitle": "WildGuide",
     "about": "About",
     "register": "Register",
@@ -22,5 +24,20 @@
     "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
     "loginFormPasswordConfirmInvalid": "Confirm Password is invalid.",
     "faq": "FAQ",
-    "newGuide": "New Guide"
+    "newGuide": "New Guide",
+    "newGuideTitle": "Create a new guide",
+    "newGuideSubTitle": "You can link your new guide to a iNaturalist Project. Linked guides will automatically load species from iNaturalist based on the project.",
+    "newGuideName": "Name",
+    "newGuideNamePlaceholder": "Guide Name",
+    "newGuideNameRequired": "Guide Name is required.",
+    "newGuideNameInvalid": "Guide Name is invalid.",
+    "newGuideDescription": "Description",
+    "newGuideDescriptionPlaceholder": "Guide Description",
+    "newGuideInaturalistCriteria": "iNaturalist Project",
+    "newGuideInaturalistCriteriaPlaceholder": "iNaturalist Project",
+    "newGuideVisibility": "Access",
+    "newGuideVisibilityPUBLIC": "Public",
+    "newGuideVisibilityHelpPUBLIC": "Visible to everybody.",
+    "newGuideVisibilityPRIVATE": "Private",
+    "newGuideVisibilityHelpPRIVATE": "Only visible to members."
 }

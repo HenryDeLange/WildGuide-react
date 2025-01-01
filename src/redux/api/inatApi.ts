@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 
 export const tagTypes = [
     'Users',
-    'Taxa'
+    'Taxa',
+    'Projects'
 ] as const;
 
 export const inatApi = createApi({
@@ -35,10 +36,20 @@ export const inatApi = createApi({
                 }
             }),
             providesTags: ['Taxa']
+        }),
+        projectsAutocomplete: builder.query<ProjectsAutocomplete, ProjectsAutocompleteArgs>({
+            query: (queryArg) => ({
+                url: 'projects/autocomplete',
+                params: {
+                    q: queryArg.q,
+                    per_page: queryArg.per_page
+                }
+            }),
+            providesTags: ['Projects']
         })
     }),
     keepUnusedDataFor: 180
-})
+});
 
 export const {
     useUsersAutocompleteQuery,
@@ -48,14 +59,14 @@ export const {
 export type UserAutocompleteArgs = {
     q: string;
     per_page?: number;
-}
+};
 
 export type UserAutocomplete = {
     total_results: number;
     page: number; // Starts at 1
     per_page: number;
     results: User[];
-}
+};
 
 export type User = {
     id: number;
@@ -67,7 +78,7 @@ export type User = {
     journal_posts_count: number;
     activity_count: number;
     species_count: number;
-}
+};
 
 export type TaxaAutocompleteArgs = {
     q: string;
@@ -79,14 +90,14 @@ export type TaxaAutocompleteArgs = {
     locale?: string;
     preferred_place_id?: number;
     all_names?: boolean;
-}
+};
 
 export type TaxaAutocomplete = {
     total_results: number;
     page: number; // Starts at 1
     per_page: number;
     results: Taxon[];
-}
+};
 
 export type Taxon = {
     id: number;
@@ -115,4 +126,35 @@ export type Taxon = {
         geoprivacy?: string;
         iucn?: number;
     }
+};
+
+export type ProjectsAutocompleteArgs = {
+    q: string;
+    id?: number[];
+    lat?: number;
+    lng?: number;
+    radius?: number; // km
+    place_id?: number[];
+    rule_details?: boolean;
+    type?: 'collection' | 'umbrella' | 'bioblitz' | 'traditional'; // TODO: Confirm these???
+    member_id?: number;
+    per_page?: number;
+};
+
+export type ProjectsAutocomplete = {
+    total_results: number;
+    page: number; // Starts at 1
+    per_page: number;
+    results: Project[];
+};
+
+export type Project = {
+    id: number;
+    title: string;
+    description: string;
+    slug: string;
+    project_type: 'collection' | 'umbrella' | 'bioblitz' | 'traditional'; // TODO: Confirm these???
+    banner_color: string;
+    icon: string;
+    header_image_url: string;
 }

@@ -17,11 +17,11 @@ import { PasswordInput } from '../ui/password-input';
 export function LoginForm() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/login' });
+    const dispatch = useAppDispatch();
 
     const [mode, setMode] = useState<'login' | 'register'>('login');
     const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
 
-    const dispatch = useAppDispatch();
     const [doUserLogin, { isLoading: loginIsLoading, isError: loginIsError }] = useLoginMutation();
     const [doUserRegister, { isLoading: registerIsLoading, isError: registerIsError }] = useRegisterMutation();
 

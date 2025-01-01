@@ -3,7 +3,7 @@ import { ProtectedRoute } from '@/components/wildguide/ProtectedRoute';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/new-guide')({
-    component: Component,
+    component: Component
 });
 
 function Component() {
