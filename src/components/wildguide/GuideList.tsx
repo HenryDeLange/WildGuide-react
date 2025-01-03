@@ -1,23 +1,32 @@
-import { Guide, useFindGuidesQuery } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, IconButton, Separator, Show, Spinner, Text, useBreakpointValue } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
+import { useAppDispatch } from '@/redux/hooks';
+import { Box, Heading, HStack, IconButton, Separator, Show, Spinner, Text } from '@chakra-ui/react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
-import { GridChildComponentProps } from 'react-window';
-import { InfiniteGrid } from '../custom/InfiniteGrid';
+import { InfiniteVirtualGrid } from '../custom/InfiniteVirtualGrid';
 import { useHeights } from './hooks';
 
 export function GuideList() {
     const { t } = useTranslation();
-    
+    const dispatch = useAppDispatch();
+
     const { content } = useHeights();
 
-    const columns = useBreakpointValue({ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }) ?? 1;
-    
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState<number>(0);
+    const [pageQueue, setPageQueue] = useState<number[]>([]);
     const [items, setItems] = useState<Guide[]>([]);
 
     const { data, isLoading, isFetching } = useFindGuidesQuery({ page });
+    // console.log('rendering page:', page)
+
+    useEffect(() => {
+        if (!isFetching && pageQueue.length > 0) {
+            // console.log('Process page from queue:', pageQueue[0]);
+            setPage(pageQueue[0]);
+            setPageQueue((prevQueue) => prevQueue.slice(1));
+        }
+    }, [isFetching, pageQueue]);
 
     useEffect(() => {
         setItems((prev) => {
@@ -29,28 +38,10 @@ export function GuideList() {
     }, [data]);
 
     const handleRefresh = useCallback(() => {
-        setPage(0);
+        dispatch(wildguideApi.util.invalidateTags(['Guides']));
         setItems([]);
-    }, []);
-
-    // ITEM
-    const ItemRenderer = useMemo(() => ({ rowIndex, columnIndex, style, data }: Readonly<GridChildComponentProps<Guide[]>>) => {
-        const index = rowIndex * columns + columnIndex;
-        if (data.length <= index) {
-            return null;
-        }
-        return (
-            <div style={style}>
-                <Box borderWidth={1} borderRadius={8} padding={4} margin={2}>
-                    <Heading>{data[index].name}</Heading>
-                    <Text>{data[index].visibility}</Text>
-                    <Text>{data[index].description ?? ''}</Text>
-                    <Text>Grid Index: {index + 1}</Text>
-                    <Text>Guide ID: {data[index].id}</Text>
-                </Box>
-            </div>
-        );
-    }, [columns]);
+        setPage(0);
+    }, [dispatch]);
 
     // RENDER
     return (
@@ -77,29 +68,33 @@ export function GuideList() {
             </Box>
             <Show when={!isLoading}>
                 {data?.data &&
-                    <InfiniteGrid
-                        items={items}
-                        ItemRenderer={ItemRenderer}
-                        itemCount={data.totalRecords}
-                        loadMoreItems={async (startIndex, stopIndex) => {
-                            console.log(startIndex, stopIndex);
-                            if (!isFetching && (stopIndex >= page * data.pageSize)) {
-                                console.log('loadMoreItems', page + 1);
-                                setPage(page + 1);
+                    <InfiniteVirtualGrid
+                        data={items}
+                        renderItem={(item) => <ItemRenderer item={item} />}
+                        loadMoreItems={() => {
+                            const nextPage = page + 1;
+                            if (nextPage <= (data.totalRecords / data.pageSize) && pageQueue.indexOf(nextPage) === -1) {
+                                // console.log('Add page to queue:', nextPage, { page, pageQueue })
+                                setPageQueue(prev => [...prev, nextPage]);
                             }
-                            // TODO: Fix issue where the last page increment is ignored if the previous one is still fetching (or if I don't wait then the last one will discard the previous ones)
+                            // else {
+                            //     console.log('not processing page', nextPage)
+                            // }
                         }}
-                        hasNextPage={data.pageNumber * data.pageSize < data.totalRecords}
-                        isItemLoaded={(index) => index < data.data.length}
-                        itemHeight={200}
-                        columnCount={columns}
-                        itemKey={({ columnIndex, rowIndex, data }) => {
-                            const index = rowIndex * columns + columnIndex;
-                            return data[index]?.id ?? `gridIndex-${index}`;
-                        }}
+                        loading={isFetching}
                     />
                 }
             </Show>
         </Box >
+    );
+}
+
+function ItemRenderer({ item }: Readonly<{ item: Guide }>) {
+    return (
+        <Box padding={2} margin={2}>
+            <Heading>{item.name}</Heading>
+            <Text>{item.visibility}</Text>
+            <Text>{item.description ?? ''}</Text>
+        </Box>
     );
 }

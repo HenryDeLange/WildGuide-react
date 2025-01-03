@@ -41,5 +41,6 @@
     "newGuideVisibilityPRIVATE": "Private",
     "newGuideVisibilityHelpPRIVATE": "Only visible to members.",
     "guideGridTitle": "Guides available to you on WildGuide",
-    "guideGridRefresh": "Refresh"
+    "guideGridRefresh": "Refresh",
+    "gridLoading": "Loading..."
 }
