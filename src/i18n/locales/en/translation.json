@@ -39,5 +39,7 @@
     "newGuideVisibilityPUBLIC": "Public",
     "newGuideVisibilityHelpPUBLIC": "Visible to everybody.",
     "newGuideVisibilityPRIVATE": "Private",
-    "newGuideVisibilityHelpPRIVATE": "Only visible to members."
+    "newGuideVisibilityHelpPRIVATE": "Only visible to members.",
+    "guideGridTitle": "Guides available to you on WildGuide",
+    "guideGridRefresh": "Refresh"
 }

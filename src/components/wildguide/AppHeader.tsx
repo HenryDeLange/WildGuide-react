@@ -27,7 +27,7 @@ export function AppHeader() {
         }
     }, [doUserRefresh, refreshIsLoading, refreshToken, userId]);
     return (
-        <Box as='header' bg={{ base: 'gray.100', _dark: 'gray.900' }} p={4}>
+        <Box id='app-header' as='header' bg={{ base: 'gray.100', _dark: 'gray.900' }} p={4}>
             <Flex alignItems='center' justifyContent='space-between' wrap={{ base: 'wrap', sm: 'nowrap' }} gap={4}>
                 <NavLink to='/'>
                     <Stack direction='row' gap={{ base: 1, sm: 2 }} alignItems='center' minWidth={'220'}>
@@ -66,7 +66,7 @@ export function AppHeader() {
                             target='_blank'
                             rel='noopener'
                         >
-                            <IconButton variant='ghost'>
+                            <IconButton aria-label='iNaturalist' variant='ghost'>
                                 <Image
                                     src={inatLogo}
                                     alt='iNaturalist'

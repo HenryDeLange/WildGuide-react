@@ -296,16 +296,16 @@ export type UserLogin = {
   password: string;
 };
 export type PagedGuide = {
-  pageNumber?: number;
-  pageSize?: number;
-  totalRecords?: number;
-  data?: Guide[];
+  pageNumber: number;
+  pageSize: number;
+  totalRecords: number;
+  data: Guide[];
 };
 export type PagedEntry = {
-  pageNumber?: number;
-  pageSize?: number;
-  totalRecords?: number;
-  data?: Entry[];
+  pageNumber: number;
+  pageSize: number;
+  totalRecords: number;
+  data: Entry[];
 };
 export type Version = {
   appVersion: string;
