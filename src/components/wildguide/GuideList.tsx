@@ -1,10 +1,11 @@
 import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch } from '@/redux/hooks';
-import { Box, Heading, HStack, IconButton, Separator, Show, Spinner, Text } from '@chakra-ui/react';
+import { Box, Heading, IconButton, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { InfiniteVirtualGrid } from '../custom/InfiniteVirtualGrid';
+import { GuideListItem } from './GuideListItem';
 import { useHeights } from './hooks';
 
 export function GuideList() {
@@ -47,11 +48,16 @@ export function GuideList() {
     return (
         <Box height={content}>
             <Box id='grid-header'>
-                <HStack justifyContent='space-between' padding={4}>
-                    <Heading>
-                        {t('guideGridTitle')}
-                    </Heading>
-                    <Box height='2em' display='flex' alignItems='center'>
+                <Stack direction='row' justifyContent='space-between' gap={8}>
+                    <Box marginX={4} marginY={2}>
+                        <Heading>
+                            {t('guideGridTitle')}
+                        </Heading>
+                        <Text>
+                            {t('guideGridSubTitle')}
+                        </Text>
+                    </Box>
+                    <Box alignSelf='flex-end' width='2.5em' height='2.5em' display='flex' alignItems='center' justifyContent='center'>
                         <Show when={!isFetching} fallback={<Spinner size='md' />}>
                             <IconButton
                                 aria-label={t('guideGridRefresh')}
@@ -63,14 +69,14 @@ export function GuideList() {
                             </IconButton>
                         </Show>
                     </Box>
-                </HStack>
+                </Stack>
                 <Separator />
             </Box>
             <Show when={!isLoading}>
                 {data?.data &&
                     <InfiniteVirtualGrid
                         data={items}
-                        renderItem={(item) => <ItemRenderer item={item} />}
+                        renderItem={(item) => <GuideListItem item={item} />}
                         loadMoreItems={() => {
                             const nextPage = page + 1;
                             if (nextPage <= (data.totalRecords / data.pageSize) && pageQueue.indexOf(nextPage) === -1) {
@@ -86,15 +92,5 @@ export function GuideList() {
                 }
             </Show>
         </Box >
-    );
-}
-
-function ItemRenderer({ item }: Readonly<{ item: Guide }>) {
-    return (
-        <Box padding={2} margin={2}>
-            <Heading>{item.name}</Heading>
-            <Text>{item.visibility}</Text>
-            <Text>{item.description ?? ''}</Text>
-        </Box>
     );
 }

@@ -41,6 +41,7 @@
     "newGuideVisibilityPRIVATE": "Private",
     "newGuideVisibilityHelpPRIVATE": "Only visible to members.",
     "guideGridTitle": "Guides available to you on WildGuide",
+    "guideGridSubTitle": "Sign in to create new guides, or to see private guides.",
     "guideGridRefresh": "Refresh",
     "gridLoading": "Loading..."
 }

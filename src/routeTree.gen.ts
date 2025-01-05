@@ -13,10 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as NewGuideImport } from './routes/new-guide'
 import { Route as LoginImport } from './routes/login'
-import { Route as GuideImport } from './routes/guide'
 import { Route as FaqImport } from './routes/faq'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
 
 // Create/Update Routes
 
@@ -29,12 +29,6 @@ const NewGuideRoute = NewGuideImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const GuideRoute = GuideImport.update({
-  id: '/guide',
-  path: '/guide',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,6 +47,12 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GuidesGuideIdRoute = GuidesGuideIdImport.update({
+  id: '/guides/$guideId',
+  path: '/guides/$guideId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,13 +81,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqImport
       parentRoute: typeof rootRoute
     }
-    '/guide': {
-      id: '/guide'
-      path: '/guide'
-      fullPath: '/guide'
-      preLoaderRoute: typeof GuideImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -102,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewGuideImport
       parentRoute: typeof rootRoute
     }
+    '/guides/$guideId': {
+      id: '/guides/$guideId'
+      path: '/guides/$guideId'
+      fullPath: '/guides/$guideId'
+      preLoaderRoute: typeof GuidesGuideIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -111,18 +111,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
-  '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/new-guide': typeof NewGuideRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
-  '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/new-guide': typeof NewGuideRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
 }
 
 export interface FileRoutesById {
@@ -130,17 +130,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
-  '/guide': typeof GuideRoute
   '/login': typeof LoginRoute
   '/new-guide': typeof NewGuideRoute
+  '/guides/$guideId': typeof GuidesGuideIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/faq'
+    | '/login'
+    | '/new-guide'
+    | '/guides/$guideId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
-  id: '__root__' | '/' | '/about' | '/faq' | '/guide' | '/login' | '/new-guide'
+  to: '/' | '/about' | '/faq' | '/login' | '/new-guide' | '/guides/$guideId'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/faq'
+    | '/login'
+    | '/new-guide'
+    | '/guides/$guideId'
   fileRoutesById: FileRoutesById
 }
 
@@ -148,18 +161,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   FaqRoute: typeof FaqRoute
-  GuideRoute: typeof GuideRoute
   LoginRoute: typeof LoginRoute
   NewGuideRoute: typeof NewGuideRoute
+  GuidesGuideIdRoute: typeof GuidesGuideIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   FaqRoute: FaqRoute,
-  GuideRoute: GuideRoute,
   LoginRoute: LoginRoute,
   NewGuideRoute: NewGuideRoute,
+  GuidesGuideIdRoute: GuidesGuideIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -175,9 +188,9 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/faq",
-        "/guide",
         "/login",
-        "/new-guide"
+        "/new-guide",
+        "/guides/$guideId"
       ]
     },
     "/": {
@@ -189,14 +202,14 @@ export const routeTree = rootRoute
     "/faq": {
       "filePath": "faq.tsx"
     },
-    "/guide": {
-      "filePath": "guide.tsx"
-    },
     "/login": {
       "filePath": "login.tsx"
     },
     "/new-guide": {
       "filePath": "new-guide.tsx"
+    },
+    "/guides/$guideId": {
+      "filePath": "guides/$guideId.tsx"
     }
   }
 }

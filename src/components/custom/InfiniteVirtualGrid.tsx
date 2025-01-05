@@ -54,7 +54,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 {/* {rowVirtualizer.getVirtualItems().map(virtualRow => {
                     console.log('render Item:, ', virtualRow.index);
                     return (
-                        <Box key={virtualRow.index} height={200} borderWidth='1px' borderRadius='lg'>
+                        <Box key={virtualRow.index} height={200}>
                             {renderItem(data[virtualRow.index])}
                         </Box>
                     );
@@ -62,7 +62,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 {data.map((item, index) => {
                     return (
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        <Box key={(item as any).id ?? index} height={200} borderWidth='1px' borderRadius='lg'>
+                        <Box key={(item as any).id ?? index} height={200}>
                             {renderItem(item)}
                         </Box>
                     );

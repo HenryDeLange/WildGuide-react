@@ -1,6 +1,6 @@
 # TODO:
 - Start using Chakra UI's Combobox when it is released, for loading the iNat project/taxon
-- Bump the react-window-infinite-loader version once it adds react 19 in its dependencies
+- make the guide grid virtualised for performance concerns
 
 # WildGuide-react
 ![App Version](https://img.shields.io/github/package-json/v/HenryDeLange/WildGuide-react)
