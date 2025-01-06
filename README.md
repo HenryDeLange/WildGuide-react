@@ -1,6 +1,6 @@
 # TODO:
-- Start using Chakra UI's Combobox when it is released, for loading the iNat project/taxon
-- make the guide grid virtualised for performance concerns
+- TODO: Start using Chakra UI's Combobox when it is released, for loading the iNat project/taxon
+- TODO: Make the guide grid virtualised for performance concerns
 
 # WildGuide-react
 ![App Version](https://img.shields.io/github/package-json/v/HenryDeLange/WildGuide-react)

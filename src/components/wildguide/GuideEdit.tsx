@@ -9,9 +9,13 @@ import { Button } from '../ui/button';
 import { Field } from '../ui/field';
 import { Radio, RadioGroup } from '../ui/radio';
 
-export function NewGuide() {
+type Props = {
+    guideId: number;
+}
+
+export function GuideEdit({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/new-guide' });
+    const navigate = useNavigate({ from: '/guides/$guideId/edit' });
 
     const [doCreateGuide, { isLoading, isError }] = useCreateGuideMutation();
 

@@ -19,14 +19,10 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
     <ErrorBoundary fallback={
-        <h1 style={{
-            textAlign: 'center',
-            verticalAlign: 'center',
-            width: '100%',
-            height: '100%'
-        }}>
-            🔥🔥💥 🦉 💥🔥🔥
-        </h1>
+        <div style={{ textAlign: 'center', verticalAlign: 'center', width: '100%', height: '100%' }}>
+            <h1>🔥💥🔥 🦉 🔥💥🔥</h1>
+            <p>Unexpected Error!</p>
+        </div>
     }>
         <StrictMode>
             <PwaProvider>

@@ -95,6 +95,7 @@ export function LoginForm() {
                                             maxLength: { value: 64, message: t('loginFormUsernameInvalid') }
                                         })}
                                         placeholder={t('loginFormUsernamePlaceholder')}
+                                        autoFocus
                                     />
                                 </InputGroup>
                             </Field>

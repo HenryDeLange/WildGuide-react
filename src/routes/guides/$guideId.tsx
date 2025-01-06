@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/guides/$guideId')({
     component: Component
-})
+});
 
 function Component() {
     const { guideId } = Route.useParams();

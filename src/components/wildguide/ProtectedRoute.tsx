@@ -11,7 +11,7 @@ export function ProtectedRoute({ children }: Readonly<Props>) {
     const navigate = useNavigate();
     const userId = useAppSelector(selectAuthUserId);
     if (!userId) {
-        console.log('User is not authenticated. Redirecting to home page.');
+        console.warn('User is not authenticated. Redirecting to home page.');
         navigate({ to: '/' });
         return null;
     }

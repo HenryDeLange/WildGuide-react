@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { InfiniteVirtualGrid } from '../custom/InfiniteVirtualGrid';
+import { ErrorDisplay } from './ErrorDisplay';
 import { GuideListItem } from './GuideListItem';
 import { useHeights } from './hooks';
 
@@ -18,7 +19,7 @@ export function GuideList() {
     const [pageQueue, setPageQueue] = useState<number[]>([]);
     const [items, setItems] = useState<Guide[]>([]);
 
-    const { data, isLoading, isFetching } = useFindGuidesQuery({ page });
+    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page });
     // console.log('rendering page:', page)
 
     useEffect(() => {
@@ -72,6 +73,7 @@ export function GuideList() {
                 </Stack>
                 <Separator />
             </Box>
+            <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading}>
                 {data?.data &&
                     <InfiniteVirtualGrid

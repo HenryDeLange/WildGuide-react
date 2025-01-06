@@ -1,6 +1,7 @@
 {
     "languageEN": "English",
     "languageAF": "Afrikaans",
+    "errorPageNotFound": "Page not found!",
     "appTitle": "WildGuide",
     "about": "About",
     "register": "Register",

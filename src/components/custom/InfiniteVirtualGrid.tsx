@@ -69,7 +69,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 })}
                 <Show when={loading}>
                     <Box gridColumn='1 / -1' textAlign='center'>
-                        <Spinner />
+                        <Spinner size='md' />
                         <Text>{t('gridLoading')}</Text>
                     </Box>
                 </Show>

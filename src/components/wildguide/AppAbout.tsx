@@ -9,10 +9,7 @@ export function AppAbout() {
             <Text>
                 FE: {import.meta.env.VITE_COMMIT_DATE}
             </Text>
-            <Show when={isLoading}>
-                <Spinner />
-            </Show>
-            <Show when={!isLoading}>
+            <Show when={!isLoading} fallback={<Spinner size='md' />}>
                 <Text>
                     BE: {data?.commitTime}
                 </Text>

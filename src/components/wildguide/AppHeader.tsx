@@ -46,7 +46,7 @@ export function AppHeader() {
                 </NavLink>
                 <Stack direction='row' gap={{ base: 2, sm: 6, md: 12 }} alignItems='center'>
                     <Show when={userId !== null}>
-                        <NavLink to='/new-guide' color='fg.success'>
+                        <NavLink to='/guides/create' color='fg.success'>
                             <LuPlus />
                             {t('newGuide')}
                         </NavLink>

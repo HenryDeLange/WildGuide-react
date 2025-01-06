@@ -21,7 +21,7 @@ const baseQueryWithHeaders =
     });
 
 // Change the baseUrl of the backend based on config
-const dynamicUrlBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
+const baseQueryWithDynamicUrl: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
     async (args, api, extraOptions) => {
         const baseUrl = import.meta.env.VITE_API_URL;
         // Gracefully handle scenarios where data to generate the URL is missing
@@ -43,6 +43,15 @@ const dynamicUrlBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
         return baseQueryWithHeaders(adjustedArgs, api, extraOptions);
     };
 
+// Retry requests
+const baseQueryWithRetry =
+    retry(
+        baseQueryWithDynamicUrl,
+        {
+            maxRetries: 2
+        }
+    );
+
 // Re-authenticate using the refresh token when the access token expired (using mutex to prevent multiple concurrent refresh calls)
 const mutex = new Mutex();
 const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
@@ -52,7 +61,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
         const isRefresh = (args as FetchArgs).url === '/users/refresh';
         let result: QueryReturnValue<unknown, FetchBaseQueryError, unknown> | undefined;
         if (!isRefresh) {
-            result = await dynamicUrlBaseQuery(args, api, extraOptions);
+            result = await baseQueryWithRetry(args, api, extraOptions);
         }
         if (!result || (result.error && result.error.status === 401)) {
             // Checking whether the mutex is locked
@@ -61,7 +70,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                 // Try to get a new token
                 try {
                     api.dispatch(authReplaceAccessToken((api.getState() as AppRootState).auth.refreshToken));
-                    const refreshResult = await dynamicUrlBaseQuery({ url: '/users/refresh', method: 'post' }, api, extraOptions);
+                    const refreshResult = await baseQueryWithRetry({ url: '/users/refresh', method: 'post' }, api, extraOptions);
                     const tokens = refreshResult.data as Tokens;
                     if (tokens) {
                         // Store the new token
@@ -73,7 +82,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                         }));
                         // Retry the initial query
                         if (!isRefresh) {
-                            return await dynamicUrlBaseQuery(args, api, extraOptions);
+                            return await baseQueryWithRetry(args, api, extraOptions);
                         }
                         else {
                             return refreshResult;
@@ -92,21 +101,14 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
             else {
                 // Wait until the mutex is available without locking it
                 await mutex.waitForUnlock();
-                return await dynamicUrlBaseQuery(args, api, extraOptions);
+                return await baseQueryWithRetry(args, api, extraOptions);
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return result as any;
     };
 
-// Retry requests
-const baseQueryWithRetry =
-    retry(
-        baseQueryWithReAuth,
-        {
-            maxRetries: 2
-        }
-    );
+
 
 /**
  * Create the empty API, to be used as the base for the rtk-query:codegen script 
@@ -119,7 +121,7 @@ export const baseApi = (name: string, cacheDuration: number) => {
     const baseSplitApi = createApi({
         // Set the reducer name to match the value from the Store
         reducerPath: `${name}Api`,
-        baseQuery: baseQueryWithRetry,
+        baseQuery: baseQueryWithReAuth,
         endpoints: () => ({}),
         // Set the cache duration
         keepUnusedDataFor: cacheDuration
