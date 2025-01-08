@@ -83,7 +83,7 @@ export function LoginForm() {
                         </Fieldset.HelperText>
                         <Fieldset.Content>
                             <Field
-                                label={t('loginFormUsername')}
+                                label={<Text fontSize='md'>{t('loginFormUsername')}</Text>}
                                 invalid={!!errors.username || loginIsError || registerIsError}
                                 errorText={errors.username?.message}
                             >
@@ -100,7 +100,7 @@ export function LoginForm() {
                                 </InputGroup>
                             </Field>
                             <Field
-                                label={t('loginFormPassword')}
+                                label={<Text fontSize='md'>{t('loginFormPassword')}</Text>}
                                 invalid={!!errors.password || loginIsError || registerIsError}
                                 errorText={errors.password?.message}
                             >

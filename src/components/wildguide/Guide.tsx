@@ -66,7 +66,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 >
                                     <MdEdit />
                                     <Text>
-                                        {t('guideEdit')}
+                                        {t('editGuide')}
                                     </Text>
                                 </Button>
                             }

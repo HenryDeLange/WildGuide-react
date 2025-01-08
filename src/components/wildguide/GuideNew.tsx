@@ -1,5 +1,5 @@
 import { GuideBase, useCreateGuideMutation } from '@/redux/api/wildguideApi';
-import { Container, Fieldset, Heading, HStack, Input, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -43,9 +43,10 @@ export function GuideNew() {
                     <Fieldset.HelperText marginBottom={4}>
                         <Text>{t('newGuideSubTitle')}</Text>
                     </Fieldset.HelperText>
-                    <Fieldset.Content gap={8} borderWidth={1} padding={8} borderRadius={8} boxShadow='md'>
+                    <Separator />
+                    <Fieldset.Content gap={8} >
                         <Field
-                            label={t('newGuideName')}
+                            label={<Text fontSize='md'>{t('newGuideName')}</Text>}
                             invalid={!!errors.name || isError}
                             errorText={errors.name?.message}
                         >
@@ -56,23 +57,11 @@ export function GuideNew() {
                                     maxLength: { value: 128, message: t('newGuideNameInvalid') }
                                 })}
                                 placeholder={t('newGuideNamePlaceholder')}
-                                variant='flushed'
+                                variant='outline'
                             />
                         </Field>
                         <Field
-                            label={t('newGuideDescription')}
-                            invalid={!!errors.description || isError}
-                            errorText={errors.description?.message}
-                        >
-                            <Textarea
-                                {...register('description')}
-                                placeholder={t('newGuideDescriptionPlaceholder')}
-                                autoresize
-                                variant='flushed'
-                            />
-                        </Field>
-                        <Field
-                            label={t('newGuideVisibility')}
+                            label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
                             invalid={!!errors.visibility || isError}
                             errorText={errors.visibility?.message}
                             helperText={t(`newGuideVisibilityHelp${visibility}`)}
@@ -100,24 +89,38 @@ export function GuideNew() {
                             />
                         </Field>
                         <Field
-                            label={t('newGuideInaturalistCriteria')}
+                            label={<Text fontSize='md'>{t('newGuideInaturalistCriteria')}</Text>}
                             invalid={!!errors.inaturalistCriteria || isError}
                             errorText={errors.inaturalistCriteria?.message}
                         >
                             <Input
                                 {...register('inaturalistCriteria')}
                                 placeContent={t('newGuideInaturalistCriteriaPlaceholder')}
-                                variant='flushed'
+                                variant='outline'
                             />
                         </Field>
+                        <Field
+                            label={<Text fontSize='md'>{t('newGuideDescription')}</Text>}
+                            invalid={!!errors.description || isError}
+                            errorText={errors.description?.message}
+                        >
+                            <Textarea
+                                {...register('description')}
+                                placeholder={t('newGuideDescriptionPlaceholder')}
+                                autoresize
+                                variant='outline'
+                            />
+                        </Field>
+                        <Box marginTop={6}>
+                            <Fieldset.ErrorText>
+                                <Text>{t('loginFormError')}</Text>
+                            </Fieldset.ErrorText>
+                            <Button type='submit' width='full' loading={isLoading} size='lg'>
+                                <LuCirclePlus />
+                                <Text>{t('newGuideConfirm')}</Text>
+                            </Button>
+                        </Box>
                     </Fieldset.Content>
-                    <Fieldset.ErrorText>
-                        <Text>{t('loginFormError')}</Text>
-                    </Fieldset.ErrorText>
-                    <Button type='submit' width='full' loading={isLoading} marginTop={12}>
-                        <LuCirclePlus />
-                        Create Guide
-                    </Button>
                 </Fieldset.Root>
             </form>
         </Container>

@@ -48,6 +48,9 @@ export function AppHeader() {
                     </Stack>
                 </NavLink>
                 <Stack direction='row' gap={{ base: 2, sm: 6, md: 12 }} flex={3} alignItems='center' justifyContent='center'>
+                    <NavLink to='/'>
+                        {t('home')}
+                    </NavLink>
                     <NavLink to='/about'>
                         {t('faq')}
                     </NavLink>
