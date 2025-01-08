@@ -2,7 +2,7 @@ import { GuideEdit } from '@/components/wildguide/GuideEdit';
 import { ProtectedRoute } from '@/components/wildguide/ProtectedRoute';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/guides/$guideId/edit')({
+export const Route = createFileRoute('/guides/$guideId_/edit')({
     component: Component
 });
 

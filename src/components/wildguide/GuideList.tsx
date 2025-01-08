@@ -1,19 +1,26 @@
+import { selectAuthUserId } from '@/auth/authSlice';
 import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
-import { useAppDispatch } from '@/redux/hooks';
-import { Box, Heading, IconButton, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Box, Heading, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
+import { MdAddCircleOutline } from 'react-icons/md';
 import { InfiniteVirtualGrid } from '../custom/InfiniteVirtualGrid';
+import { Button } from '../ui/button';
 import { ErrorDisplay } from './ErrorDisplay';
 import { GuideListItem } from './GuideListItem';
 import { useHeights } from './hooks';
 
 export function GuideList() {
     const { t } = useTranslation();
+    const navigate = useNavigate({ from: '/' });
     const dispatch = useAppDispatch();
 
     const { content } = useHeights();
+
+    const userId = useAppSelector(selectAuthUserId);
 
     const [page, setPage] = useState<number>(0);
     const [pageQueue, setPageQueue] = useState<number[]>([]);
@@ -39,6 +46,8 @@ export function GuideList() {
         });
     }, [data]);
 
+    const handleNewGuide = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
+
     const handleRefresh = useCallback(() => {
         dispatch(wildguideApi.util.invalidateTags(['Guides']));
         setItems([]);
@@ -58,30 +67,49 @@ export function GuideList() {
                             {t('guideGridSubTitle')}
                         </Text>
                     </Box>
-                    <Box alignSelf='flex-end' width='2.5em' height='2.5em' display='flex' alignItems='center' justifyContent='center'>
-                        <Show when={!isFetching} fallback={<Spinner size='md' />}>
-                            <IconButton
-                                aria-label={t('guideGridRefresh')}
-                                size='md'
+                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end'>
+                        {userId !== null &&
+                            <Button
+                                size='lg'
                                 variant='ghost'
-                                onClick={handleRefresh}
+                                color='fg.success'
+                                onClick={handleNewGuide}
+                                whiteSpace='nowrap'
                             >
-                                <LuRefreshCcw />
-                            </IconButton>
-                        </Show>
-                    </Box>
+                                <MdAddCircleOutline />
+                                <Text>
+                                    {t('newGuide')}
+                                </Text>
+                            </Button>
+                        }
+                        <Button
+                            aria-label={t('guideGridRefresh')}
+                            size='md'
+                            variant='ghost'
+                            onClick={handleRefresh}
+                            loading={isFetching}
+                        >
+                            <LuRefreshCcw />
+                        </Button>
+                    </Stack>
                 </Stack>
                 <Separator />
             </Box>
             <ErrorDisplay error={isError ? error : undefined} />
-            <Show when={!isLoading}>
+            <Show
+                when={!isLoading}
+                fallback={
+                    <Box textAlign='center' margin={4}>
+                        <Spinner size='lg' />
+                    </Box>
+                }>
                 {data?.data &&
                     <InfiniteVirtualGrid
                         data={items}
                         renderItem={(item) => <GuideListItem item={item} />}
                         loadMoreItems={() => {
                             const nextPage = page + 1;
-                            if (nextPage <= (data.totalRecords / data.pageSize) && pageQueue.indexOf(nextPage) === -1) {
+                            if (nextPage <= (data.totalRecords / data.pageSize) && !pageQueue.includes(nextPage)) {
                                 // console.log('Add page to queue:', nextPage, { page, pageQueue })
                                 setPageQueue(prev => [...prev, nextPage]);
                             }
@@ -93,6 +121,6 @@ export function GuideList() {
                     />
                 }
             </Show>
-        </Box >
+        </Box>
     );
 }

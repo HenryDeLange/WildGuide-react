@@ -18,7 +18,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as GuidesIndexImport } from './routes/guides/index'
 import { Route as GuidesCreateImport } from './routes/guides/create'
 import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
-import { Route as GuidesGuideIdEditImport } from './routes/guides/$guideId.edit'
+import { Route as GuidesGuideIdEditImport } from './routes/guides/$guideId_.edit'
 
 // Create/Update Routes
 
@@ -65,9 +65,9 @@ const GuidesGuideIdRoute = GuidesGuideIdImport.update({
 } as any)
 
 const GuidesGuideIdEditRoute = GuidesGuideIdEditImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => GuidesGuideIdRoute,
+  id: '/guides/$guideId_/edit',
+  path: '/guides/$guideId/edit',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -123,36 +123,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesIndexImport
       parentRoute: typeof rootRoute
     }
-    '/guides/$guideId/edit': {
-      id: '/guides/$guideId/edit'
-      path: '/edit'
+    '/guides/$guideId_/edit': {
+      id: '/guides/$guideId_/edit'
+      path: '/guides/$guideId/edit'
       fullPath: '/guides/$guideId/edit'
       preLoaderRoute: typeof GuidesGuideIdEditImport
-      parentRoute: typeof GuidesGuideIdImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface GuidesGuideIdRouteChildren {
-  GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
-}
-
-const GuidesGuideIdRouteChildren: GuidesGuideIdRouteChildren = {
-  GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
-}
-
-const GuidesGuideIdRouteWithChildren = GuidesGuideIdRoute._addFileChildren(
-  GuidesGuideIdRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
-  '/guides/$guideId': typeof GuidesGuideIdRouteWithChildren
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
@@ -163,7 +151,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
-  '/guides/$guideId': typeof GuidesGuideIdRouteWithChildren
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
@@ -175,10 +163,10 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
-  '/guides/$guideId': typeof GuidesGuideIdRouteWithChildren
+  '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides/': typeof GuidesIndexRoute
-  '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
+  '/guides/$guideId_/edit': typeof GuidesGuideIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -211,7 +199,7 @@ export interface FileRouteTypes {
     | '/guides/$guideId'
     | '/guides/create'
     | '/guides/'
-    | '/guides/$guideId/edit'
+    | '/guides/$guideId_/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -220,9 +208,10 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
-  GuidesGuideIdRoute: typeof GuidesGuideIdRouteWithChildren
+  GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   GuidesCreateRoute: typeof GuidesCreateRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -230,9 +219,10 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
-  GuidesGuideIdRoute: GuidesGuideIdRouteWithChildren,
+  GuidesGuideIdRoute: GuidesGuideIdRoute,
   GuidesCreateRoute: GuidesCreateRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -251,7 +241,8 @@ export const routeTree = rootRoute
         "/login",
         "/guides/$guideId",
         "/guides/create",
-        "/guides/"
+        "/guides/",
+        "/guides/$guideId_/edit"
       ]
     },
     "/": {
@@ -267,10 +258,7 @@ export const routeTree = rootRoute
       "filePath": "login.tsx"
     },
     "/guides/$guideId": {
-      "filePath": "guides/$guideId.tsx",
-      "children": [
-        "/guides/$guideId/edit"
-      ]
+      "filePath": "guides/$guideId.tsx"
     },
     "/guides/create": {
       "filePath": "guides/create.tsx"
@@ -278,9 +266,8 @@ export const routeTree = rootRoute
     "/guides/": {
       "filePath": "guides/index.tsx"
     },
-    "/guides/$guideId/edit": {
-      "filePath": "guides/$guideId.edit.tsx",
-      "parent": "/guides/$guideId"
+    "/guides/$guideId_/edit": {
+      "filePath": "guides/$guideId_.edit.tsx"
     }
   }
 }
