@@ -13,9 +13,10 @@ import { ErrorDisplay } from './ErrorDisplay';
 
 type Props = {
     guideId: number;
+    entryId: number;
 }
 
-export function GuideEdit({ guideId }: Readonly<Props>) {
+export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId/edit' });
 

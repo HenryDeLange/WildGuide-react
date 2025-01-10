@@ -11,7 +11,7 @@ export function ErrorDisplay({ error }: Readonly<Props>) {
     if (!error) {
         return null;
     }
-    console.error('API Error:', error);
+    console.error('APP ERROR:', error);
     return (
         <VStack padding={6}>
             <Heading size='3xl'>💥🦉💥</Heading>

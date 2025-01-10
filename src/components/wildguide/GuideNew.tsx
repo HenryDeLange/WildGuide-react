@@ -13,7 +13,7 @@ export function GuideNew() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/create' });
 
-    const [doCreateGuide, { isLoading, isError }] = useCreateGuideMutation();
+    const [doCreate, { isLoading, isError }] = useCreateGuideMutation();
 
     const { register, handleSubmit, formState: { errors }, control, watch } = useForm<GuideBase>({
         defaultValues: {
@@ -27,7 +27,7 @@ export function GuideNew() {
     const visibility = watch('visibility');
 
     const onSubmit = handleSubmit(async (data) => {
-        doCreateGuide({ guideBase: data })
+        doCreate({ guideBase: data })
             .unwrap().then(() => {
                 navigate({ to: '/' });
             });
@@ -113,7 +113,7 @@ export function GuideNew() {
                         </Field>
                         <Box marginTop={6}>
                             <Fieldset.ErrorText>
-                                <Text>{t('loginFormError')}</Text>
+                                <Text>{t('newGuideError')}</Text>
                             </Fieldset.ErrorText>
                             <Button type='submit' width='full' loading={isLoading} size='lg'>
                                 <LuCirclePlus />

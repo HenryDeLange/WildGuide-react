@@ -1,14 +1,18 @@
 {
     "languageEN": "English",
     "languageAF": "Afrikaans",
+
     "errorPageNotFound": "Page not found!",
+
     "appTitle": "WildGuide",
     "home": "Guides",
     "about": "About",
     "faq": "FAQ",
+
     "register": "Register",
     "login": "Sign In",
     "logout": "Sign Out",
+
     "loginFormTitle": "Sign in to WildGuide",
     "loginFormTitleRegister": "Register a WildGuide account",
     "loginFormDescription": "Sign in using your existing account.",
@@ -26,6 +30,7 @@
     "loginFormPasswordPlaceholder": "WildGuide Password",
     "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
     "loginFormPasswordConfirmInvalid": "Confirm Password is invalid.",
+
     "newGuide": "New Guide",
     "newGuideTitle": "Create a new guide",
     "newGuideSubTitle": "You can link your new guide to a iNaturalist Project. Linked guides will automatically load species from iNaturalist based on the project.",
@@ -41,13 +46,48 @@
     "newGuideVisibilityPUBLIC": "Public",
     "newGuideVisibilityHelpPUBLIC": "Visible to everybody.",
     "newGuideVisibilityPRIVATE": "Private",
-    "newGuideVisibilityHelpPRIVATE": "Only visible to members.",
+    "newGuideVisibilityHelpPRIVATE": "Only visible to owners and members.",
     "newGuideConfirm": "Create Guide",
+    "newGuideError": "Failed to create the new Guide!",
+
     "guideGridTitle": "Guides available to you on WildGuide",
     "guideGridSubTitle": "Sign in to create new guides, or to see private guides.",
-    "guideGridRefresh": "Refresh",
+    "guideGridRefresh": "Refresh Guides",
     "gridLoading": "Loading...",
+
     "editGuide": "Edit",
     "editGuideConfirm": "Update Guide",
-    "editGuideBack": "Back to the Guide"
+    "editGuideError": "Failed to edit the Guide!",
+    "editGuideBack": "Back to the Guide",
+
+    "entryListTitle": "Guide Entries",
+    "entryListSubTitle": "Entries based on the associated iNaturalist Project's Observations will be shown automatically. Alternatively additional manual entries can also be added.",
+    "entryListRefresh": "Refresh Entries",
+
+    "newEntry": "New Entry",
+    "newEntryTitle": "Create a new Entry",
+    "newEntrySubTitle": "Create an Entry for {{guide}}.",
+    "newEntryName": "Name",
+    "newEntryNamePlaceholder": "Entry Name",
+    "newEntryNameHelper": "For example the common name (or the scientific name)",
+    "newEntryNameRequired": "Entry Name is required.",
+    "newEntryNameInvalid": "Entry Name is invalid.",
+    "newEntryInaturalistTaxon": "iNaturalist Taxon",
+    "newEntryInaturalistTaxonPlaceholder": "iNaturalist Taxon",
+    "newEntryScientificName": "Scientific Name",
+    "newEntryScientificNamePlaceholder": "Scientific Name",
+    "newEntryScientificNameRequired": "Scientific Name is required.",
+    "newEntryScientificNameInvalid": "Scientific Name is invalid.",
+    "newEntryScientificRank": "Scientific Rank",
+    "newEntryScientificRankRequired": "Scientific Rank is required.",
+    "newEntryScientificRankFAMILY": "Family",
+    "newEntryScientificRankGENUS": "Genus",
+    "newEntryScientificRankSPECIES": "Species",
+    "newEntryScientificRankSUBSPECIES": "Subspecies",
+    "newEntrySummary": "Summary",
+    "newEntrySummaryPlaceholder": "Entry Summary",
+    "newEntryDescription": "Description",
+    "newEntryDescriptionPlaceholder": "Entry Description",
+    "newEntryConfirm": "Create Entry",
+    "newEntryError": "Failed to create the new Entry!"
 }

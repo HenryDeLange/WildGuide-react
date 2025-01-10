@@ -46,7 +46,7 @@ export function GuideList() {
         });
     }, [data]);
 
-    const handleNewGuide = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
+    const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
         dispatch(wildguideApi.util.invalidateTags(['Guides']));
@@ -67,13 +67,13 @@ export function GuideList() {
                             {t('guideGridSubTitle')}
                         </Text>
                     </Box>
-                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end'>
+                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
                         {userId !== null &&
                             <Button
                                 size='lg'
                                 variant='ghost'
                                 color='fg.success'
-                                onClick={handleNewGuide}
+                                onClick={handleCreate}
                                 whiteSpace='nowrap'
                             >
                                 <MdAddCircleOutline />

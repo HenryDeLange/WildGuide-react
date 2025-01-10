@@ -19,6 +19,10 @@ import { Route as GuidesIndexImport } from './routes/guides/index'
 import { Route as GuidesCreateImport } from './routes/guides/create'
 import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
 import { Route as GuidesGuideIdEditImport } from './routes/guides/$guideId_.edit'
+import { Route as GuidesGuideIdEntriesIndexImport } from './routes/guides/$guideId_/entries/index'
+import { Route as GuidesGuideIdEntriesCreateImport } from './routes/guides/$guideId_/entries/create'
+import { Route as GuidesGuideIdEntriesEntryIdImport } from './routes/guides/$guideId_/entries/$entryId'
+import { Route as GuidesGuideIdEntriesEntryIdEditImport } from './routes/guides/$guideId_/entries/$entryId_.edit'
 
 // Create/Update Routes
 
@@ -69,6 +73,34 @@ const GuidesGuideIdEditRoute = GuidesGuideIdEditImport.update({
   path: '/guides/$guideId/edit',
   getParentRoute: () => rootRoute,
 } as any)
+
+const GuidesGuideIdEntriesIndexRoute = GuidesGuideIdEntriesIndexImport.update({
+  id: '/guides/$guideId_/entries/',
+  path: '/guides/$guideId/entries/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GuidesGuideIdEntriesCreateRoute = GuidesGuideIdEntriesCreateImport.update(
+  {
+    id: '/guides/$guideId_/entries/create',
+    path: '/guides/$guideId/entries/create',
+    getParentRoute: () => rootRoute,
+  } as any,
+)
+
+const GuidesGuideIdEntriesEntryIdRoute =
+  GuidesGuideIdEntriesEntryIdImport.update({
+    id: '/guides/$guideId_/entries/$entryId',
+    path: '/guides/$guideId/entries/$entryId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const GuidesGuideIdEntriesEntryIdEditRoute =
+  GuidesGuideIdEntriesEntryIdEditImport.update({
+    id: '/guides/$guideId_/entries/$entryId_/edit',
+    path: '/guides/$guideId/entries/$entryId/edit',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -130,6 +162,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesGuideIdEditImport
       parentRoute: typeof rootRoute
     }
+    '/guides/$guideId_/entries/$entryId': {
+      id: '/guides/$guideId_/entries/$entryId'
+      path: '/guides/$guideId/entries/$entryId'
+      fullPath: '/guides/$guideId/entries/$entryId'
+      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/guides/$guideId_/entries/create': {
+      id: '/guides/$guideId_/entries/create'
+      path: '/guides/$guideId/entries/create'
+      fullPath: '/guides/$guideId/entries/create'
+      preLoaderRoute: typeof GuidesGuideIdEntriesCreateImport
+      parentRoute: typeof rootRoute
+    }
+    '/guides/$guideId_/entries/': {
+      id: '/guides/$guideId_/entries/'
+      path: '/guides/$guideId/entries'
+      fullPath: '/guides/$guideId/entries'
+      preLoaderRoute: typeof GuidesGuideIdEntriesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/guides/$guideId_/entries/$entryId_/edit': {
+      id: '/guides/$guideId_/entries/$entryId_/edit'
+      path: '/guides/$guideId/entries/$entryId/edit'
+      fullPath: '/guides/$guideId/entries/$entryId/edit'
+      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdEditImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -144,6 +204,10 @@ export interface FileRoutesByFullPath {
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
+  '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
+  '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
+  '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -155,6 +219,10 @@ export interface FileRoutesByTo {
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
+  '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
+  '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
+  '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -167,6 +235,10 @@ export interface FileRoutesById {
   '/guides/create': typeof GuidesCreateRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId_/edit': typeof GuidesGuideIdEditRoute
+  '/guides/$guideId_/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
+  '/guides/$guideId_/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/guides/$guideId_/entries/': typeof GuidesGuideIdEntriesIndexRoute
+  '/guides/$guideId_/entries/$entryId_/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -180,6 +252,10 @@ export interface FileRouteTypes {
     | '/guides/create'
     | '/guides'
     | '/guides/$guideId/edit'
+    | '/guides/$guideId/entries/$entryId'
+    | '/guides/$guideId/entries/create'
+    | '/guides/$guideId/entries'
+    | '/guides/$guideId/entries/$entryId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -190,6 +266,10 @@ export interface FileRouteTypes {
     | '/guides/create'
     | '/guides'
     | '/guides/$guideId/edit'
+    | '/guides/$guideId/entries/$entryId'
+    | '/guides/$guideId/entries/create'
+    | '/guides/$guideId/entries'
+    | '/guides/$guideId/entries/$entryId/edit'
   id:
     | '__root__'
     | '/'
@@ -200,6 +280,10 @@ export interface FileRouteTypes {
     | '/guides/create'
     | '/guides/'
     | '/guides/$guideId_/edit'
+    | '/guides/$guideId_/entries/$entryId'
+    | '/guides/$guideId_/entries/create'
+    | '/guides/$guideId_/entries/'
+    | '/guides/$guideId_/entries/$entryId_/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -212,6 +296,10 @@ export interface RootRouteChildren {
   GuidesCreateRoute: typeof GuidesCreateRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
+  GuidesGuideIdEntriesEntryIdRoute: typeof GuidesGuideIdEntriesEntryIdRoute
+  GuidesGuideIdEntriesCreateRoute: typeof GuidesGuideIdEntriesCreateRoute
+  GuidesGuideIdEntriesIndexRoute: typeof GuidesGuideIdEntriesIndexRoute
+  GuidesGuideIdEntriesEntryIdEditRoute: typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -223,6 +311,10 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesCreateRoute: GuidesCreateRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
+  GuidesGuideIdEntriesEntryIdRoute: GuidesGuideIdEntriesEntryIdRoute,
+  GuidesGuideIdEntriesCreateRoute: GuidesGuideIdEntriesCreateRoute,
+  GuidesGuideIdEntriesIndexRoute: GuidesGuideIdEntriesIndexRoute,
+  GuidesGuideIdEntriesEntryIdEditRoute: GuidesGuideIdEntriesEntryIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -242,7 +334,11 @@ export const routeTree = rootRoute
         "/guides/$guideId",
         "/guides/create",
         "/guides/",
-        "/guides/$guideId_/edit"
+        "/guides/$guideId_/edit",
+        "/guides/$guideId_/entries/$entryId",
+        "/guides/$guideId_/entries/create",
+        "/guides/$guideId_/entries/",
+        "/guides/$guideId_/entries/$entryId_/edit"
       ]
     },
     "/": {
@@ -268,6 +364,18 @@ export const routeTree = rootRoute
     },
     "/guides/$guideId_/edit": {
       "filePath": "guides/$guideId_.edit.tsx"
+    },
+    "/guides/$guideId_/entries/$entryId": {
+      "filePath": "guides/$guideId_/entries/$entryId.tsx"
+    },
+    "/guides/$guideId_/entries/create": {
+      "filePath": "guides/$guideId_/entries/create.tsx"
+    },
+    "/guides/$guideId_/entries/": {
+      "filePath": "guides/$guideId_/entries/index.tsx"
+    },
+    "/guides/$guideId_/entries/$entryId_/edit": {
+      "filePath": "guides/$guideId_/entries/$entryId_.edit.tsx"
     }
   }
 }

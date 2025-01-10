@@ -269,6 +269,17 @@ export type GuideBase = {
 };
 export type Entry = {
   name: string;
+  scientificName: string;
+  scientificRank:
+    | "FAMILY"
+    | "SUBFAMILY"
+    | "TRIBE"
+    | "SUBTRIBE"
+    | "GENUS"
+    | "SUBGENUS"
+    | "SPECIES"
+    | "SUBSPECIES"
+    | "VARIETY_FORM_ABERRATION";
   summary?: string;
   description?: string;
   inaturalistTaxon?: number;
@@ -277,6 +288,17 @@ export type Entry = {
 };
 export type EntryBase = {
   name: string;
+  scientificName: string;
+  scientificRank:
+    | "FAMILY"
+    | "SUBFAMILY"
+    | "TRIBE"
+    | "SUBTRIBE"
+    | "GENUS"
+    | "SUBGENUS"
+    | "SPECIES"
+    | "SUBSPECIES"
+    | "VARIETY_FORM_ABERRATION";
   summary?: string;
   description?: string;
   inaturalistTaxon?: number;

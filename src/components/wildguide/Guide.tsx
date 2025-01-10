@@ -1,13 +1,16 @@
+import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, Image, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdOutlineLock } from 'react-icons/md';
 import { Button } from '../ui/button';
+import { Tooltip } from '../ui/tooltip';
+import { EntryList } from './EntryList';
 import { ErrorDisplay } from './ErrorDisplay';
 
 type Props = {
@@ -51,46 +54,80 @@ export function Guide({ guideId }: Readonly<Props>) {
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
-                    <Box width='100%' padding={4}>
-                        <Stack direction='row'>
-                            <Heading flex={1}>
-                                {data.name}
-                            </Heading>
-                            {(ownerData && ownerData.includes(userId ?? -1)) &&
+                    <VStack>
+                        <Box width='100%' paddingTop={4} paddingX={4}>
+                            <Stack direction='row'>
+                                <HStack flex={1}>
+                                    <Show when={data.visibility === 'PRIVATE'}>
+                                        <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
+                                            <Icon size='md'>
+                                                <MdOutlineLock />
+                                            </Icon>
+                                        </Tooltip>
+                                    </Show>
+                                    <Heading>
+                                        {data.name}
+                                    </Heading>
+                                </HStack>
+                                {(ownerData && ownerData.includes(userId ?? -1)) &&
+                                    <Button
+                                        size='lg'
+                                        variant='ghost'
+                                        color='fg.success'
+                                        onClick={handleEditGuide}
+                                        whiteSpace='nowrap'
+                                    >
+                                        <MdEdit />
+                                        <Text>
+                                            {t('editGuide')}
+                                        </Text>
+                                    </Button>
+                                }
                                 <Button
-                                    size='lg'
+                                    aria-label={t('guideGridRefresh')}
+                                    size='md'
                                     variant='ghost'
-                                    color='fg.success'
-                                    onClick={handleEditGuide}
-                                    whiteSpace='nowrap'
+                                    onClick={handleRefresh}
+                                    loading={isFetching || ownerIsFetching}
                                 >
-                                    <MdEdit />
-                                    <Text>
-                                        {t('editGuide')}
-                                    </Text>
+                                    <LuRefreshCcw />
                                 </Button>
+                            </Stack>
+                            {data.inaturalistCriteria &&
+                                <Box width='fit-content' justifySelf='flex-end'>
+                                    <a
+                                        aria-label='iNaturalist'
+                                        href={`https://www.inaturalist.org/projects/${data.inaturalistCriteria}`}
+                                        target='_blank'
+                                        rel='noopener'
+                                    >
+                                        <HStack>
+                                            <Image
+                                                src={inatLogo}
+                                                alt='iNaturalist'
+                                                boxSize={6}
+                                                borderRadius='full'
+                                                fit='cover'
+                                                loading='lazy'
+                                            />
+                                            <Text>{t('newGuideInaturalistCriteria')}</Text>
+                                        </HStack>
+                                    </a>
+                                </Box>
                             }
-                            <Button
-                                aria-label={t('guideGridRefresh')}
-                                size='md'
-                                variant='ghost'
-                                onClick={handleRefresh}
-                                loading={isFetching || ownerIsFetching}
-                            >
-                                <LuRefreshCcw />
-                            </Button>
-                        </Stack>
-                        <Show when={data.description}>
-                            <Text>
-                                {data.description}
-                            </Text>
-                        </Show>
-                        <Show when={data.inaturalistCriteria}>
-                            <Text>
-                                {data.inaturalistCriteria}
-                            </Text>
-                        </Show>
-                    </Box>
+                            {data.description &&
+                                <Box marginY={4}>
+                                    <Separator variant='dashed' />
+                                    <Text paddingY={2}>
+                                        {data.description}
+                                    </Text>
+                                    <Separator variant='dashed' />
+                                </Box>
+                            }
+                        </Box>
+                        <Separator />
+                        <EntryList guideId={guideId} />
+                    </VStack>
                 }
             </Show>
         </Box>
