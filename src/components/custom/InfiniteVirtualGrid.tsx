@@ -3,6 +3,8 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHeights } from '../wildguide/hooks';
 
+// TODO: Make the virtualizer work
+
 type Props<T> = {
     data: T[];
     renderItem: (item: T) => ReactNode;
@@ -15,8 +17,6 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
     const { grid } = useHeights();
 
     const parentRef = useRef<HTMLDivElement>(null);
-
-    // TODO: Make the virtualizer work
 
     // const rowVirtualizer = useVirtualizer({
     //     count: data.length,
@@ -46,8 +46,9 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
             scrollElement.addEventListener('scroll', handleScroll);
             return () => scrollElement?.removeEventListener('scroll', handleScroll);
         }
-    }, [loading, loadMoreItems]);
+    }, [loadMoreItems]);
 
+    // RENDER
     return (
         <Box ref={parentRef} height={grid} overflowY='auto'>
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} gap={4} margin={4}>

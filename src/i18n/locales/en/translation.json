@@ -80,14 +80,21 @@
     "newEntryScientificNameInvalid": "Scientific Name is invalid.",
     "newEntryScientificRank": "Scientific Rank",
     "newEntryScientificRankRequired": "Scientific Rank is required.",
-    "newEntryScientificRankFAMILY": "Family",
-    "newEntryScientificRankGENUS": "Genus",
-    "newEntryScientificRankSPECIES": "Species",
-    "newEntryScientificRankSUBSPECIES": "Subspecies",
     "newEntrySummary": "Summary",
     "newEntrySummaryPlaceholder": "Entry Summary",
     "newEntryDescription": "Description",
     "newEntryDescriptionPlaceholder": "Entry Description",
     "newEntryConfirm": "Create Entry",
-    "newEntryError": "Failed to create the new Entry!"
+    "newEntryError": "Failed to create the new Entry!",
+
+    "entryScientificRankFAMILY": "family",
+    "entryScientificRankSUBFAMILY": "Subfamily",
+    "entryScientificRankTRIBE": "Tribe",
+    "entryScientificRankSUBTRIBE": "Subtribe",
+    "entryScientificRankGENUS": "Genus",
+    "entryScientificRankSUBGENUS": "Subgenus",
+    "entryScientificRankSPECIES": "Species",
+    "entryScientificRankSUBSPECIES": "Subspecies",
+    "entryScientificRankVARIETY_FORM_ABERRATION": "Variety, Form or Aberration"
+
 }

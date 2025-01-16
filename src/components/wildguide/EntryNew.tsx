@@ -110,10 +110,10 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                                                     name={field.name}
                                                     value={field.value}
                                                     items={[
-                                                        { label: t('newEntryScientificRankFAMILY'), value: 'FAMILY' },
-                                                        { label: t('newEntryScientificRankGENUS'), value: 'GENUS' },
-                                                        { label: t('newEntryScientificRankSPECIES'), value: 'SPECIES' },
-                                                        { label: t('newEntryScientificRankSUBSPECIES'), value: 'SUBSPECIES' }
+                                                        { label: t('entryScientificRankFAMILY'), value: 'FAMILY' },
+                                                        { label: t('entryScientificRankGENUS'), value: 'GENUS' },
+                                                        { label: t('entryScientificRankSPECIES'), value: 'SPECIES' },
+                                                        { label: t('entryScientificRankSUBSPECIES'), value: 'SUBSPECIES' }
                                                     ]}
                                                     onValueChange={({ value }) => field.onChange(value)}
                                                 />

@@ -41,10 +41,20 @@ export function GuideList() {
         setItems((prev) => {
             const existingIds = new Set(prev.map(item => item.id));
             const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
-            return [...prev, ...newItems]
-                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+            return [...prev, ...newItems];
         });
-    }, [data]);
+    }, [data?.data]);
+
+    const handleLoadMoreItems = useCallback(() => {
+        const nextPage = page + 1;
+        if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
+            // console.log('Add page to queue:', nextPage, { page, pageQueue })
+            setPageQueue(prev => [...prev, nextPage]);
+        }
+        // else {
+        //     console.log('not processing page', nextPage)
+        // }
+    }, [data?.pageSize, data?.totalRecords, page, pageQueue]);
 
     const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
 
@@ -107,16 +117,7 @@ export function GuideList() {
                     <InfiniteVirtualGrid
                         data={items}
                         renderItem={(item) => <GuideListItem item={item} />}
-                        loadMoreItems={() => {
-                            const nextPage = page + 1;
-                            if (nextPage <= (data.totalRecords / data.pageSize) && !pageQueue.includes(nextPage)) {
-                                // console.log('Add page to queue:', nextPage, { page, pageQueue })
-                                setPageQueue(prev => [...prev, nextPage]);
-                            }
-                            // else {
-                            //     console.log('not processing page', nextPage)
-                            // }
-                        }}
+                        loadMoreItems={handleLoadMoreItems}
                         loading={isFetching}
                     />
                 }
