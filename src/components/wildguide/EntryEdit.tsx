@@ -1,5 +1,5 @@
-import { GuideBase, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { EntryBase, useFindEntryQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
+import { Box, Container, Fieldset, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
 import { Field } from '../ui/field';
-import { Radio, RadioGroup } from '../ui/radio';
+import { SegmentedControl } from '../ui/segmented-control';
 import { ErrorDisplay } from './ErrorDisplay';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 
 export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/guides/$guideId/edit' });
+    const navigate = useNavigate({ from: '/guides/$guideId/entries/$entryId/edit' });
 
     const {
         data,
@@ -26,124 +26,146 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         isSuccess,
         isError,
         error
-    } = useFindGuideQuery({ guideId });
+    } = useFindEntryQuery({ guideId, entryId });
 
     const [
-        doUpdateGuide, {
+        doUpdate, {
             isLoading: updateIsLoading,
             isError: updateIsError,
             error: updateError
         }
-    ] = useUpdateGuideMutation();
+    ] = useUpdateEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<GuideBase>();
+    const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
         }
     }, [data, isSuccess, reset]);
 
-    const inatCriteria = watch('inaturalistCriteria');
-    const [debouncedInatCriteria] = useDebounce(inatCriteria, 500);
-
-    const visibility = watch('visibility');
+    const inatTaxon = watch('inaturalistTaxon');
+    const [debouncedInatTaxon] = useDebounce(inatTaxon, 500);
 
     const onSubmit = handleSubmit(async (data) => {
-        doUpdateGuide({ guideId, guideBase: data })
+        doUpdate({ guideId, entryId, entryBase: data })
             .unwrap().then(() => {
-                navigate({ to: '/guides/$guideId' });
+                navigate({ to: '/guides/$guideId/entries/$entryId', replace: true });
             });
     });
 
-    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
+    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId/entries/$entryId', replace: true }), [navigate]);
 
     return (
         <Container padding={6}>
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
-                    <Fieldset.Root invalid={isError} disabled={isLoading}>
+                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
                         <Fieldset.Content gap={8} >
                             <Field
-                                label={<Text fontSize='md'>{t('newGuideName')}</Text>}
+                                label={<Text fontSize='md'>{t('newEntryName')}</Text>}
+                                invalid={!!errors.name || isError}
+                                errorText={errors.name?.message}
+                                helperText={t('newEntryNameHelper')}
+                            >
+                                <Input
+                                    {...register('name', {
+                                        required: t('newEntryNameRequired'),
+                                        minLength: { value: 1, message: t('newEntryNameInvalid') },
+                                        maxLength: { value: 128, message: t('newEntryNameInvalid') }
+                                    })}
+                                    placeholder={t('newEntryNamePlaceholder')}
+                                    variant='outline'
+                                />
+                            </Field>
+                            <Field
+                                label={<Text fontSize='md'>{t('newEntryScientificName')}</Text>}
                                 invalid={!!errors.name || isError}
                                 errorText={errors.name?.message}
                             >
                                 <Input
-                                    {...register('name', {
-                                        required: t('newGuideNameRequired'),
-                                        minLength: { value: 4, message: t('newGuideNameInvalid') },
-                                        maxLength: { value: 128, message: t('newGuideNameInvalid') }
+                                    {...register('scientificName', {
+                                        required: t('newEntryScientificNameRequired'),
+                                        minLength: { value: 3, message: t('newEntryScientificInvalid') },
+                                        maxLength: { value: 256, message: t('newEntryScientificInvalid') }
                                     })}
-                                    placeholder={t('newGuideNamePlaceholder')}
+                                    placeholder={t('newEntryScientificNamePlaceholder')}
                                     variant='outline'
                                 />
                             </Field>
-                            <Field
-                                label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
-                                invalid={!!errors.visibility || isError}
-                                errorText={errors.visibility?.message}
-                                helperText={t(`newGuideVisibilityHelp${visibility}`)}
-                            >
-                                <Controller
-                                    name='visibility'
-                                    control={control}
-                                    render={({ field }) => (
-                                        <RadioGroup
+                            <Controller
+                                control={control}
+                                name='scientificRank'
+                                rules={{
+                                    required: t('newEntryScientificRankRequired')
+                                }}
+                                render={({ field }) => (
+                                    <Field
+                                        label={<Text fontSize='md'>{t('newEntryScientificRank')}</Text>}
+                                        invalid={!!errors.scientificRank || isError}
+                                        errorText={errors.scientificRank?.message}
+                                    >
+                                        <SegmentedControl
+                                            onBlur={field.onBlur}
                                             name={field.name}
                                             value={field.value}
+                                            items={[
+                                                { label: t('entryScientificRankFAMILY'), value: 'FAMILY' },
+                                                { label: t('entryScientificRankGENUS'), value: 'GENUS' },
+                                                { label: t('entryScientificRankSPECIES'), value: 'SPECIES' },
+                                                { label: t('entryScientificRankSUBSPECIES'), value: 'SUBSPECIES' }
+                                            ]}
                                             onValueChange={({ value }) => field.onChange(value)}
-                                            variant='subtle'
-                                        >
-                                            <HStack gap={8}>
-                                                <Radio value='PUBLIC'>
-                                                    {t('newGuideVisibilityPUBLIC')}
-                                                </Radio>
-                                                <Radio value='PRIVATE'>
-                                                    {t('newGuideVisibilityPRIVATE')}
-                                                </Radio>
-                                            </HStack>
-                                        </RadioGroup>
-                                    )}
-                                />
-                            </Field>
+                                        />
+                                    </Field>
+                                )}
+                            />
                             <Field
-                                label={<Text fontSize='md'>{t('newGuideInaturalistCriteria')}</Text>}
-                                invalid={!!errors.inaturalistCriteria || isError}
-                                errorText={errors.inaturalistCriteria?.message}
+                                label={<Text fontSize='md'>{t('newEntryInaturalistTaxon')}</Text>}
+                                invalid={!!errors.inaturalistTaxon || isError}
+                                errorText={errors.inaturalistTaxon?.message}
                             >
                                 <Input
-                                    {...register('inaturalistCriteria')}
-                                    placeContent={t('newGuideInaturalistCriteriaPlaceholder')}
+                                    {...register('inaturalistTaxon')}
+                                    placeContent={t('newEntryInaturalistTaxonPlaceholder')}
                                     variant='outline'
                                 />
                             </Field>
                             <Field
-                                label={<Text fontSize='md'>{t('newGuideDescription')}</Text>}
+                                label={<Text fontSize='md'>{t('newEntrySummary')}</Text>}
+                                invalid={!!errors.description || isError}
+                                errorText={errors.description?.message}
+                            >
+                                <Textarea
+                                    {...register('summary')}
+                                    placeholder={t('newEntrySummaryPlaceholder')}
+                                    autoresize
+                                    variant='outline'
+                                />
+                            </Field>
+                            <Field
+                                label={<Text fontSize='md'>{t('newEntryDescription')}</Text>}
                                 invalid={!!errors.description || isError}
                                 errorText={errors.description?.message}
                             >
                                 <Textarea
                                     {...register('description')}
-                                    placeholder={t('newGuideDescriptionPlaceholder')}
+                                    placeholder={t('newEntryDescriptionPlaceholder')}
                                     autoresize
                                     variant='outline'
                                 />
                             </Field>
-                            <Separator />
-                            <p>TODO: Add/Remove Owners</p>
-                            <p>TODO: Add/Remove Members</p>
                             <Box marginTop={6}>
                                 <Fieldset.ErrorText>
-                                    <Text>{t('editGuideError')}</Text>
+                                    <Text>{t('editEntryError')}</Text>
                                 </Fieldset.ErrorText>
                                 <Button type='submit' width='full' loading={updateIsLoading} size='lg'>
                                     <MdEdit />
-                                    <Text>{t('editGuideConfirm')}</Text>
+                                    <Text>{t('editEntryConfirm')}</Text>
                                 </Button>
                                 <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
                                     <MdKeyboardBackspace />
-                                    <Text>{t('editGuideBack')}</Text>
+                                    <Text>{t('editEntryBack')}</Text>
                                 </Button>
                             </Box>
                         </Fieldset.Content>

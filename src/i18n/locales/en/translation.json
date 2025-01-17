@@ -95,6 +95,13 @@
     "entryScientificRankSUBGENUS": "Subgenus",
     "entryScientificRankSPECIES": "Species",
     "entryScientificRankSUBSPECIES": "Subspecies",
-    "entryScientificRankVARIETY_FORM_ABERRATION": "Variety, Form or Aberration"
+    "entryScientificRankVARIETY_FORM_ABERRATION": "Variety, Form or Aberration",
+
+    "entryBack": "Back to the Guide",
+
+    "editEntry": "Edit",
+    "editEntryConfirm": "Update Entry",
+    "editEntryError": "Failed to edit the Guide!",
+    "editEntryBack": "Back to the Entry"
 
 }

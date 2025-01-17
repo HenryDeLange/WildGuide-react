@@ -28,7 +28,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
     } = useFindGuideQuery({ guideId });
 
     const [
-        doUpdateGuide, {
+        doUpdate, {
             isLoading: updateIsLoading,
             isError: updateIsError,
             error: updateError
@@ -48,9 +48,9 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
     const visibility = watch('visibility');
 
     const onSubmit = handleSubmit(async (data) => {
-        doUpdateGuide({ guideId, guideBase: data })
+        doUpdate({ guideId, guideBase: data })
             .unwrap().then(() => {
-                navigate({ to: '/guides/$guideId' });
+                navigate({ to: '/guides/$guideId', replace: true });
             });
     });
 
@@ -61,7 +61,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
-                    <Fieldset.Root invalid={isError} disabled={isLoading}>
+                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
                         <Fieldset.Content gap={8} >
                             <Field
                                 label={<Text fontSize='md'>{t('newGuideName')}</Text>}

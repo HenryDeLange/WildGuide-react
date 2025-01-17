@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 
+// TODO: Can I enforce the iNat usage limits here in the API?
+
 export const tagTypes = [
     'Users',
     'Taxa',

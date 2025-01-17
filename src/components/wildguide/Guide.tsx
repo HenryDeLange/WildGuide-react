@@ -41,7 +41,7 @@ export function Guide({ guideId }: Readonly<Props>) {
         refetch: ownerRefetch
     } = useFindGuideOwnersQuery({ guideId });
 
-    const handleEditGuide = useCallback(() => navigate({ to: '/guides/$guideId/edit' }), [navigate]);
+    const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/edit' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
         refetch();
@@ -51,10 +51,10 @@ export function Guide({ guideId }: Readonly<Props>) {
     // RENDER
     return (
         <Box display='flex' justifyContent='center'>
-            <ErrorDisplay error={isError ? error : undefined} />
+            <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : undefined} />
             <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
-                    <VStack>
+                    <VStack width='100%'>
                         <Box width='100%' paddingTop={4} paddingX={4}>
                             <Stack direction='row'>
                                 <HStack flex={1}>
@@ -74,7 +74,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         size='lg'
                                         variant='ghost'
                                         color='fg.success'
-                                        onClick={handleEditGuide}
+                                        onClick={handleEdit}
                                         whiteSpace='nowrap'
                                     >
                                         <MdEdit />
