@@ -1,5 +1,5 @@
 import { GuideBase, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -129,9 +129,6 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                     variant='outline'
                                 />
                             </Field>
-                            <Separator />
-                            <p>TODO: Add/Remove Owners</p>
-                            <p>TODO: Add/Remove Members</p>
                             <Box marginTop={6}>
                                 <Fieldset.ErrorText>
                                     <Text>{t('editGuideError')}</Text>

@@ -82,7 +82,7 @@ export function GuideList() {
                             <Button
                                 size='lg'
                                 variant='ghost'
-                                color='fg.success'
+                                color='fg.info'
                                 onClick={handleCreate}
                                 whiteSpace='nowrap'
                             >

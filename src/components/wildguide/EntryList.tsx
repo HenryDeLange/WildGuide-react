@@ -84,7 +84,7 @@ export function EntryList({ guideId }: Readonly<Props>) {
                             <Button
                                 size='lg'
                                 variant='ghost'
-                                color='fg.success'
+                                color='fg.info'
                                 onClick={handleCreate}
                                 whiteSpace='nowrap'
                             >

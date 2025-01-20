@@ -149,6 +149,15 @@ const injectedRtkApi = api
         query: () => ({ url: `/version` }),
         providesTags: ["WildGuide Version"],
       }),
+      findUserInfo: build.query<FindUserInfoApiResponse, FindUserInfoApiArg>({
+        query: (queryArg) => ({
+          url: `/users/`,
+          params: {
+            username: queryArg.username,
+          },
+        }),
+        providesTags: ["User Authentication"],
+      }),
       findGuideOwners: build.query<
         FindGuideOwnersApiResponse,
         FindGuideOwnersApiArg
@@ -246,11 +255,16 @@ export type CreateEntryApiArg = {
 };
 export type GetVersionApiResponse = /** status 200 OK */ Version;
 export type GetVersionApiArg = void;
-export type FindGuideOwnersApiResponse = /** status 200 OK */ number[];
+export type FindUserInfoApiResponse = /** status 200 OK */ UserInfo;
+export type FindUserInfoApiArg = {
+  username: string;
+};
+export type FindGuideOwnersApiResponse = /** status 200 OK */ GuideLinkedUser[];
 export type FindGuideOwnersApiArg = {
   guideId: number;
 };
-export type FindGuideMembersApiResponse = /** status 200 OK */ number[];
+export type FindGuideMembersApiResponse =
+  /** status 200 OK */ GuideLinkedUser[];
 export type FindGuideMembersApiArg = {
   guideId: number;
 };
@@ -336,6 +350,14 @@ export type Version = {
   commitTime: string;
   buildTime: string;
 };
+export type UserInfo = {
+  id: number;
+  username: string;
+};
+export type GuideLinkedUser = {
+  userId: number;
+  username: string;
+};
 export const {
   useFindGuideQuery,
   useUpdateGuideMutation,
@@ -355,6 +377,7 @@ export const {
   useFindEntriesQuery,
   useCreateEntryMutation,
   useGetVersionQuery,
+  useFindUserInfoQuery,
   useFindGuideOwnersQuery,
   useFindGuideMembersQuery,
 } = injectedRtkApi;

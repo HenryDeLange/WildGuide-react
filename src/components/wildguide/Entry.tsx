@@ -40,6 +40,8 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
         refetch: ownerRefetch
     } = useFindGuideOwnersQuery({ guideId });
 
+    const isOwner = ownerData?.map(owner => owner.userId).includes(userId ?? -1) ?? false;
+
     const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/entries/$entryId/edit' }), [navigate]);
     const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
 
@@ -60,11 +62,11 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 <Heading flex={1}>
                                     {data.name}
                                 </Heading>
-                                {(ownerData && ownerData.includes(userId ?? -1)) &&
+                                {isOwner &&
                                     <Button
                                         size='lg'
                                         variant='ghost'
-                                        color='fg.success'
+                                        color='fg.info'
                                         onClick={handleEdit}
                                         whiteSpace='nowrap'
                                     >

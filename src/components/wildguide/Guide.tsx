@@ -12,6 +12,7 @@ import { Button } from '../ui/button';
 import { Tooltip } from '../ui/tooltip';
 import { EntryList } from './EntryList';
 import { ErrorDisplay } from './ErrorDisplay';
+import { GuideLinkUsers } from './GuideLinkUsers';
 
 type Props = {
     guideId: number;
@@ -41,6 +42,8 @@ export function Guide({ guideId }: Readonly<Props>) {
         refetch: ownerRefetch
     } = useFindGuideOwnersQuery({ guideId });
 
+    const isOwner = ownerData?.map(owner => owner.userId).includes(userId ?? -1) ?? false;
+
     const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/edit' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
@@ -69,19 +72,22 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         {data.name}
                                     </Heading>
                                 </HStack>
-                                {(ownerData && ownerData.includes(userId ?? -1)) &&
-                                    <Button
-                                        size='lg'
-                                        variant='ghost'
-                                        color='fg.success'
-                                        onClick={handleEdit}
-                                        whiteSpace='nowrap'
-                                    >
-                                        <MdEdit />
-                                        <Text>
-                                            {t('editGuide')}
-                                        </Text>
-                                    </Button>
+                                {isOwner &&
+                                    <>
+                                        <GuideLinkUsers guideId={guideId} />
+                                        <Button
+                                            size='lg'
+                                            variant='ghost'
+                                            color='fg.info'
+                                            onClick={handleEdit}
+                                            whiteSpace='nowrap'
+                                        >
+                                            <MdEdit />
+                                            <Text>
+                                                {t('editGuide')}
+                                            </Text>
+                                        </Button>
+                                    </>
                                 }
                                 <Button
                                     aria-label={t('guideGridRefresh')}

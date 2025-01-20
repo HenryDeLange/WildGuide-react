@@ -59,6 +59,7 @@
     "editGuideConfirm": "Update Guide",
     "editGuideError": "Failed to edit the Guide!",
     "editGuideBack": "Back to the Guide",
+    "editGuideAccess": "Access",
 
     "entryListTitle": "Guide Entries",
     "entryListSubTitle": "Entries based on the associated iNaturalist Project's Observations will be shown automatically. Alternatively additional manual entries can also be added.",
@@ -102,6 +103,18 @@
     "editEntry": "Edit",
     "editEntryConfirm": "Update Entry",
     "editEntryError": "Failed to edit the Guide!",
-    "editEntryBack": "Back to the Entry"
+    "editEntryBack": "Back to the Entry",
+
+    "editGuideAccessTitle": "Guide User Access",
+    "editGuideAccessConfirm": "Link User",
+    "editGuideAccessClose": "Close",
+    "editGuideAccessMembershipType": "Access Type",
+    "editGuideAccessMembershipTypeOWNER": "Owner",
+    "editGuideAccessMembershipTypeMEMBER": "Member",
+    "editGuideAccessUsername": "Username",
+    "editGuideAccessUsernamePlaceholder": "WildGuide Username",
+    "editGuideAccessUsernameHelp": "Link a WildGuide user to the guide.",
+    "editGuideAccessError": "Failed to update the user access for this guide!",
+    "editGuideAccessUsers": "Already linked users:"
 
 }

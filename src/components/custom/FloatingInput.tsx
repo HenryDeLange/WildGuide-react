@@ -20,7 +20,7 @@ export function FloatingInput({ label, ...props }: Readonly<Props>) {
 const floatingStyles = defineStyle({
     pos: 'absolute',
     top: '-3',
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
     pointerEvents: 'none',
     transition: 'position',
     _peerPlaceholderShown: {
