@@ -1,5 +1,5 @@
-import { EntryBase, useFindEntryQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { EntryBase, useDeleteEntryMutation, useFindEntryQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
+import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
 import { Field } from '../ui/field';
 import { SegmentedControl } from '../ui/segmented-control';
+import { DeleteButton } from './DeleteButton';
 import { ErrorDisplay } from './ErrorDisplay';
 
 type Props = {
@@ -36,6 +37,14 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         }
     ] = useUpdateEntryMutation();
 
+    const [
+        doDelete, {
+            isLoading: deleteIsLoading,
+            isError: deleteIsError,
+            error: deleteError
+        }
+    ] = useDeleteEntryMutation();
+
     const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
@@ -55,12 +64,30 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
 
     const handleBack = useCallback(() => navigate({ to: '/guides/$guideId/entries/$entryId', replace: true }), [navigate]);
 
+    const handleDelete = useCallback(() => {
+        doDelete({ guideId, entryId }).unwrap()
+            .then(() => navigate({ to: '/guides/$guideId', params: { guideId: guideId.toString() }, replace: true }));
+    }, [doDelete, entryId, guideId, navigate]);
+
     return (
         <Container padding={6}>
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
                     <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
+                        <Fieldset.Legend width='100%'>
+                            <HStack justifyContent='space-between'>
+                                <Heading>
+                                    {t('editGuideTitle')}
+                                </Heading>
+                                <DeleteButton
+                                    handleDelete={handleDelete}
+                                    loading={updateIsLoading || deleteIsLoading}
+                                    buttonText='editEntryDelete'
+                                    popupText='editEntryDeleteDetails'
+                                />
+                            </HStack>
+                        </Fieldset.Legend>
                         <Fieldset.Content gap={8} >
                             <Field
                                 label={<Text fontSize='md'>{t('newEntryName')}</Text>}

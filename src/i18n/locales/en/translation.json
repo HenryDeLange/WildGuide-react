@@ -12,6 +12,7 @@
     "register": "Register",
     "login": "Sign In",
     "logout": "Sign Out",
+    "dialogClose": "Close",
 
     "loginFormTitle": "Sign in to WildGuide",
     "loginFormTitleRegister": "Register a WildGuide account",
@@ -56,18 +57,32 @@
     "gridLoading": "Loading...",
 
     "editGuide": "Edit",
+    "editGuideTitle": "Update Guide Details",
     "editGuideConfirm": "Update Guide",
     "editGuideError": "Failed to edit the Guide!",
     "editGuideBack": "Back to the Guide",
+    "editGuideDelete": "Delete",
+    "editGuideDeleteDetails": "Permanently delete this guide?",
+
     "editGuideAccess": "Access",
+    "editGuideAccessTitle": "Guide User Access",
+    "editGuideAccessConfirm": "Link User",
+    "editGuideAccessMembershipType": "Access Type",
+    "editGuideAccessMembershipTypeOWNER": "Owner",
+    "editGuideAccessMembershipTypeMEMBER": "Member",
+    "editGuideAccessUsername": "Username",
+    "editGuideAccessUsernamePlaceholder": "WildGuide Username",
+    "editGuideAccessUsernameHelp": "Link a WildGuide user to the guide.",
+    "editGuideAccessError": "Failed to update the user access for this guide!",
+    "editGuideAccessUsers": "Already linked users:",
 
     "entryListTitle": "Guide Entries",
     "entryListSubTitle": "Entries based on the associated iNaturalist Project's Observations will be shown automatically. Alternatively additional manual entries can also be added.",
     "entryListRefresh": "Refresh Entries",
 
     "newEntry": "New Entry",
-    "newEntryTitle": "Create a new Entry",
-    "newEntrySubTitle": "Create an Entry for {{guide}}.",
+    "newEntryTitle": "Create a new entry",
+    "newEntrySubTitle": "Create an entry for guide: {{guide}}.",
     "newEntryName": "Name",
     "newEntryNamePlaceholder": "Entry Name",
     "newEntryNameHelper": "For example the common name (or the scientific name)",
@@ -104,17 +119,7 @@
     "editEntryConfirm": "Update Entry",
     "editEntryError": "Failed to edit the Guide!",
     "editEntryBack": "Back to the Entry",
-
-    "editGuideAccessTitle": "Guide User Access",
-    "editGuideAccessConfirm": "Link User",
-    "editGuideAccessClose": "Close",
-    "editGuideAccessMembershipType": "Access Type",
-    "editGuideAccessMembershipTypeOWNER": "Owner",
-    "editGuideAccessMembershipTypeMEMBER": "Member",
-    "editGuideAccessUsername": "Username",
-    "editGuideAccessUsernamePlaceholder": "WildGuide Username",
-    "editGuideAccessUsernameHelp": "Link a WildGuide user to the guide.",
-    "editGuideAccessError": "Failed to update the user access for this guide!",
-    "editGuideAccessUsers": "Already linked users:"
+    "editEntryDelete": "Delete",
+    "editEntryDeleteDetails": "Permanently delete this entry?"
 
 }

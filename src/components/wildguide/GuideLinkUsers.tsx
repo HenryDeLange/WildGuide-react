@@ -185,7 +185,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                     <DialogFooter>
                         <DialogActionTrigger asChild>
                             <Button variant='subtle'>
-                                {t('editGuideAccessClose')}
+                                {t('dialogClose')}
                             </Button>
                         </DialogActionTrigger>
                     </DialogFooter>

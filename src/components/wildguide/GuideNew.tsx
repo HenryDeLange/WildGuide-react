@@ -28,8 +28,8 @@ export function GuideNew() {
 
     const onSubmit = handleSubmit(async (data) => {
         doCreate({ guideBase: data })
-            .unwrap().then(() => {
-                navigate({ to: '/' });
+            .unwrap().then(response => {
+                navigate({ to: '/guides/$guideId', params: { guideId: response.id.toString() } });
             });
     });
 

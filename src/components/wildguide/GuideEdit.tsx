@@ -1,5 +1,5 @@
-import { GuideBase, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
+import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
 import { Field } from '../ui/field';
 import { Radio, RadioGroup } from '../ui/radio';
+import { DeleteButton } from './DeleteButton';
 import { ErrorDisplay } from './ErrorDisplay';
 
 type Props = {
@@ -35,6 +36,14 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
         }
     ] = useUpdateGuideMutation();
 
+    const [
+        doDelete, {
+            isLoading: deleteIsLoading,
+            isError: deleteIsError,
+            error: deleteError
+        }
+    ] = useDeleteGuideMutation();
+
     const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<GuideBase>();
     useEffect(() => {
         if (isSuccess) {
@@ -56,12 +65,30 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
 
     const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
 
+    const handleDelete = useCallback(() => {
+        doDelete({ guideId }).unwrap()
+            .then(() => navigate({ to: '/guides', replace: true }));
+    }, [doDelete, guideId, navigate]);
+
     return (
         <Container padding={6}>
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
                     <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
+                        <Fieldset.Legend width='100%'>
+                            <HStack justifyContent='space-between'>
+                                <Heading>
+                                    {t('editGuideTitle')}
+                                </Heading>
+                                <DeleteButton
+                                    handleDelete={handleDelete}
+                                    loading={updateIsLoading || deleteIsLoading}
+                                    buttonText='editGuideDelete'
+                                    popupText='editGuideDeleteDetails'
+                                />
+                            </HStack>
+                        </Fieldset.Legend>
                         <Fieldset.Content gap={8} >
                             <Field
                                 label={<Text fontSize='md'>{t('newGuideName')}</Text>}
@@ -133,7 +160,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 <Fieldset.ErrorText>
                                     <Text>{t('editGuideError')}</Text>
                                 </Fieldset.ErrorText>
-                                <Button type='submit' width='full' loading={updateIsLoading} size='lg'>
+                                <Button type='submit' width='full' size='lg' loading={updateIsLoading || deleteIsLoading}>
                                     <MdEdit />
                                     <Text>{t('editGuideConfirm')}</Text>
                                 </Button>
