@@ -6,11 +6,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
-import { Button } from '../ui/button';
-import { Field } from '../ui/field';
-import { Radio, RadioGroup } from '../ui/radio';
-import { DeleteButton } from './DeleteButton';
-import { ErrorDisplay } from './ErrorDisplay';
+import { DeleteButton } from '../../custom/DeleteButton';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { Button } from '../../ui/button';
+import { Field } from '../../ui/field';
+import { Radio, RadioGroup } from '../../ui/radio';
 
 type Props = {
     guideId: number;

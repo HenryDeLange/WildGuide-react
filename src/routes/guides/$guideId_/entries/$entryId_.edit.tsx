@@ -1,5 +1,5 @@
-import { EntryEdit } from '@/components/wildguide/EntryEdit';
-import { ProtectedRoute } from '@/components/wildguide/ProtectedRoute';
+import { ProtectedRoute } from '@/components/custom/ProtectedRoute';
+import { EntryEdit } from '@/components/wildguide/entry/EntryEdit';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/guides/$guideId_/entries/$entryId_/edit')({

@@ -5,7 +5,8 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 export const tagTypes = [
     'Users',
     'Taxa',
-    'Projects'
+    'Projects',
+    'Observations'
 ] as const;
 
 export const inatApi = createApi({
@@ -48,6 +49,12 @@ export const inatApi = createApi({
                 }
             }),
             providesTags: ['Projects']
+        }),
+        observationFind: builder.query<ObservationFind, ObservationFindArgs>({
+            query: (queryArg) => ({
+                url: `observations/${queryArg.id}`,
+            }),
+            providesTags: ['Observations']
         })
     }),
     keepUnusedDataFor: 180
@@ -55,7 +62,9 @@ export const inatApi = createApi({
 
 export const {
     useUsersAutocompleteQuery,
-    useTaxaAutocompleteQuery
+    useTaxaAutocompleteQuery,
+    useProjectsAutocompleteQuery,
+    useObservationFindQuery
 } = inatApi;
 
 export type UserAutocompleteArgs = {
@@ -75,11 +84,14 @@ export type User = {
     login: string;
     name: string;
     icon: string;
+    icon_url: string;
+    created_at: string;
     observations_count: number;
     identifications_count: number;
     journal_posts_count: number;
-    activity_count: number;
     species_count: number;
+    activity_count: number;
+    universal_search_rank: number;
 };
 
 export type TaxaAutocompleteArgs = {
@@ -106,7 +118,7 @@ export type Taxon = {
     is_active: boolean;
     name: string;
     preferred_common_name: string;
-    rank: string;
+    rank: string; // TODO: Confirm these???
     rank_level: number;
     parent_id: number;
     ancestor_ids: number[];
@@ -119,8 +131,12 @@ export type Taxon = {
         square_url: string
     };
     wikipedia_url?: string;
+    wikipedia_summary?: string;
     observations_count: number;
     extinct?: boolean;
+    native: boolean;
+    introduced: boolean;
+    endemic: boolean;
     conservation_status?: {
         authority?: string;
         status?: string;
@@ -159,4 +175,57 @@ export type Project = {
     banner_color: string;
     icon: string;
     header_image_url: string;
-}
+};
+
+export type ObservationFindArgs = {
+    id: number;
+};
+
+export type ObservationFind = {
+    total_results: number;
+    page: number; // Starts at 1
+    per_page: number;
+    results: Observation[];
+};
+
+export type Observation = {
+    id: number;
+    created_at: string;
+    time_observed_at: string;
+    observed_on_string: string;
+    quality_grade: 'casual' | 'needs_id' | 'research' | 'verifiable'; // TODO: Confirm these???
+    license_code: string;
+    description: string | null;
+    photos: Photo[];
+    identifications_count: number;
+    species_guess: string;
+    mappable: boolean;
+    place_guess: string;
+    taxon_geoprivacy: 'open' | 'obscured' | 'private'; // TODO: Confirm these???
+    obscured: boolean;
+    positional_accuracy: number | null;
+    geojson: {
+        type: 'Point';
+        coordinates: [number, number];
+    }
+    location: string;
+    user: User;
+    taxon: Taxon;
+    // identifications: Identification[];
+    captive: boolean;
+    comments_count: number;
+    // comments: Comment[];
+    // annotations: Annotation[];
+    faves_count: number;
+};
+
+export type Photo = {
+    id: number;
+    license_code: string;
+    url: string;
+    attribution: string;
+    original_dimensions: {
+        width: number;
+        height: number;
+    };
+};

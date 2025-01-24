@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { LuCirclePlus } from 'react-icons/lu';
 import { MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
-import { Field } from '../ui/field';
-import { SegmentedControl } from '../ui/segmented-control';
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { Field } from '../../ui/field';
+import { SegmentedControl } from '../../ui/segmented-control';
 
 type Props = {
     guideId: number;

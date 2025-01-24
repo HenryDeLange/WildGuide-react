@@ -1,7 +1,7 @@
 import { Box, Show, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHeights } from '../wildguide/hooks';
+import { useHeights } from '../wildguide/hooks/uiHooks';
 
 // TODO: Make the virtualizer work
 
@@ -71,7 +71,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 <Show when={loading}>
                     <Box gridColumn='1 / -1' textAlign='center'>
                         <Spinner size='md' />
-                        <Text>{t('gridLoading')}</Text>
+                        <Text>{t('loading')}</Text>
                     </Box>
                 </Show>
             </SimpleGrid>

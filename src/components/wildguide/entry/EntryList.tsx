@@ -1,5 +1,5 @@
 import { selectAuthUserId } from '@/auth/authSlice';
-import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
+import { Entry, useFindEntriesQuery, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Heading, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -7,31 +7,32 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
-import { InfiniteVirtualGrid } from '../custom/InfiniteVirtualGrid';
-import { Button } from '../ui/button';
-import { ErrorDisplay } from './ErrorDisplay';
-import { GuideListItem } from './GuideListItem';
-import { useHeights } from './hooks';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
+import { Button } from '../../ui/button';
+import { EntryListItem } from './EntryListItem';
 
-export function GuideList() {
+// TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
+
+type Props = {
+    guideId: number;
+}
+
+export function EntryList({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/' });
+    const navigate = useNavigate({ from: '/guides/$guideId' });
     const dispatch = useAppDispatch();
-
-    const { content } = useHeights();
 
     const userId = useAppSelector(selectAuthUserId);
 
     const [page, setPage] = useState<number>(0);
     const [pageQueue, setPageQueue] = useState<number[]>([]);
-    const [items, setItems] = useState<Guide[]>([]);
+    const [items, setItems] = useState<Entry[]>([]);
 
-    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page });
-    // console.log('rendering page:', page)
+    const { data, isLoading, isFetching, isError, error } = useFindEntriesQuery({ guideId, page });
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
-            // console.log('Process page from queue:', pageQueue[0]);
             setPage(pageQueue[0]);
             setPageQueue((prevQueue) => prevQueue.slice(1));
         }
@@ -45,36 +46,37 @@ export function GuideList() {
         });
     }, [data?.data]);
 
-    const handleLoadMoreItems = useCallback(() => {
-        const nextPage = page + 1;
+    const handleLoadMoreItems = useCallback((nextPage: number) => {
         if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
-            // console.log('Add page to queue:', nextPage, { page, pageQueue })
             setPageQueue(prev => [...prev, nextPage]);
         }
-        // else {
-        //     console.log('not processing page', nextPage)
-        // }
-    }, [data?.pageSize, data?.totalRecords, page, pageQueue]);
+    }, [data?.pageSize, data?.totalRecords, pageQueue]);
 
-    const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
+    const handleCreate = useCallback(() => navigate({ to: '/guides/$guideId/entries/create' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
-        dispatch(wildguideApi.util.invalidateTags(['Guides']));
-        setItems([]);
         setPage(0);
+        setPageQueue([]);
+        setItems([]);
+        dispatch(wildguideApi.util.invalidateTags(['Entries']));
     }, [dispatch]);
+
+    const renderItem = useCallback((item: Entry, index: number) => <EntryListItem guideId={guideId} entry={item} index={index} />,
+        [guideId]);
+
+    const hasNextPage = items.length < (data?.totalRecords ?? 0);
 
     // RENDER
     return (
-        <Box height={content}>
-            <Box id='grid-header'>
+        <Box>
+            <Box>
                 <Stack direction='row' justifyContent='space-between' gap={8}>
                     <Box marginX={4} marginY={2}>
                         <Heading>
-                            {t('guideGridTitle')}
+                            {t('entryListTitle')}
                         </Heading>
                         <Text>
-                            {t('guideGridSubTitle')}
+                            {t('entryListSubTitle')}
                         </Text>
                     </Box>
                     <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
@@ -88,12 +90,12 @@ export function GuideList() {
                             >
                                 <MdAddCircleOutline />
                                 <Text>
-                                    {t('newGuide')}
+                                    {t('newEntry')}
                                 </Text>
                             </Button>
                         }
                         <Button
-                            aria-label={t('guideGridRefresh')}
+                            aria-label={t('entryListRefresh')}
                             size='md'
                             variant='ghost'
                             onClick={handleRefresh}
@@ -113,14 +115,15 @@ export function GuideList() {
                         <Spinner size='lg' />
                     </Box>
                 }>
-                {data?.data &&
-                    <InfiniteVirtualGrid
-                        data={items}
-                        renderItem={(item) => <GuideListItem item={item} />}
-                        loadMoreItems={handleLoadMoreItems}
-                        loading={isFetching}
-                    />
-                }
+                <InfiniteVirtualList
+                    data={items}
+                    renderItem={renderItem}
+                    hasNextPage={hasNextPage}
+                    loadNextPage={handleLoadMoreItems}
+                    loading={isFetching}
+                    pageSize={data?.pageSize ?? 0}
+                    totalCount={data?.totalRecords ?? 0}
+                />
             </Show>
         </Box>
     );

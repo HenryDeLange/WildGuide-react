@@ -13,6 +13,7 @@
     "login": "Sign In",
     "logout": "Sign Out",
     "dialogClose": "Close",
+    "loading": "Loading...",
 
     "loginFormTitle": "Sign in to WildGuide",
     "loginFormTitleRegister": "Register a WildGuide account",
@@ -54,7 +55,6 @@
     "guideGridTitle": "Guides available to you on WildGuide",
     "guideGridSubTitle": "Sign in to create new guides, or to see private guides.",
     "guideGridRefresh": "Refresh Guides",
-    "gridLoading": "Loading...",
 
     "editGuide": "Edit",
     "editGuideTitle": "Update Guide Details",

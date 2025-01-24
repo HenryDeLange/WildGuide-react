@@ -3,13 +3,13 @@ import { DialogRootProvider, Fieldset, HStack, Show, Spinner, Text, useDialog } 
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuUsersRound } from 'react-icons/lu';
-import { FloatingInput } from '../custom/FloatingInput';
-import { Button } from '../ui/button';
-import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { Field } from '../ui/field';
-import { SegmentedControl } from '../ui/segmented-control';
-import { Tag } from '../ui/tag';
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { FloatingInput } from '../../custom/FloatingInput';
+import { Button } from '../../ui/button';
+import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
+import { Field } from '../../ui/field';
+import { SegmentedControl } from '../../ui/segmented-control';
+import { Tag } from '../../ui/tag';
 
 type Props = {
     guideId: number;

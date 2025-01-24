@@ -2,7 +2,7 @@ import { Box, Spinner, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ENTRY_LIST_ITEM_HEIGHT } from '../wildguide/EntryListItem';
+import { ENTRY_LIST_ITEM_HEIGHT } from '../wildguide/entry/EntryListItem';
 
 // TODO: Maybe try to make the item sizes dynamic? (depends on how much of the summary to allow to be shown?)
 
@@ -87,7 +87,7 @@ export function InfiniteVirtualList<T>({ data, renderItem, hasNextPage, loadNext
                                     {isLoaderRow &&
                                         <Box textAlign='center' marginTop={16}>
                                             <Spinner size='md' />
-                                            <Text>{t('gridLoading')}</Text>
+                                            <Text>{t('loading')}</Text>
                                             {loading ? '...fetching...' : '!!! not fetching !!!'}
                                         </Box>
                                     }

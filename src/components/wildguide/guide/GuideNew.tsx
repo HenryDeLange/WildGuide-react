@@ -5,9 +5,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LuCirclePlus } from 'react-icons/lu';
 import { useDebounce } from 'use-debounce';
-import { Button } from '../ui/button';
-import { Field } from '../ui/field';
-import { Radio, RadioGroup } from '../ui/radio';
+import { Button } from '../../ui/button';
+import { Field } from '../../ui/field';
+import { Radio, RadioGroup } from '../../ui/radio';
 
 export function GuideNew() {
     const { t } = useTranslation();

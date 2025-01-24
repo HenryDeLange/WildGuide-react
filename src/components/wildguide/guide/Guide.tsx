@@ -1,17 +1,20 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
+import { InatObs } from '@/components/markdown/InatObs';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Icon, Image, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import Markdown from 'markdown-to-jsx';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { MdEdit, MdOutlineLock } from 'react-icons/md';
-import { Button } from '../ui/button';
-import { Tooltip } from '../ui/tooltip';
-import { EntryList } from './EntryList';
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import '../../markdown/markdown.css';
+import { Button } from '../../ui/button';
+import { Tooltip } from '../../ui/tooltip';
+import { EntryList } from '../entry/EntryList';
 import { GuideLinkUsers } from './GuideLinkUsers';
 
 type Props = {
@@ -122,11 +125,20 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 </Box>
                             }
                             {data.description &&
-                                <Box marginY={4}>
+                                <Box marginY={4} className='markdown'>
                                     <Separator variant='dashed' />
-                                    <Text paddingY={2}>
-                                        {data.description}
-                                    </Text>
+                                        <Markdown
+                                            options={{
+                                                // TODO: Somehow prevent markdown.css styles from applying to these custom components?
+                                                overrides: {
+                                                    InatObs: {
+                                                        component: InatObs
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            {data.description}
+                                        </Markdown>
                                     <Separator variant='dashed' />
                                 </Box>
                             }

@@ -1,5 +1,5 @@
+import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
 import { AppHeader } from '@/components/wildguide/AppHeader';
-import { ErrorDisplay } from '@/components/wildguide/ErrorDisplay';
 import i18n from '@/i18n/i18n';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 

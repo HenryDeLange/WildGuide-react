@@ -3,6 +3,7 @@ import { configureStore, createListenerMiddleware, isAnyOf } from '@reduxjs/tool
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer, { authLogin, authLogout, authRefresh, authSetRefreshToken } from '../auth/authSlice';
 import { inatApi } from './api/inatApi';
+import { inatRateLimitMiddleware } from './api/inatRateLimitMiddleware';
 import { wildguideApi } from './api/wildguideApi';
 
 // export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
@@ -79,6 +80,7 @@ export const store = configureStore({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         wildguideApi.middleware as any,
         // rtkQueryErrorLogger
+        inatRateLimitMiddleware
     )
 });
 

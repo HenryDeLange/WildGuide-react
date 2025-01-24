@@ -3,7 +3,7 @@ import { Box, Heading, Separator, Text, VStack } from '@chakra-ui/react';
 import { Link } from '@tanstack/react-router';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '../ui/tooltip';
+import { Tooltip } from '../../ui/tooltip';
 
 type Props = {
     index: number;

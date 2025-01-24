@@ -1,5 +1,5 @@
 import { selectAuthUserId } from '@/auth/authSlice';
-import { Entry, useFindEntriesQuery, wildguideApi } from '@/redux/api/wildguideApi';
+import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Heading, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -7,32 +7,31 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
-import { InfiniteVirtualList } from '../custom/InfiniteVirtualList';
-import { Button } from '../ui/button';
-import { EntryListItem } from './EntryListItem';
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { InfiniteVirtualGrid } from '../../custom/InfiniteVirtualGrid';
+import { Button } from '../../ui/button';
+import { useHeights } from '../hooks/uiHooks';
+import { GuideListItem } from './GuideListItem';
 
-// TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
-
-type Props = {
-    guideId: number;
-}
-
-export function EntryList({ guideId }: Readonly<Props>) {
+export function GuideList() {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/guides/$guideId' });
+    const navigate = useNavigate({ from: '/' });
     const dispatch = useAppDispatch();
+
+    const { content } = useHeights();
 
     const userId = useAppSelector(selectAuthUserId);
 
     const [page, setPage] = useState<number>(0);
     const [pageQueue, setPageQueue] = useState<number[]>([]);
-    const [items, setItems] = useState<Entry[]>([]);
+    const [items, setItems] = useState<Guide[]>([]);
 
-    const { data, isLoading, isFetching, isError, error } = useFindEntriesQuery({ guideId, page });
+    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page });
+    // console.log('rendering page:', page)
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
+            // console.log('Process page from queue:', pageQueue[0]);
             setPage(pageQueue[0]);
             setPageQueue((prevQueue) => prevQueue.slice(1));
         }
@@ -46,37 +45,36 @@ export function EntryList({ guideId }: Readonly<Props>) {
         });
     }, [data?.data]);
 
-    const handleLoadMoreItems = useCallback((nextPage: number) => {
+    const handleLoadMoreItems = useCallback(() => {
+        const nextPage = page + 1;
         if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
+            // console.log('Add page to queue:', nextPage, { page, pageQueue })
             setPageQueue(prev => [...prev, nextPage]);
         }
-    }, [data?.pageSize, data?.totalRecords, pageQueue]);
+        // else {
+        //     console.log('not processing page', nextPage)
+        // }
+    }, [data?.pageSize, data?.totalRecords, page, pageQueue]);
 
-    const handleCreate = useCallback(() => navigate({ to: '/guides/$guideId/entries/create' }), [navigate]);
+    const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
-        setPage(0);
-        setPageQueue([]);
+        dispatch(wildguideApi.util.invalidateTags(['Guides']));
         setItems([]);
-        dispatch(wildguideApi.util.invalidateTags(['Entries']));
+        setPage(0);
     }, [dispatch]);
-
-    const renderItem = useCallback((item: Entry, index: number) => <EntryListItem guideId={guideId} entry={item} index={index} />,
-        [guideId]);
-
-    const hasNextPage = items.length < (data?.totalRecords ?? 0);
 
     // RENDER
     return (
-        <Box>
-            <Box>
+        <Box height={content}>
+            <Box id='grid-header'>
                 <Stack direction='row' justifyContent='space-between' gap={8}>
                     <Box marginX={4} marginY={2}>
                         <Heading>
-                            {t('entryListTitle')}
+                            {t('guideGridTitle')}
                         </Heading>
                         <Text>
-                            {t('entryListSubTitle')}
+                            {t('guideGridSubTitle')}
                         </Text>
                     </Box>
                     <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
@@ -90,12 +88,12 @@ export function EntryList({ guideId }: Readonly<Props>) {
                             >
                                 <MdAddCircleOutline />
                                 <Text>
-                                    {t('newEntry')}
+                                    {t('newGuide')}
                                 </Text>
                             </Button>
                         }
                         <Button
-                            aria-label={t('entryListRefresh')}
+                            aria-label={t('guideGridRefresh')}
                             size='md'
                             variant='ghost'
                             onClick={handleRefresh}
@@ -115,15 +113,14 @@ export function EntryList({ guideId }: Readonly<Props>) {
                         <Spinner size='lg' />
                     </Box>
                 }>
-                <InfiniteVirtualList
-                    data={items}
-                    renderItem={renderItem}
-                    hasNextPage={hasNextPage}
-                    loadNextPage={handleLoadMoreItems}
-                    loading={isFetching}
-                    pageSize={data?.pageSize ?? 0}
-                    totalCount={data?.totalRecords ?? 0}
-                />
+                {data?.data &&
+                    <InfiniteVirtualGrid
+                        data={items}
+                        renderItem={(item) => <GuideListItem item={item} />}
+                        loadMoreItems={handleLoadMoreItems}
+                        loading={isFetching}
+                    />
+                }
             </Show>
         </Box>
     );

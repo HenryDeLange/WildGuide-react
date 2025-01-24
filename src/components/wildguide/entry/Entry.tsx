@@ -8,8 +8,8 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
-import { Button } from '../ui/button';
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { Button } from '../../ui/button';
 
 type Props = {
     guideId: number;

@@ -1,4 +1,4 @@
-import { GuideList } from '@/components/wildguide/GuideList';
+import { GuideList } from '@/components/wildguide/guide/GuideList';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
