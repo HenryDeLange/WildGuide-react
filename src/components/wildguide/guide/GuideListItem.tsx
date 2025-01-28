@@ -18,7 +18,7 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
             >
                 <Heading>{item.name}</Heading>
                 <Text>{item.visibility}</Text>
-                <Text>{item.description ?? ''}</Text>
+                <Text>{item.summary ?? ''}</Text>
             </VStack>
         </Link>
     );

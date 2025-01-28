@@ -270,6 +270,7 @@ export type FindGuideMembersApiArg = {
 };
 export type Guide = {
   name: string;
+  summary?: string;
   description?: string;
   visibility: "PUBLIC" | "PRIVATE";
   inaturalistCriteria?: string;
@@ -277,6 +278,7 @@ export type Guide = {
 };
 export type GuideBase = {
   name: string;
+  summary?: string;
   description?: string;
   visibility: "PUBLIC" | "PRIVATE";
   inaturalistCriteria?: string;

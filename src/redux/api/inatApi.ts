@@ -1,12 +1,11 @@
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 
-// TODO: Can I enforce the iNat usage limits here in the API?
-
 export const tagTypes = [
     'Users',
     'Taxa',
     'Projects',
-    'Observations'
+    'Observation',
+    'Taxon'
 ] as const;
 
 export const inatApi = createApi({
@@ -54,28 +53,38 @@ export const inatApi = createApi({
             query: (queryArg) => ({
                 url: `observations/${queryArg.id}`,
             }),
-            providesTags: ['Observations']
+            providesTags: ['Observation']
+        }),
+        taxonFind: builder.query<TaxonFind, TaxonFindArgs>({
+            query: (queryArg) => ({
+                url: `taxa/${queryArg.id}`,
+            }),
+            providesTags: ['Taxon']
         })
     }),
-    keepUnusedDataFor: 180
+    keepUnusedDataFor: 300 // 5 minutes
 });
 
 export const {
     useUsersAutocompleteQuery,
     useTaxaAutocompleteQuery,
     useProjectsAutocompleteQuery,
-    useObservationFindQuery
+    useObservationFindQuery,
+    useTaxonFindQuery
 } = inatApi;
+
+type ResponseBase = {
+    total_results: number;
+    page: number; // Starts at 1
+    per_page: number;
+}
 
 export type UserAutocompleteArgs = {
     q: string;
     per_page?: number;
 };
 
-export type UserAutocomplete = {
-    total_results: number;
-    page: number; // Starts at 1
-    per_page: number;
+export type UserAutocomplete = ResponseBase & {
     results: User[];
 };
 
@@ -106,10 +115,7 @@ export type TaxaAutocompleteArgs = {
     all_names?: boolean;
 };
 
-export type TaxaAutocomplete = {
-    total_results: number;
-    page: number; // Starts at 1
-    per_page: number;
+export type TaxaAutocomplete = ResponseBase & {
     results: Taxon[];
 };
 
@@ -122,14 +128,7 @@ export type Taxon = {
     rank_level: number;
     parent_id: number;
     ancestor_ids: number[];
-    default_photo?: {
-        id: number;
-        attribution: string;
-        license_code: string;
-        url: string;
-        medium_url: string;
-        square_url: string
-    };
+    default_photo?: Photo;
     wikipedia_url?: string;
     wikipedia_summary?: string;
     observations_count: number;
@@ -143,7 +142,11 @@ export type Taxon = {
         status_name?: string;
         geoprivacy?: string;
         iucn?: number;
-    }
+    };
+    taxon_photos?: {
+        taxon_id: number;
+        photo: Photo;
+    }[];
 };
 
 export type ProjectsAutocompleteArgs = {
@@ -160,9 +163,6 @@ export type ProjectsAutocompleteArgs = {
 };
 
 export type ProjectsAutocomplete = {
-    total_results: number;
-    page: number; // Starts at 1
-    per_page: number;
     results: Project[];
 };
 
@@ -181,10 +181,7 @@ export type ObservationFindArgs = {
     id: number;
 };
 
-export type ObservationFind = {
-    total_results: number;
-    page: number; // Starts at 1
-    per_page: number;
+export type ObservationFind = ResponseBase & {
     results: Observation[];
 };
 
@@ -223,9 +220,21 @@ export type Photo = {
     id: number;
     license_code: string;
     url: string;
+    square_url?: string;
+    medium_url?: string;
+    large_url?: string;
+    original_url?: string;
     attribution: string;
     original_dimensions: {
         width: number;
         height: number;
     };
+};
+
+export type TaxonFindArgs = {
+    id: number;
+};
+
+export type TaxonFind = ResponseBase & {
+    results: Taxon[];
 };

@@ -1,13 +1,15 @@
+import { Button } from '@/components/ui/button';
+import { Field } from '@/components/ui/field';
+import { Radio, RadioGroup } from '@/components/ui/radio';
 import { GuideBase, useCreateGuideMutation } from '@/redux/api/wildguideApi';
 import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LuCirclePlus } from 'react-icons/lu';
+import { MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
-import { Button } from '../../ui/button';
-import { Field } from '../../ui/field';
-import { Radio, RadioGroup } from '../../ui/radio';
 
 export function GuideNew() {
     const { t } = useTranslation();
@@ -25,6 +27,8 @@ export function GuideNew() {
     const [debouncedInatCriteria] = useDebounce(inatCriteria, 500);
 
     const visibility = watch('visibility');
+
+    const handleBack = useCallback(() => navigate({ to: '/guides', replace: true }), [navigate]);
 
     const onSubmit = handleSubmit(async (data) => {
         doCreate({ guideBase: data })
@@ -100,6 +104,20 @@ export function GuideNew() {
                             />
                         </Field>
                         <Field
+                            label={<Text fontSize='md'>{t('newGuideSummary')}</Text>}
+                            invalid={!!errors.summary || isError}
+                            errorText={errors.summary?.message}
+                        >
+                            <Textarea
+                                {...register('summary', {
+                                    maxLength: { value: 256, message: t('newGuideSummaryInvalid') }
+                                })}
+                                placeholder={t('newGuideSummaryPlaceholder')}
+                                autoresize
+                                variant='outline'
+                            />
+                        </Field>
+                        <Field
                             label={<Text fontSize='md'>{t('newGuideDescription')}</Text>}
                             invalid={!!errors.description || isError}
                             errorText={errors.description?.message}
@@ -118,6 +136,10 @@ export function GuideNew() {
                             <Button type='submit' width='full' loading={isLoading} size='lg'>
                                 <LuCirclePlus />
                                 <Text>{t('newGuideConfirm')}</Text>
+                            </Button>
+                            <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
+                                <MdKeyboardBackspace />
+                                <Text>{t('newGuideBack')}</Text>
                             </Button>
                         </Box>
                     </Fieldset.Content>

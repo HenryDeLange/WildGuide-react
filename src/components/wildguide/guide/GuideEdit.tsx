@@ -145,6 +145,20 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 />
                             </Field>
                             <Field
+                                label={<Text fontSize='md'>{t('newGuideSummary')}</Text>}
+                                invalid={!!errors.summary || isError}
+                                errorText={errors.summary?.message}
+                            >
+                                <Textarea
+                                    {...register('summary', {
+                                        maxLength: { value: 256, message: t('newGuideSummaryInvalid') }
+                                    })}
+                                    placeholder={t('newGuideSummaryPlaceholder')}
+                                    autoresize
+                                    variant='outline'
+                                />
+                            </Field>
+                            <Field
                                 label={<Text fontSize='md'>{t('newGuideDescription')}</Text>}
                                 invalid={!!errors.description || isError}
                                 errorText={errors.description?.message}

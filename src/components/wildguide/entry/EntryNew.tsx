@@ -1,5 +1,6 @@
+import { Button } from '@/components/ui/button';
 import { EntryBase, useCreateEntryMutation, useFindGuideQuery } from '@/redux/api/wildguideApi';
-import { Box, Button, Container, Fieldset, Heading, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -133,11 +134,13 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                                     </Field>
                                     <Field
                                         label={<Text fontSize='md'>{t('newEntrySummary')}</Text>}
-                                        invalid={!!errors.description || isError}
-                                        errorText={errors.description?.message}
+                                        invalid={!!errors.summary || isError}
+                                        errorText={errors.summary?.message}
                                     >
                                         <Textarea
-                                            {...register('summary')}
+                                            {...register('summary', {
+                                                maxLength: { value: 256, message: t('newEntrySummaryInvalid') }
+                                            })}
                                             placeholder={t('newEntrySummaryPlaceholder')}
                                             autoresize
                                             variant='outline'
