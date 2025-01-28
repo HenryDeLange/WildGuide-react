@@ -1,13 +1,14 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
+import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from '@/components/ui/popover';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, Image, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, Image, QrCode, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw } from 'react-icons/lu';
+import { LuQrCode, LuRefreshCcw } from 'react-icons/lu';
 import { MdEdit, MdOutlineLock } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
@@ -90,15 +91,51 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         </Button>
                                     </>
                                 }
-                                <Button
-                                    aria-label={t('guideGridRefresh')}
-                                    size='md'
-                                    variant='ghost'
-                                    onClick={handleRefresh}
-                                    loading={isFetching || ownerIsFetching}
-                                >
-                                    <LuRefreshCcw />
-                                </Button>
+                                <PopoverRoot lazyMount>
+                                    <PopoverTrigger asChild>
+                                        <Box>
+                                            <Tooltip content={t('qrButton')} >
+                                                <Button variant='ghost' whiteSpace='nowrap'>
+                                                    <LuQrCode />
+                                                </Button>
+                                            </Tooltip>
+                                        </Box>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <PopoverArrow />
+                                        <PopoverBody>
+                                            <PopoverTitle width='100%' textAlign='center'>
+                                                <Heading>
+                                                    {t('qrTitleGuide')}
+                                                </Heading>
+                                            </PopoverTitle>
+                                            <Separator marginY={4} />
+                                            <Box>
+                                                <QrCode.Root value={`${window.location.origin}/guides/${guideId}`} size='lg' width='100%'>
+                                                    <QrCode.Frame fill='black' backgroundColor='white' width='100%'>
+                                                        <QrCode.Pattern />
+                                                    </QrCode.Frame>
+                                                    <QrCode.DownloadTrigger asChild fileName='qr-code.png' mimeType='image/png'>
+                                                        <Button variant='outline' size='xs' mt='3' width='100%'>
+                                                            {t('qrDownload')}
+                                                        </Button>
+                                                    </QrCode.DownloadTrigger>
+                                                </QrCode.Root>
+                                            </Box>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </PopoverRoot>
+                                <Tooltip content={t('guideGridRefresh')}>
+                                    <Button
+                                        aria-label={t('guideGridRefresh')}
+                                        size='md'
+                                        variant='ghost'
+                                        onClick={handleRefresh}
+                                        loading={isFetching || ownerIsFetching}
+                                    >
+                                        <LuRefreshCcw />
+                                    </Button>
+                                </Tooltip>
                             </Stack>
                             {data.inaturalistCriteria &&
                                 <Box width='fit-content' justifySelf='flex-end'>

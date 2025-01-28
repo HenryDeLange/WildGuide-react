@@ -11,18 +11,17 @@ export function InatObservation({ id }: Readonly<Props>) {
     const { t } = useTranslation();
     const { data, isLoading, isError } = useObservationFindQuery({ id });
     const obs = data?.results[0];
-    const ratio = (obs?.photos[0].original_dimensions.width ?? 1) / (obs?.photos[0].original_dimensions.height ?? 1);
     return (
         <div className='no-inherit'>
             <Card.Root flexDirection='row' overflow='hidden'>
                 <Image
                     objectFit='cover'
                     width={{ base: 100, sm: 150, md: 200, lg: 250 }}
-                    height={{ base: 100 * ratio, sm: 150 * ratio, md: 200 * ratio, lg: 250 * ratio }}
+                    height={{ base: 100, sm: 150, md: 200, lg: 250 }}
                     src={obs?.photos[0].url.replace('/square.', '/medium.') ?? inatLogo}
                     alt={obs?.species_guess ?? 'iNaturalist'}
                 />
-                <Box overflow='auto' width='100%' height={{ base: 100 * ratio, sm: 150 * ratio, md: 200 * ratio, lg: 250 * ratio }}>
+                <Box overflow='auto' width='100%' height={{ base: 100, sm: 150, md: 200, lg: 250 }}>
                     <Card.Body height='100%'>
                         <Card.Title>
                             {obs?.species_guess ?? t('loading')}

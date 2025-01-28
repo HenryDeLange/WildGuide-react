@@ -33,6 +33,10 @@
     "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
     "loginFormPasswordConfirmInvalid": "Confirm Password is invalid.",
 
+    "qrButton": "QR Code",
+    "qrTitleGuide": "QR Code for this guide",
+    "qrDownload": "Download",
+
     "newGuide": "New Guide",
     "newGuideBack": "Back to the Guides",
     "newGuideTitle": "Create a new guide",
