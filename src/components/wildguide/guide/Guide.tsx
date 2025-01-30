@@ -1,6 +1,5 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
-import { AnnotatedImage } from '@/components/markdown/AnnotatedImage';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from '@/components/ui/popover';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
@@ -160,42 +159,6 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     </a>
                                 </Box>
                             }
-
-                            <Separator />
-                            <AnnotatedImage
-                                url='https://inaturalist-open-data.s3.amazonaws.com/photos/466737351/original.jpg'
-                                annotations={[
-                                    {
-                                        type: 'circle',
-                                        top: 30,
-                                        left: 14,
-                                        size: 50,
-                                        color: 'orange'
-                                    },
-                                    {
-                                        type: 'square',
-                                        top: 32,
-                                        left: 55,
-                                        size: 75,
-                                        color: 'red',
-                                        rotation: 45,
-                                        border: 'white',
-                                        text: '1 A'
-                                    },
-                                    {
-                                        type: 'line',
-                                        top: 52,
-                                        left: 23,
-                                        size: 65,
-                                        color: 'mediumpurple',
-                                        rotation: -65,
-                                        border: 'black',
-                                        text: 'some line'
-                                    }
-                                ]}
-                            />
-                            <Separator />
-
                             {data.summary &&
                                 <Box marginY={4}>
                                     <Separator variant='dashed' />

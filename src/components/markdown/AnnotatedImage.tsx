@@ -1,9 +1,11 @@
-import { Box, Image } from '@chakra-ui/react';
+import { Box, DialogRoot, HStack, IconButton, Image, useBreakpointValue } from '@chakra-ui/react';
 import NamedColors from 'color-name';
 import { useCallback, useState } from 'react';
+import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
+import { DialogBody, DialogCloseTrigger, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Tooltip } from '../ui/tooltip';
 
-const LINE_SIZE = 5;
+const LINE_SIZE = 3;
 
 type Props = {
     /** URL of the image */
@@ -17,30 +19,69 @@ type AnnotationParams = {
     size: number;
     /** As % of image height */
     top: number;
+    /** As % of image width */
     left: number;
     color: keyof typeof NamedColors;
     border?: 'white' | 'black';
     /** Degrees to rotate */
     rotation?: number;
+    /** Tooltip text */
     text?: string;
 }
 
 export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
+    const scale = useBreakpointValue({ base: 1, sm: 1.2, md: 1.5, lg: 1.85 }) ?? 1;
+    const [zoom, setZoom] = useState(1);
     const parsedAnnotations: AnnotationParams[] = typeof annotations === 'string'
         ? JSON.parse(annotations.slice(1, -1).replace(/\n/g, '')) // TODO: Try to handle this better (instead of this black-magic parsing)
         : annotations;
     return (
-        <Box position='relative' display='inline-block' border='1px solid' borderRadius={3}>
+        <Box position='relative' display='inline-block' border='1px solid' borderRadius={3} bgColor='gray.muted'>
             <Image
                 src={url}
                 objectFit='contain'
-                width={{ base: 100, sm: 150, md: 200, lg: 250 }}
-                height={{ base: 100, sm: 150, md: 200, lg: 250 }}
+                minWidth={250 * scale}
+                width={250 * scale}
+                height={250 * scale}
             />
+            <DialogRoot placement='center' motionPreset='slide-in-bottom' size='cover'>
+                <DialogTrigger asChild>
+                    <Box position='absolute' top={1} right={1}>
+                        <IconButton variant='ghost'>
+                            <LuZoomIn />
+                        </IconButton>
+                    </Box>
+                </DialogTrigger>
+                <DialogContent bgColor='gray' width='100%' height='100%'>
+                    <DialogTitle>
+                        <HStack margin={2}>
+                            <IconButton variant='ghost' onClick={() => setZoom(zoom * 1.5)}>
+                                <LuZoomIn />
+                            </IconButton>
+                            <IconButton variant='ghost' onClick={() => setZoom(zoom / 1.5)}>
+                                <LuZoomOut />
+                            </IconButton>
+                        </HStack>
+                    </DialogTitle>
+                    <DialogBody display='flex' justifyContent='center' alignItems='center' overflow='auto' margin={2} marginTop={0}>
+                        <Image
+                            src={url}
+                            objectFit='contain'
+                            width='auto'
+                            height='auto'
+                            maxWidth='100%'
+                            maxHeight='80vh'
+                            transform={`scale(${zoom})`}
+                        />
+                    </DialogBody>
+                    <DialogCloseTrigger />
+                </DialogContent>
+            </DialogRoot>
             {parsedAnnotations.map((annotation, index) => (
                 <Annotation
                     key={`${index}_${annotation.type}_${annotation.top}_${annotation.left}_${annotation.size}`}
                     annotation={annotation}
+                    scale={scale}
                 />
             ))}
         </Box>
@@ -49,9 +90,10 @@ export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
 
 type AnnotationProps = {
     annotation: AnnotationParams;
+    scale: number;
 }
 
-function Annotation({ annotation }: Readonly<AnnotationProps>) {
+function Annotation({ annotation, scale }: Readonly<AnnotationProps>) {
     const [showTooltip, setShowTooltip] = useState(false);
     const [forceShowTooltip, setForceShowTooltip] = useState(false);
     const handleToggleForceShowTooltip = useCallback(() => setForceShowTooltip(!forceShowTooltip), [forceShowTooltip]);
@@ -74,13 +116,13 @@ function Annotation({ annotation }: Readonly<AnnotationProps>) {
                 position='absolute'
                 top={`${annotation.top}%`}
                 left={`${annotation.left}%`}
-                width={`${annotation.size}px`}
-                height={`${annotation.type === 'line' ? LINE_SIZE : annotation.size}px`}
-                border={annotation.type === 'line' ? undefined : `${LINE_SIZE}px solid ${annotation.color}`}
-                borderRadius={annotation.type === 'circle' ? '50%' : '10%'}
+                width={`${annotation.size * scale}px`}
+                height={annotation.type === 'line' ? `${LINE_SIZE * scale}px` : `${annotation.size * scale}px`}
+                border={annotation.type === 'line' ? undefined : `${LINE_SIZE * scale}px solid ${annotation.color}`}
+                borderRadius={annotation.type === 'circle' ? '50%' : annotation.type === 'square' ? `${LINE_SIZE * scale * 2}px` : undefined}
                 backgroundColor={annotation.type === 'line' ? annotation.color : undefined}
                 transform={annotation.rotation ? `rotate(${annotation.rotation}deg)` : undefined}
-                boxShadow={`0 0 0 2px ${annotation.border}`}
+                boxShadow={`0 0 0 ${LINE_SIZE / 3 * scale}px ${annotation.border}`}
             />
         </Tooltip>
     );
