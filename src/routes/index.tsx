@@ -1,4 +1,4 @@
-import { GuideList } from '@/components/wildguide/guide/GuideList';
+import { AppHome } from '@/components/wildguide/AppHome';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
@@ -7,6 +7,6 @@ export const Route = createFileRoute('/')({
 
 function Component() {
     return (
-        <GuideList />
+        <AppHome />
     );
 }

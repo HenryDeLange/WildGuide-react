@@ -1,4 +1,5 @@
 import Markdown from 'markdown-to-jsx';
+import { AnnotatedImage } from './AnnotatedImage';
 import { InatObservation } from './InatObservation';
 import { InatTaxon } from './InatTaxon';
 import './markdown.css';
@@ -13,10 +14,13 @@ export function ExtendedMarkdown({ content }: Readonly<Props>) {
         <Markdown
             className='markdown'
             options={{
+                forceWrapper: true,
+                forceBlock: true,
                 overrides: {
                     InatObservation: { component: InatObservation },
                     InatTaxon: { component: InatTaxon },
-                    Popup: { component: Popup }
+                    Popup: { component: Popup },
+                    AnnotatedImage: { component: AnnotatedImage }
                 }
             }}
         >

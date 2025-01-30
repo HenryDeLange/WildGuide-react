@@ -1,7 +1,12 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { GuideList } from '@/components/wildguide/guide/GuideList';
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/guides/')({
-    beforeLoad: () => {
-        throw redirect({ from: '/guides', to: '/' });
-    }
+    component: Component
 });
+
+function Component() {
+    return (
+        <GuideList />
+    );
+}
