@@ -161,8 +161,8 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                             </Field>
                             <Field
                                 label={<Text fontSize='md'>{t('newEntrySummary')}</Text>}
-                                invalid={!!errors.description || isError}
-                                errorText={errors.description?.message}
+                                invalid={!!errors.summary || isError}
+                                errorText={errors.summary?.message}
                             >
                                 <Textarea
                                     {...register('summary')}

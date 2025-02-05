@@ -1,7 +1,7 @@
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { Button } from '@/components/ui/button';
 import { EntryBase, useCreateEntryMutation, useFindGuideQuery } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, Input, Separator, Show, Spinner, Stack, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -53,48 +53,49 @@ export function EntryNew({ guideId }: Readonly<Props>) {
             <ErrorDisplay error={guideIsError ? guideError : undefined} />
             <Show when={!guideIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {guide &&
-                    <Container padding={6}>
+                    <Container padding={4}>
                         <form onSubmit={onSubmit}>
                             <Fieldset.Root invalid={isError} disabled={isLoading}>
                                 <Fieldset.Legend>
                                     <Heading>{t('newEntryTitle')}</Heading>
                                 </Fieldset.Legend>
-                                <Fieldset.HelperText marginBottom={4}>
+                                <Fieldset.HelperText marginBottom={4} marginTop={0}>
                                     <Text>{t('newEntrySubTitle', { guide: guide.name })}</Text>
                                 </Fieldset.HelperText>
-                                <Separator />
-                                <Fieldset.Content gap={8} >
-                                    <Field
-                                        label={<Text fontSize='md'>{t('newEntryName')}</Text>}
-                                        invalid={!!errors.name || isError}
-                                        errorText={errors.name?.message}
-                                        helperText={t('newEntryNameHelper')}
-                                    >
-                                        <Input
-                                            {...register('name', {
-                                                required: t('newEntryNameRequired'),
-                                                minLength: { value: 1, message: t('newEntryNameInvalid') },
-                                                maxLength: { value: 128, message: t('newEntryNameInvalid') }
-                                            })}
-                                            placeholder={t('newEntryNamePlaceholder')}
-                                            variant='outline'
-                                        />
-                                    </Field>
-                                    <Field
-                                        label={<Text fontSize='md'>{t('newEntryScientificName')}</Text>}
-                                        invalid={!!errors.name || isError}
-                                        errorText={errors.name?.message}
-                                    >
-                                        <Input
-                                            {...register('scientificName', {
-                                                required: t('newEntryScientificNameRequired'),
-                                                minLength: { value: 3, message: t('newEntryScientificInvalid') },
-                                                maxLength: { value: 256, message: t('newEntryScientificInvalid') }
-                                            })}
-                                            placeholder={t('newEntryScientificNamePlaceholder')}
-                                            variant='outline'
-                                        />
-                                    </Field>
+                                <Separator marginTop={0} />
+                                <Fieldset.Content gap={6} >
+                                    <Stack direction={{ base: 'column', sm: 'row' }}>
+                                        <Field
+                                            label={<Text fontSize='md'>{t('newEntryName')}</Text>}
+                                            invalid={!!errors.name || isError}
+                                            errorText={errors.name?.message}
+                                        >
+                                            <Input
+                                                {...register('name', {
+                                                    required: t('newEntryNameRequired'),
+                                                    minLength: { value: 1, message: t('newEntryNameInvalid') },
+                                                    maxLength: { value: 128, message: t('newEntryNameInvalid') }
+                                                })}
+                                                placeholder={t('newEntryNamePlaceholder')}
+                                                variant='outline'
+                                            />
+                                        </Field>
+                                        <Field
+                                            label={<Text fontSize='md'>{t('newEntryScientificName')}</Text>}
+                                            invalid={!!errors.name || isError}
+                                            errorText={errors.name?.message}
+                                        >
+                                            <Input
+                                                {...register('scientificName', {
+                                                    required: t('newEntryScientificNameRequired'),
+                                                    minLength: { value: 3, message: t('newEntryScientificInvalid') },
+                                                    maxLength: { value: 256, message: t('newEntryScientificInvalid') }
+                                                })}
+                                                placeholder={t('newEntryScientificNamePlaceholder')}
+                                                variant='outline'
+                                            />
+                                        </Field>
+                                    </Stack>
                                     <Controller
                                         control={control}
                                         name='scientificRank'

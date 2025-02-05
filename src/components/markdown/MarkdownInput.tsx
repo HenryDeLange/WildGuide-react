@@ -20,7 +20,8 @@ export function MarkdownInput<T extends GuideBase | EntryBase>({ register, watch
                 {...register}
                 placeholder={t(placeholder)}
                 variant='outline'
-                minHeight={250}
+                minHeight={200}
+                // height={300}
                 maxHeight={400}
             />
             <VStack>
