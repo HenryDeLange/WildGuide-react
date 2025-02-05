@@ -1,20 +1,18 @@
 {
     "languageEN": "English",
     "languageAF": "Afrikaans",
-
     "errorPageNotFound": "Page not found!",
-
     "appTitle": "WildGuide",
     "guides": "Guides",
     "about": "About",
     "faq": "FAQ",
-
     "register": "Register",
     "login": "Sign In",
     "logout": "Sign Out",
     "dialogClose": "Close",
     "loading": "Loading...",
-
+    "copy": "Copy",
+    "copyDone": "Copied",
     "loginFormTitle": "Sign in to WildGuide",
     "loginFormTitleRegister": "Register a WildGuide account",
     "loginFormDescription": "Sign in using your existing account.",
@@ -32,11 +30,9 @@
     "loginFormPasswordPlaceholder": "WildGuide Password",
     "loginFormPasswordConfirmPlaceholder": "Confirm WildGuide Password",
     "loginFormPasswordConfirmInvalid": "Confirm Password is invalid.",
-
     "qrButton": "QR Code",
     "qrTitleGuide": "QR Code for this guide",
     "qrDownload": "Download",
-
     "newGuide": "New Guide",
     "newGuideBack": "Back to the Guides",
     "newGuideTitle": "Create a new guide",
@@ -59,11 +55,9 @@
     "newGuideVisibilityHelpPRIVATE": "Only visible to owners and members.",
     "newGuideConfirm": "Create Guide",
     "newGuideError": "Failed to create the new Guide!",
-
     "guideGridTitle": "Guides available to you on WildGuide",
     "guideGridSubTitle": "Sign in to create new guides, or to see private guides.",
     "guideGridRefresh": "Refresh Guides",
-
     "editGuide": "Edit",
     "editGuideTitle": "Update Guide Details",
     "editGuideConfirm": "Update Guide",
@@ -71,7 +65,6 @@
     "editGuideBack": "Back to the Guide",
     "editGuideDelete": "Delete",
     "editGuideDeleteDetails": "Permanently delete this guide?",
-
     "editGuideAccess": "Access",
     "editGuideAccessTitle": "Guide User Access",
     "editGuideAccessConfirm": "Link User",
@@ -83,11 +76,9 @@
     "editGuideAccessUsernameHelp": "Link a WildGuide user to the guide.",
     "editGuideAccessError": "Failed to update the user access for this guide!",
     "editGuideAccessUsers": "Already linked users:",
-
     "entryListTitle": "Guide Entries",
     "entryListSubTitle": "Entries based on the associated iNaturalist Project's Observations will be shown automatically. Alternatively additional manual entries can also be added.",
     "entryListRefresh": "Refresh Entries",
-
     "newEntry": "New Entry",
     "newEntryTitle": "Create a new entry",
     "newEntrySubTitle": "Create an entry for guide: {{guide}}.",
@@ -111,7 +102,6 @@
     "newEntryDescriptionPlaceholder": "Entry Description",
     "newEntryConfirm": "Create Entry",
     "newEntryError": "Failed to create the new Entry!",
-
     "entryScientificRankFAMILY": "family",
     "entryScientificRankSUBFAMILY": "Subfamily",
     "entryScientificRankTRIBE": "Tribe",
@@ -121,14 +111,46 @@
     "entryScientificRankSPECIES": "Species",
     "entryScientificRankSUBSPECIES": "Subspecies",
     "entryScientificRankVARIETY_FORM_ABERRATION": "Variety, Form or Aberration",
-
     "entryBack": "Back to the Guide",
-
     "editEntry": "Edit",
     "editEntryConfirm": "Update Entry",
     "editEntryError": "Failed to edit the Guide!",
     "editEntryBack": "Back to the Entry",
     "editEntryDelete": "Delete",
-    "editEntryDeleteDetails": "Permanently delete this entry?"
-
+    "editEntryDeleteDetails": "Permanently delete this entry?",
+    "markdownError": "Parsing Error!",
+    "markdownPreview": "Preview",
+    "markdownSnippets": "Markdown Help",
+    "markdownSnippetsSyntax": "Markdown",
+    "markdownSnippetsSyntaxDetails": "This field supports Markdown syntax, as well as some simple HTML tags. Additionally it also supports a number of custom fields that can be used to enhance the content.",
+    "markdownSnippetsSyntaxInput": "Try out ...",
+    "markdownSnippetsAnnotatedImage": "Annotated Image",
+    "markdownSnippetsAnnotatedImageUrl": "Image URL",
+    "markdownSnippetsAnnotatedImageAnnotations": "Annotations",
+    "markdownSnippetsAnnotatedImageAnnotationsDetails": "Please note the use of strict JSON formatting. (Double quote the values, and use correct array/object blocks.)",
+    "markdownSnippetsAnnotatedImageAnnotationTypeDetails": "The type of annotation.",
+    "markdownSnippetsAnnotatedImageAnnotationTypeData": "\"circle\", \"square\" or \"line\"",
+    "markdownSnippetsAnnotatedImageAnnotationSizeDetails": "The width (and height) of the shape, as relative pixels.",
+    "markdownSnippetsAnnotatedImageAnnotationSizeData": "number",
+    "markdownSnippetsAnnotatedImageAnnotationTopDetails": "Distance from the top, as percentage.",
+    "markdownSnippetsAnnotatedImageAnnotationTopData": "number",
+    "markdownSnippetsAnnotatedImageAnnotationLeftDetails": "Distance from the left, as percentage.",
+    "markdownSnippetsAnnotatedImageAnnotationLeftData": "number",
+    "markdownSnippetsAnnotatedImageAnnotationColorDetails": "Any of the standard HTML colors.",
+    "markdownSnippetsAnnotatedImageAnnotationColorData": "HTML Colors: \"red\", \"blue\", etc.",
+    "markdownSnippetsAnnotatedImageAnnotationBorderDetails": "Border color, if specified.",
+    "markdownSnippetsAnnotatedImageAnnotationBorderData": "(optional) HTML Colors: \"white\", \"black\", etc.",
+    "markdownSnippetsAnnotatedImageAnnotationRotationDetails": "Degrees to rotate the annotation by.",
+    "markdownSnippetsAnnotatedImageAnnotationRotationData": "(optional) number",
+    "markdownSnippetsAnnotatedImageAnnotationTextDetails": "Tooltip text to display when hovered or pressed.",
+    "markdownSnippetsAnnotatedImageAnnotationTextData": "(optional) text",
+    "markdownSnippetsInatObservation": "iNaturalist Observation",
+    "markdownSnippetsInatObservationId": "iNaturalist Observation ID",
+    "markdownSnippetsInatObservationError": "iNaturalist observation not found!",
+    "markdownSnippetsInatTaxon": "iNaturalist Taxon",
+    "markdownSnippetsInatTaxonId": "iNaturalist Taxon ID",
+    "markdownSnippetsInatTaxonError": "iNaturalist taxon not found!",
+    "markdownSnippetsPopup": "Popup",
+    "markdownSnippetsPopupText": "Label",
+    "markdownSnippetsPopupContent": "Content"
 }

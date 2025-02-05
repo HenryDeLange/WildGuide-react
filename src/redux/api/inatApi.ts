@@ -219,13 +219,13 @@ export type Observation = {
 export type Photo = {
     id: number;
     license_code: string;
-    url: string;
+    url?: string;
     square_url?: string;
     medium_url?: string;
     large_url?: string;
     original_url?: string;
-    attribution: string;
-    original_dimensions: {
+    attribution?: string;
+    original_dimensions?: {
         width: number;
         height: number;
     };

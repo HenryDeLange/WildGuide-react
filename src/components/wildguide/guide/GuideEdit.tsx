@@ -1,3 +1,4 @@
+import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -163,11 +164,10 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 invalid={!!errors.description || isError}
                                 errorText={errors.description?.message}
                             >
-                                <Textarea
-                                    {...register('description')}
-                                    placeholder={t('newGuideDescriptionPlaceholder')}
-                                    autoresize
-                                    variant='outline'
+                                <MarkdownInput
+                                    register={register('description')}
+                                    watch={watch}
+                                    placeholder='newGuideDescriptionPlaceholder'
                                 />
                             </Field>
                             <Box marginTop={6}>

@@ -1,3 +1,4 @@
+import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { Radio, RadioGroup } from '@/components/ui/radio';
@@ -122,11 +123,10 @@ export function GuideNew() {
                             invalid={!!errors.description || isError}
                             errorText={errors.description?.message}
                         >
-                            <Textarea
-                                {...register('description')}
-                                placeholder={t('newGuideDescriptionPlaceholder')}
-                                autoresize
-                                variant='outline'
+                            <MarkdownInput
+                                register={register('description')}
+                                watch={watch}
+                                placeholder='newGuideDescriptionPlaceholder'
                             />
                         </Field>
                         <Box marginTop={6}>

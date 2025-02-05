@@ -1,6 +1,7 @@
 # TODO:
 - TODO: Start using Chakra UI's Combobox when it is released, for loading the iNat project/taxon
 - TODO: Make the guide grid virtualised for performance concerns
+- TODO: Try to add a iNat rate limiter that works n client side (75 requests per minute)
 
 # WildGuide-react
 ![App Version](https://img.shields.io/github/package-json/v/HenryDeLange/WildGuide-react)

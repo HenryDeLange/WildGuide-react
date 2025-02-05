@@ -1,5 +1,6 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
+import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useFindEntryQuery, useFindGuideOwnersQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Image, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
@@ -136,9 +137,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                         {t('newEntryDescription')}
                                     </Heading>
                                     <Separator variant='dashed' />
-                                    <Text paddingY={2}>
-                                        {data.description}
-                                    </Text>
+                                    <ExtendedMarkdown content={data.description} />
                                     <Separator variant='dashed' />
                                 </Box>
                             }

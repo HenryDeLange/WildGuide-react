@@ -1,3 +1,4 @@
+import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { Button } from '@/components/ui/button';
 import { EntryBase, useCreateEntryMutation, useFindGuideQuery } from '@/redux/api/wildguideApi';
 import { Box, Container, Fieldset, Heading, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
@@ -151,11 +152,10 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                                         invalid={!!errors.description || isError}
                                         errorText={errors.description?.message}
                                     >
-                                        <Textarea
-                                            {...register('description')}
-                                            placeholder={t('newEntryDescriptionPlaceholder')}
-                                            autoresize
-                                            variant='outline'
+                                        <MarkdownInput
+                                            register={register('description')}
+                                            watch={watch}
+                                            placeholder='newEntryDescriptionPlaceholder'
                                         />
                                     </Field>
                                     <Box marginTop={6}>
