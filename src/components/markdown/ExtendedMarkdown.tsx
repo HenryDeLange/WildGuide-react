@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import Markdown from 'markdown-to-jsx';
 import { AnnotatedImage } from './AnnotatedImage';
 import { InatObservation } from './InatObservation';
@@ -13,21 +14,23 @@ type Props = {
 export function ExtendedMarkdown({ content }: Readonly<Props>) {
     return (
         <MarkdownErrorBoundary>
-            <Markdown
-                className='markdown'
-                options={{
-                    forceWrapper: true,
-                    forceBlock: true,
-                    overrides: {
-                        InatObservation: { component: InatObservation },
-                        InatTaxon: { component: InatTaxon },
-                        Popup: { component: Popup },
-                        AnnotatedImage: { component: AnnotatedImage }
-                    }
-                }}
-            >
-                {content}
-            </Markdown>
+            <Box marginY={4} paddingY={0} paddingX={3} borderWidth={1} borderRadius='sm' boxShadow='lg'>
+                <Markdown
+                    className='markdown'
+                    options={{
+                        forceWrapper: true,
+                        forceBlock: true,
+                        overrides: {
+                            InatObservation: { component: InatObservation },
+                            InatTaxon: { component: InatTaxon },
+                            Popup: { component: Popup },
+                            AnnotatedImage: { component: AnnotatedImage }
+                        }
+                    }}
+                >
+                    {content}
+                </Markdown>
+            </Box>
         </MarkdownErrorBoundary>
     );
 }

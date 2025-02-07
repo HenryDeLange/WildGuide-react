@@ -17,6 +17,7 @@ export function ChangeLanguage() {
             onValueChange={(event) => i18n.changeLanguage(event.value[0])}
             variant='subtle'
             size='xs'
+            width='auto'
         >
             <SelectTrigger>
                 <Text cursor='pointer' fontWeight='semibold'>
@@ -26,7 +27,9 @@ export function ChangeLanguage() {
             <SelectContent position='absolute'>
                 {languages.items.map((language) => (
                     <SelectItem key={language.value} item={language}>
-                        {t(language.label)}
+                        <Text fontSize='sm'>
+                            {t(language.label)}
+                        </Text>
                     </SelectItem>
                 ))}
             </SelectContent>

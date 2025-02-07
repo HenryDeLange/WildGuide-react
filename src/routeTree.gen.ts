@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
 import { Route as FaqImport } from './routes/faq'
 import { Route as AboutImport } from './routes/about'
@@ -25,6 +26,12 @@ import { Route as GuidesGuideIdEntriesEntryIdImport } from './routes/guides/$gui
 import { Route as GuidesGuideIdEntriesEntryIdEditImport } from './routes/guides/$guideId_/entries/$entryId_.edit'
 
 // Create/Update Routes
+
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginRoute = LoginImport.update({
   id: '/login',
@@ -134,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
     '/guides/$guideId': {
       id: '/guides/$guideId'
       path: '/guides/$guideId'
@@ -200,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
@@ -215,6 +230,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides': typeof GuidesIndexRoute
@@ -231,6 +247,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
   '/guides/': typeof GuidesIndexRoute
@@ -248,6 +265,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/faq'
     | '/login'
+    | '/register'
     | '/guides/$guideId'
     | '/guides/create'
     | '/guides'
@@ -262,6 +280,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/faq'
     | '/login'
+    | '/register'
     | '/guides/$guideId'
     | '/guides/create'
     | '/guides'
@@ -276,6 +295,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/faq'
     | '/login'
+    | '/register'
     | '/guides/$guideId'
     | '/guides/create'
     | '/guides/'
@@ -292,6 +312,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   GuidesCreateRoute: typeof GuidesCreateRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
@@ -307,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   GuidesGuideIdRoute: GuidesGuideIdRoute,
   GuidesCreateRoute: GuidesCreateRoute,
   GuidesIndexRoute: GuidesIndexRoute,
@@ -331,6 +353,7 @@ export const routeTree = rootRoute
         "/about",
         "/faq",
         "/login",
+        "/register",
         "/guides/$guideId",
         "/guides/create",
         "/guides/",
@@ -352,6 +375,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/register": {
+      "filePath": "register.tsx"
     },
     "/guides/$guideId": {
       "filePath": "guides/$guideId.tsx"
