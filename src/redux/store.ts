@@ -3,7 +3,7 @@ import { configureStore, createListenerMiddleware, isAnyOf } from '@reduxjs/tool
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer, { authLogin, authLogout, authRefresh, authSetRefreshToken } from '../auth/authSlice';
 import { inatApi } from './api/inatApi';
-import { wildguideApi } from './api/wildguideApi';
+import { wildguideApi, addTagTypes as wildGuideApiTags } from './api/wildguideApi';
 
 // export const rtkQueryErrorLogger: Middleware = (api: MiddlewareAPI) => (next) => (action) => {
 //     if (isRejectedWithValue(action)) {
@@ -44,6 +44,7 @@ listenerMiddleware.startListening({
         switch (action.type) {
             case 'auth/authLogin':
                 storeAuthData(REFRESH_TOKEN, (listenerApi.getState() as AppRootState).auth.refreshToken ?? '');
+                store.dispatch(wildguideApi.util.invalidateTags([...wildGuideApiTags]));
                 break;
             case 'auth/authRefresh':
                 storeAuthData(REFRESH_TOKEN, (listenerApi.getState() as AppRootState).auth.refreshToken ?? '');
@@ -53,6 +54,7 @@ listenerMiddleware.startListening({
                 break;
             case 'auth/authLogout':
                 storeAuthData(REFRESH_TOKEN, '');
+                store.dispatch(wildguideApi.util.invalidateTags([...wildGuideApiTags]));
                 break;
         }
     }
