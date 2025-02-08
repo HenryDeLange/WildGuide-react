@@ -1,7 +1,10 @@
+import { Tooltip } from '@/components/ui/tooltip';
 import { Guide } from '@/redux/api/wildguideApi';
-import { Heading, Text, VStack } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Icon, Show, Text, VStack } from '@chakra-ui/react';
 import { Link } from '@tanstack/react-router';
+import { t } from 'i18next';
 import { memo } from 'react';
+import { MdOutlineLock } from 'react-icons/md';
 
 export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ item: Guide }>) {
     return (
@@ -15,10 +18,28 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
                 borderWidth='1px'
                 borderRadius='lg'
                 height='100%'
+                padding={2}
             >
-                <Heading>{item.name}</Heading>
-                <Text>{item.visibility}</Text>
-                <Text>{item.summary ?? ''}</Text>
+                <HStack>
+                    <Show when={item.visibility === 'PRIVATE'}>
+                        <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
+                            <Icon size='md'>
+                                <MdOutlineLock />
+                            </Icon>
+                        </Tooltip>
+                    </Show>
+                    <Heading>
+                        {item.name}
+                    </Heading>
+                </HStack>
+                <Flex maxWidth='100%'>
+                    <Text
+                        truncate
+                        lineClamp={5}
+                    >
+                        {item.summary ?? ''}
+                    </Text>
+                </Flex>
             </VStack>
         </Link>
     );

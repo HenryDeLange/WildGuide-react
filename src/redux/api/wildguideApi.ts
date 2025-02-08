@@ -76,6 +76,7 @@ const injectedRtkApi = api
           url: `/guides`,
           params: {
             page: queryArg.page,
+            name: queryArg.name,
           },
         }),
         providesTags: ["Guides"],
@@ -218,6 +219,7 @@ export type LoginApiArg = {
 export type FindGuidesApiResponse = /** status 200 OK */ PagedGuide;
 export type FindGuidesApiArg = {
   page?: number;
+  name?: string;
 };
 export type CreateGuideApiResponse = /** status 200 OK */ Guide;
 export type CreateGuideApiArg = {

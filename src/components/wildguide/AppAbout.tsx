@@ -67,7 +67,10 @@ export function AppAbout() {
             <Separator />
             <VStack margin={6}>
                 <Text>{t('aboutDeveloper')}</Text>
-                <Image height={100} src={myWildLogo} />
+                <Image
+                    src={myWildLogo}
+                    height={100}
+                    alt='MyWild' />
             </VStack>
         </Box>
     );

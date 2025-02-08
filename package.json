@@ -20,8 +20,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@reduxjs/toolkit": "^2.5.1",
-    "@tanstack/react-router": "^1.99.6",
-    "@tanstack/react-virtual": "^3.12.0",
+    "@tanstack/react-router": "^1.99.13",
+    "@tanstack/react-virtual": "^3.13.0",
     "@tanstack/router": "^0.0.1-beta.53",
     "async-mutex": "^0.5.0",
     "crypto-js": "^4.2.0",
@@ -40,16 +40,16 @@
     "use-debounce": "^10.0.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
+    "@eslint/js": "^9.20.0",
     "@hookform/devtools": "^4.3.3",
-    "@tanstack/router-devtools": "^1.99.6",
-    "@tanstack/router-plugin": "^1.99.6",
+    "@tanstack/router-devtools": "^1.99.13",
+    "@tanstack/router-plugin": "^1.99.14",
     "@types/color-name": "^2.0.0",
     "@types/crypto-js": "^4.2.2",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react-swc": "^3.7.2",
-    "eslint": "^9.19.0",
+    "eslint": "^9.20.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
@@ -57,7 +57,7 @@
     "simple-git": "^3.27.0",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.23.0",
-    "vite": "^6.0.11",
+    "vite": "^6.1.0",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

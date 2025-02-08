@@ -1,12 +1,14 @@
 import { selectAuthUserId } from '@/auth/authSlice';
+import { InputGroup } from '@/components/ui/input-group';
 import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, Heading, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Heading, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw } from 'react-icons/lu';
+import { LuRefreshCcw, LuSearch } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
+import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualGrid } from '../../custom/InfiniteVirtualGrid';
 import { Button } from '../../ui/button';
@@ -26,7 +28,10 @@ export function GuideList() {
     const [pageQueue, setPageQueue] = useState<number[]>([]);
     const [items, setItems] = useState<Guide[]>([]);
 
-    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page });
+    const [filter, setFilter] = useState<string | undefined | null>(undefined);
+    const [debouncedFilter] = useDebounce(filter, 500);
+
+    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page, name: debouncedFilter ?? undefined });
     // console.log('rendering page:', page)
 
     useEffect(() => {
@@ -44,6 +49,14 @@ export function GuideList() {
             return [...prev, ...newItems];
         });
     }, [data?.data]);
+
+    useEffect(() => {
+        if (debouncedFilter || debouncedFilter === null) {
+            dispatch(wildguideApi.util.invalidateTags(['Guides']));
+            setItems([]);
+            setPage(0);
+        }
+    }, [debouncedFilter, dispatch]);
 
     const handleLoadMoreItems = useCallback(() => {
         const nextPage = page + 1;
@@ -64,6 +77,10 @@ export function GuideList() {
         setPage(0);
     }, [dispatch]);
 
+    const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setFilter(event.target.value.length > 0 ? event.target.value : null);
+    }, []);
+
     // RENDER
     return (
         <Box height={content}>
@@ -77,7 +94,7 @@ export function GuideList() {
                             {t('guideGridSubTitle')}
                         </Text>
                     </Box>
-                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
+                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'  margin={1}>
                         {userId !== null &&
                             <Button
                                 size='lg'
@@ -101,6 +118,9 @@ export function GuideList() {
                         >
                             <LuRefreshCcw />
                         </Button>
+                        <InputGroup startElement={<LuSearch />}>
+                            <Input size='md' value={filter ?? ''} onChange={handleSearch} type='search' />
+                        </InputGroup>
                     </Stack>
                 </Stack>
                 <Separator />
