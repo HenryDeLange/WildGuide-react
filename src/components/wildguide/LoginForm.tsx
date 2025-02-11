@@ -21,13 +21,22 @@ type Props = {
 
 export function LoginForm({ registerMode }: Readonly<Props>) {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/login' });
+    const navigate = useNavigate({ from: registerMode ? '/register' : '/login' });
     const dispatch = useAppDispatch();
 
     const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
 
-    const [doUserLogin, { isLoading: loginIsLoading, isError: loginIsError }] = useLoginMutation();
-    const [doUserRegister, { isLoading: registerIsLoading, isError: registerIsError }] = useRegisterMutation();
+    const [
+        doUserLogin, {
+            isLoading: loginIsLoading,
+            isError: loginIsError
+        }
+    ] = useLoginMutation();
+    const [doUserRegister, {
+        isLoading: registerIsLoading,
+        isError: registerIsError
+    }
+    ] = useRegisterMutation();
 
     const { register, handleSubmit, formState: { errors }, trigger } = useForm<UserLogin>({
         defaultValues: {

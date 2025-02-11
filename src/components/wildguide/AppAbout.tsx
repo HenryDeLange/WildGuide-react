@@ -5,7 +5,12 @@ import { useTranslation } from 'react-i18next';
 
 export function AppAbout() {
     const { t } = useTranslation();
-    const { data, isFetching } = useGetVersionQuery();
+    
+    const {
+        data,
+        isFetching
+    } = useGetVersionQuery();
+
     return (
         <Box margin={4}>
             <Box textAlign='center' marginX={6} marginBottom={4} paddingX={4} paddingBottom={4}>

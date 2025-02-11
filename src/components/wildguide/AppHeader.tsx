@@ -24,9 +24,13 @@ export function AppHeader() {
     };
 
     // Automatically login the user, if there is a stored refresh token
+    const [
+        doUserRefresh, {
+            isLoading: refreshIsLoading
+        }
+    ] = useRefreshMutation();
     const userId = useAppSelector(selectAuthUserId);
     const refreshToken = useAppSelector(selectAuthRefreshToken);
-    const [doUserRefresh, { isLoading: refreshIsLoading }] = useRefreshMutation();
     useEffect(() => {
         if (!userId && refreshToken && refreshToken !== '' && !refreshIsLoading) {
             doUserRefresh();

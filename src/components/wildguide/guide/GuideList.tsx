@@ -2,9 +2,9 @@ import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
 import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, Heading, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Heading, Input, Separator, Show, Spinner, Stack, StackProps, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw, LuSearch } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
@@ -69,6 +69,8 @@ export function GuideList() {
         // }
     }, [data?.pageSize, data?.totalRecords, page, pageQueue]);
 
+    const handleRenderItem = useCallback((item: Guide) => <GuideListItem item={item} />, []);
+
     const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
@@ -80,6 +82,8 @@ export function GuideList() {
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setFilter(event.target.value.length > 0 ? event.target.value : null);
     }, []);
+
+    const controlDirection = useMemo<StackProps['direction']>(() => ({ base: 'column', md: 'row' }), []);
 
     // RENDER
     return (
@@ -94,7 +98,13 @@ export function GuideList() {
                             {t('guideGridSubTitle')}
                         </Text>
                     </Box>
-                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'  margin={1}>
+                    <Stack
+                        direction={controlDirection}
+                        alignItems='flex-end'
+                        justifyContent='flex-end'
+                        margin={1}
+                        marginRight={4}
+                    >
                         {userId !== null &&
                             <Button
                                 size='lg'
@@ -136,7 +146,7 @@ export function GuideList() {
                 {data?.data &&
                     <InfiniteVirtualGrid
                         data={items}
-                        renderItem={(item) => <GuideListItem item={item} />}
+                        renderItem={handleRenderItem}
                         loadMoreItems={handleLoadMoreItems}
                         loading={isFetching}
                     />
