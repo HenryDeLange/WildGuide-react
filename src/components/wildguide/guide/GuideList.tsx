@@ -129,7 +129,7 @@ export function GuideList() {
                             <LuRefreshCcw />
                         </Button>
                         <InputGroup startElement={<LuSearch />}>
-                            <Input size='md' value={filter ?? ''} onChange={handleSearch} type='search' />
+                            <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                         </InputGroup>
                     </Stack>
                 </Stack>

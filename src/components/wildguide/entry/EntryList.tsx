@@ -1,24 +1,26 @@
 import { selectAuthUserId } from '@/auth/authSlice';
-import { Entry, useFindEntriesQuery, wildguideApi } from '@/redux/api/wildguideApi';
+import { InputGroup } from '@/components/ui/input-group';
+import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, Heading, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw } from 'react-icons/lu';
+import { LuSearch } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
+import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
 import { Button } from '../../ui/button';
 import { EntryListItem } from './EntryListItem';
 
-// TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
-
 type Props = {
     guideId: number;
+    triggerRefresh: boolean;
+    handleRefreshComplete: () => void;
 }
 
-export function EntryList({ guideId }: Readonly<Props>) {
+export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
     const dispatch = useAppDispatch();
@@ -29,7 +31,11 @@ export function EntryList({ guideId }: Readonly<Props>) {
     const [pageQueue, setPageQueue] = useState<number[]>([]);
     const [items, setItems] = useState<Entry[]>([]);
 
-    const { data, isLoading, isFetching, isError, error } = useFindEntriesQuery({ guideId, page });
+    // TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
+    const [filter, setFilter] = useState<string | undefined | null>(undefined);
+    const [debouncedFilter] = useDebounce(filter, 500);
+
+    const { data, isLoading, isFetching, isError, error, refetch } = useFindEntriesQuery({ guideId, page });
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
@@ -39,12 +45,14 @@ export function EntryList({ guideId }: Readonly<Props>) {
     }, [isFetching, pageQueue]);
 
     useEffect(() => {
-        setItems((prev) => {
-            const existingIds = new Set(prev.map(item => item.id));
-            const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
-            return [...prev, ...newItems];
-        });
-    }, [data?.data]);
+        if (!isFetching) {
+            setItems((prev) => {
+                const existingIds = new Set(prev.map(item => item.id));
+                const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
+                return [...prev, ...newItems];
+            });
+        }
+    }, [data?.data, isFetching]);
 
     const handleLoadMoreItems = useCallback((nextPage: number) => {
         if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
@@ -54,12 +62,24 @@ export function EntryList({ guideId }: Readonly<Props>) {
 
     const handleCreate = useCallback(() => navigate({ to: '/guides/$guideId/entries/create' }), [navigate]);
 
-    const handleRefresh = useCallback(() => {
+    useEffect(() => {
         setPage(0);
         setPageQueue([]);
         setItems([]);
-        dispatch(wildguideApi.util.invalidateTags(['Entries']));
-    }, [dispatch]);
+        // dispatch(wildguideApi.util.invalidateTags(['Entries']));
+        refetch();
+    }, [triggerRefresh, dispatch, refetch]);
+
+    useEffect(() => {
+        if (triggerRefresh && !isLoading) {
+            handleRefreshComplete();
+        }
+    }, [handleRefreshComplete, isLoading, triggerRefresh]);
+
+    const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setFilter(event.target.value.length > 0 ? event.target.value : null);
+        // TODO: Implement the rest of the filter logic
+    }, []);
 
     const renderItem = useCallback((item: Entry, index: number) => <EntryListItem guideId={guideId} entry={item} index={index} />,
         [guideId]);
@@ -70,15 +90,10 @@ export function EntryList({ guideId }: Readonly<Props>) {
     return (
         <Box>
             <Box>
-                <Stack direction='row' justifyContent='space-between' gap={8}>
-                    <Box marginX={4} marginY={2}>
-                        <Heading>
-                            {t('entryListTitle')}
-                        </Heading>
-                        <Text>
-                            {t('entryListSubTitle')}
-                        </Text>
-                    </Box>
+                <Stack direction='row' justifyContent='space-between' gap={8} padding={2}>
+                    <InputGroup startElement={<LuSearch />}>
+                        <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
+                    </InputGroup>
                     <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
                         {userId !== null &&
                             <Button
@@ -94,15 +109,6 @@ export function EntryList({ guideId }: Readonly<Props>) {
                                 </Text>
                             </Button>
                         }
-                        <Button
-                            aria-label={t('entryListRefresh')}
-                            size='md'
-                            variant='ghost'
-                            onClick={handleRefresh}
-                            loading={isFetching}
-                        >
-                            <LuRefreshCcw />
-                        </Button>
                     </Stack>
                 </Stack>
                 <Separator />

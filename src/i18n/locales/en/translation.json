@@ -89,8 +89,6 @@
     "editGuideAccessUsernameHelp": "Link a WildGuide user to the guide.",
     "editGuideAccessError": "Failed to update the user access for this guide!",
     "editGuideAccessUsers": "Already linked users:",
-    "entryListTitle": "Guide Entries",
-    "entryListSubTitle": "Entries based on the associated iNaturalist Project's Observations will be shown automatically. Alternatively additional manual entries can also be added.",
     "newEntry": "New Entry",
     "newEntryTitle": "Create a new entry",
     "newEntrySubTitle": "Create an entry for guide: {{guide}}.",

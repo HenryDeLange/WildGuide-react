@@ -88,7 +88,7 @@ export function InfiniteVirtualList<T>({ data, renderItem, hasNextPage, loadNext
                                         <Box textAlign='center' marginTop={16}>
                                             <Spinner size='md' />
                                             <Text>{t('loading')}</Text>
-                                            {loading ? '...fetching...' : '!!! not fetching !!!'}
+                                            {/* {loading ? '...fetching...' : '!!! not fetching !!!'} */}
                                         </Box>
                                     }
                                     {!isLoaderRow &&
