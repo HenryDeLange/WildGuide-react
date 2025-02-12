@@ -1,14 +1,17 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
+import { QrCodePopup } from '@/components/custom/QrCodePopup';
+import { RefreshButton } from '@/components/custom/RefreshButton';
+import { ShareButton } from '@/components/custom/ShareButton';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
-import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from '@/components/ui/popover';
+import { MenuContent, MenuItem, MenuItemGroup, MenuRoot, MenuSeparator, MenuTrigger } from '@/components/ui/menu';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, Image, QrCode, Separator, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, IconButton, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuBookText, LuLayoutList, LuQrCode, LuRefreshCcw } from 'react-icons/lu';
+import { LuBookText, LuEllipsisVertical, LuLayoutList } from 'react-icons/lu';
 import { MdEdit, MdOutlineLock } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
@@ -59,8 +62,8 @@ export function Guide({ guideId }: Readonly<Props>) {
             <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : undefined} />
             <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
-                    <Box width='100%' paddingY={2} paddingX={4}>
-                        <HStack flex={1}>
+                    <Box width='100%' padding={4}>
+                        <HStack flex={1} flexWrap='wrap'>
                             <Show when={data.visibility === 'PRIVATE'}>
                                 <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
                                     <Icon size='md'>
@@ -71,6 +74,53 @@ export function Guide({ guideId }: Readonly<Props>) {
                             <Heading size='4xl'>
                                 {data.name}
                             </Heading>
+                            <Box flex={1}>
+                                <HStack justifyContent='flex-end'>
+                                    {isOwner &&
+                                        <>
+                                            <GuideLinkUsers guideId={guideId} />
+                                            <Button
+                                                size='lg'
+                                                variant='ghost'
+                                                color='fg.info'
+                                                onClick={handleEdit}
+                                                whiteSpace='nowrap'
+                                            >
+                                                <MdEdit />
+                                                <Text>
+                                                    {t('editGuide')}
+                                                </Text>
+                                            </Button>
+                                        </>
+                                    }
+                                    <MenuRoot>
+                                        <MenuTrigger asChild>
+                                            <IconButton variant='ghost'>
+                                                <LuEllipsisVertical />
+                                            </IconButton>
+                                        </MenuTrigger>
+                                        <MenuContent>
+                                            <MenuItemGroup title={t('shareTitle')}>
+                                                <MenuItem value='share' closeOnSelect={false} asChild>
+                                                    <ShareButton value={`${window.location.origin}/guides/${guideId}`} />
+                                                </MenuItem>
+                                                <MenuItem value='qr' closeOnSelect={false} asChild>
+                                                    <QrCodePopup value={`${window.location.origin}/guides/${guideId}`} />
+                                                </MenuItem>
+                                            </MenuItemGroup>
+                                            <MenuSeparator />
+                                            <MenuItemGroup title={t('guide')}>
+                                                <MenuItem value='refresh' closeOnSelect={false}>
+                                                    <RefreshButton
+                                                        handleRefresh={handleRefresh}
+                                                        loading={isFetching || ownerIsFetching}
+                                                    />
+                                                </MenuItem>
+                                            </MenuItemGroup>
+                                        </MenuContent>
+                                    </MenuRoot>
+                                </HStack>
+                            </Box>
                         </HStack>
                         {data.summary &&
                             <Box
@@ -119,70 +169,6 @@ export function Guide({ guideId }: Readonly<Props>) {
                             >
                                 <VStack width='100%'>
                                     <Box width='100%' paddingTop={4} paddingX={4}>
-                                        <Stack direction='row'>
-                                            {isOwner &&
-                                                <>
-                                                    <GuideLinkUsers guideId={guideId} />
-                                                    <Button
-                                                        size='lg'
-                                                        variant='ghost'
-                                                        color='fg.info'
-                                                        onClick={handleEdit}
-                                                        whiteSpace='nowrap'
-                                                    >
-                                                        <MdEdit />
-                                                        <Text>
-                                                            {t('editGuide')}
-                                                        </Text>
-                                                    </Button>
-                                                </>
-                                            }
-                                            <PopoverRoot lazyMount>
-                                                <PopoverTrigger asChild>
-                                                    <Box>
-                                                        <Tooltip content={t('qrButton')} >
-                                                            <Button variant='ghost' whiteSpace='nowrap'>
-                                                                <LuQrCode />
-                                                            </Button>
-                                                        </Tooltip>
-                                                    </Box>
-                                                </PopoverTrigger>
-                                                <PopoverContent>
-                                                    <PopoverArrow />
-                                                    <PopoverBody>
-                                                        <PopoverTitle width='100%' textAlign='center'>
-                                                            <Heading>
-                                                                {t('qrTitleGuide')}
-                                                            </Heading>
-                                                        </PopoverTitle>
-                                                        <Separator marginY={4} />
-                                                        <Box>
-                                                            <QrCode.Root value={`${window.location.origin}/guides/${guideId}`} size='lg' width='100%'>
-                                                                <QrCode.Frame fill='black' backgroundColor='white' width='100%'>
-                                                                    <QrCode.Pattern />
-                                                                </QrCode.Frame>
-                                                                <QrCode.DownloadTrigger asChild fileName='qr-code.png' mimeType='image/png'>
-                                                                    <Button variant='outline' size='xs' mt='3' width='100%'>
-                                                                        {t('qrDownload')}
-                                                                    </Button>
-                                                                </QrCode.DownloadTrigger>
-                                                            </QrCode.Root>
-                                                        </Box>
-                                                    </PopoverBody>
-                                                </PopoverContent>
-                                            </PopoverRoot>
-                                            <Tooltip content={t('guideGridRefresh')}>
-                                                <Button
-                                                    aria-label={t('guideGridRefresh')}
-                                                    size='md'
-                                                    variant='ghost'
-                                                    onClick={handleRefresh}
-                                                    loading={isFetching || ownerIsFetching}
-                                                >
-                                                    <LuRefreshCcw />
-                                                </Button>
-                                            </Tooltip>
-                                        </Stack>
                                         {data.inaturalistCriteria &&
                                             <Box width='fit-content' justifySelf='flex-end'>
                                                 <a
