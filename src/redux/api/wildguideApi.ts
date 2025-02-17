@@ -134,6 +134,7 @@ const injectedRtkApi = api
           url: `/guides/${queryArg.guideId}/entries`,
           params: {
             page: queryArg.page,
+            name: queryArg.name,
           },
         }),
         providesTags: ["Entries"],
@@ -249,6 +250,7 @@ export type FindEntriesApiResponse = /** status 200 OK */ PagedEntry;
 export type FindEntriesApiArg = {
   guideId: number;
   page?: number;
+  name?: string;
 };
 export type CreateEntryApiResponse = /** status 200 OK */ Entry;
 export type CreateEntryApiArg = {

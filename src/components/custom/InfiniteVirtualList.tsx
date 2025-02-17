@@ -3,6 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ENTRY_LIST_ITEM_HEIGHT } from '../wildguide/entry/EntryListItem';
+import { useHeights } from '../wildguide/hooks/uiHooks';
 
 // TODO: Maybe try to make the item sizes dynamic? (depends on how much of the summary to allow to be shown?)
 
@@ -14,10 +15,22 @@ type Props<T> = {
     loading: boolean;
     pageSize: number;
     totalCount: number;
+    heightDelta: number;
 };
 
-export function InfiniteVirtualList<T>({ data, renderItem, hasNextPage, loadNextPage, loading, pageSize, totalCount }: Readonly<Props<T>>) {
+export function InfiniteVirtualList<T>({
+    data,
+    renderItem,
+    hasNextPage,
+    loadNextPage,
+    loading,
+    pageSize,
+    totalCount,
+    heightDelta = 0
+}: Readonly<Props<T>>) {
     const { t } = useTranslation();
+
+    const { grid } = useHeights();
 
     const parentRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +58,7 @@ export function InfiniteVirtualList<T>({ data, renderItem, hasNextPage, loadNext
             <div
                 ref={parentRef}
                 style={{
-                    height: '500px',
+                    height: grid - heightDelta,
                     width: '100%',
                     overflowY: 'auto',
                     contain: 'strict'

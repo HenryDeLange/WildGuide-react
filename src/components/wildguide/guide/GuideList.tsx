@@ -31,12 +31,13 @@ export function GuideList() {
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
 
-    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({ page, name: debouncedFilter ?? undefined });
-    // console.log('rendering page:', page)
+    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({
+        page,
+        name: debouncedFilter ?? undefined
+    });
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
-            // console.log('Process page from queue:', pageQueue[0]);
             setPage(pageQueue[0]);
             setPageQueue((prevQueue) => prevQueue.slice(1));
         }
@@ -61,12 +62,8 @@ export function GuideList() {
     const handleLoadMoreItems = useCallback(() => {
         const nextPage = page + 1;
         if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
-            // console.log('Add page to queue:', nextPage, { page, pageQueue })
             setPageQueue(prev => [...prev, nextPage]);
         }
-        // else {
-        //     console.log('not processing page', nextPage)
-        // }
     }, [data?.pageSize, data?.totalRecords, page, pageQueue]);
 
     const handleRenderItem = useCallback((item: Guide) => <GuideListItem item={item} />, []);

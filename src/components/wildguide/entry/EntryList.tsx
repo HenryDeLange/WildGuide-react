@@ -1,7 +1,7 @@
 import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
 import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -23,7 +23,6 @@ type Props = {
 export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
-    const dispatch = useAppDispatch();
 
     const userId = useAppSelector(selectAuthUserId);
 
@@ -35,7 +34,11 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
 
-    const { data, isLoading, isFetching, isError, error, refetch } = useFindEntriesQuery({ guideId, page });
+    const { data, isLoading, isFetching, isError, error, refetch } = useFindEntriesQuery({
+        guideId,
+        page,
+        name: debouncedFilter ?? undefined
+    });
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
@@ -54,6 +57,15 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
         }
     }, [data?.data, isFetching]);
 
+    useEffect(() => {
+        if (debouncedFilter || debouncedFilter === null) {
+            setItems([]);
+            setPage(0);
+            // dispatch(wildguideApi.util.invalidateTags(['Entries']));
+            refetch();
+        }
+    }, [debouncedFilter, refetch]);
+
     const handleLoadMoreItems = useCallback((nextPage: number) => {
         if (nextPage <= ((data?.totalRecords ?? 0) / (data?.pageSize ?? 0)) && !pageQueue.includes(nextPage)) {
             setPageQueue(prev => [...prev, nextPage]);
@@ -68,7 +80,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
         setItems([]);
         // dispatch(wildguideApi.util.invalidateTags(['Entries']));
         refetch();
-    }, [triggerRefresh, dispatch, refetch]);
+    }, [triggerRefresh, refetch]);
 
     useEffect(() => {
         if (triggerRefresh && !isLoading) {
@@ -89,7 +101,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     // RENDER
     return (
         <Box>
-            <Box>
+            <Box id='grid-header'>
                 <Stack direction='row' justifyContent='space-between' gap={8} padding={2}>
                     <InputGroup startElement={<LuSearch />}>
                         <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
@@ -129,6 +141,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     loading={isFetching}
                     pageSize={data?.pageSize ?? 0}
                     totalCount={data?.totalRecords ?? 0}
+                    heightDelta={18}
                 />
             </Show>
         </Box>

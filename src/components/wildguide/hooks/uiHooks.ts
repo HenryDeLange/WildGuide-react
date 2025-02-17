@@ -18,7 +18,9 @@ export function useHeights() {
 function calcHeights() {
     return {
         window: window.innerHeight,
+        appHeader: (document.getElementById('app-header')?.offsetHeight ?? 0),
         content: calcContentHeight(),
+        gridHeader: (document.getElementById('grid-header')?.offsetHeight ?? 0),
         grid: calcGridHeight()
     };
 }
@@ -26,6 +28,8 @@ function calcHeights() {
 function calcGridHeight() {
     return window.innerHeight
         - (document.getElementById('app-header')?.offsetHeight ?? 0)
+        - (document.getElementById('page-header')?.offsetHeight ?? 0)
+        - (document.getElementById('tab-header')?.offsetHeight ?? 0)
         - (document.getElementById('grid-header')?.offsetHeight ?? 0);
 }
 

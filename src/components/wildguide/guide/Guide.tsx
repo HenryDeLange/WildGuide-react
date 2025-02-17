@@ -66,72 +66,74 @@ export function Guide({ guideId }: Readonly<Props>) {
             <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
                     <Box width='100%' padding={4}>
-                        <HStack flex={1} flexWrap='wrap'>
-                            <Show when={data.visibility === 'PRIVATE'}>
-                                <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
-                                    <Icon size='md'>
-                                        <MdOutlineLock />
-                                    </Icon>
-                                </Tooltip>
-                            </Show>
-                            <Heading size='4xl'>
-                                {data.name}
-                            </Heading>
-                            <Box flex={1}>
-                                <HStack justifyContent='flex-end'>
-                                    {isOwner &&
-                                        <>
-                                            <GuideLinkUsers guideId={guideId} />
-                                            <EditButton handleEdit={handleEdit} />
-                                        </>
-                                    }
-                                    <MenuRoot>
-                                        <MenuTrigger asChild>
-                                            <IconButton variant='ghost'>
-                                                <LuEllipsisVertical />
-                                            </IconButton>
-                                        </MenuTrigger>
-                                        <MenuContent>
-                                            <MenuItemGroup title={t('shareTitle')}>
-                                                <MenuItem value='share' closeOnSelect={false} asChild>
-                                                    <ShareButton value={`${window.location.origin}/guides/${guideId}`} />
-                                                </MenuItem>
-                                                <MenuItem value='qr' closeOnSelect={false} asChild>
-                                                    <QrCodePopup value={`${window.location.origin}/guides/${guideId}`} />
-                                                </MenuItem>
-                                            </MenuItemGroup>
-                                            <MenuSeparator />
-                                            <MenuItemGroup title={t('guide')}>
-                                                <MenuItem value='refresh' closeOnSelect={false} asChild>
-                                                    <RefreshButton
-                                                        handleRefresh={handleRefresh}
-                                                        loading={isFetching || ownerIsFetching || entriesRefresh}
-                                                    />
-                                                </MenuItem>
-                                            </MenuItemGroup>
-                                        </MenuContent>
-                                    </MenuRoot>
-                                </HStack>
-                            </Box>
-                        </HStack>
-                        {data.summary &&
-                            <Box
-                                marginY={2}
-                                marginBottom={4}
-                                paddingX={4}
-                                paddingY={2}
-                                borderWidth={1}
-                                borderRadius='sm'
-                                boxShadow='xs'
-                                borderColor='border.muted'
-                            >
-                                <Text fontSize='lg'>
-                                    {data.summary}
-                                </Text>
-                            </Box>
-                        }
+                        <Box id='page-header'>
+                            <HStack flex={1} flexWrap='wrap'>
+                                <Show when={data.visibility === 'PRIVATE'}>
+                                    <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
+                                        <Icon size='md'>
+                                            <MdOutlineLock />
+                                        </Icon>
+                                    </Tooltip>
+                                </Show>
+                                <Heading size='4xl'>
+                                    {data.name}
+                                </Heading>
+                                <Box flex={1}>
+                                    <HStack justifyContent='flex-end'>
+                                        {isOwner &&
+                                            <>
+                                                <GuideLinkUsers guideId={guideId} />
+                                                <EditButton handleEdit={handleEdit} />
+                                            </>
+                                        }
+                                        <MenuRoot>
+                                            <MenuTrigger asChild>
+                                                <IconButton variant='ghost'>
+                                                    <LuEllipsisVertical />
+                                                </IconButton>
+                                            </MenuTrigger>
+                                            <MenuContent>
+                                                <MenuItemGroup title={t('shareTitle')}>
+                                                    <MenuItem value='share' closeOnSelect={false} asChild>
+                                                        <ShareButton value={`${window.location.origin}/guides/${guideId}`} />
+                                                    </MenuItem>
+                                                    <MenuItem value='qr' closeOnSelect={false} asChild>
+                                                        <QrCodePopup value={`${window.location.origin}/guides/${guideId}`} />
+                                                    </MenuItem>
+                                                </MenuItemGroup>
+                                                <MenuSeparator />
+                                                <MenuItemGroup title={t('guide')}>
+                                                    <MenuItem value='refresh' closeOnSelect={false} asChild>
+                                                        <RefreshButton
+                                                            handleRefresh={handleRefresh}
+                                                            loading={isFetching || ownerIsFetching || entriesRefresh}
+                                                        />
+                                                    </MenuItem>
+                                                </MenuItemGroup>
+                                            </MenuContent>
+                                        </MenuRoot>
+                                    </HStack>
+                                </Box>
+                            </HStack>
+                            {data.summary &&
+                                <Box
+                                    marginY={2}
+                                    marginBottom={4}
+                                    paddingX={4}
+                                    paddingY={2}
+                                    borderWidth={1}
+                                    borderRadius='sm'
+                                    boxShadow='xs'
+                                    borderColor='border.muted'
+                                >
+                                    <Text fontSize='lg'>
+                                        {data.summary}
+                                    </Text>
+                                </Box>
+                            }
+                        </Box>
                         <TabsRoot marginTop={2} size='lg' fitted width='100%' defaultValue='guide' variant='outline'>
-                            <TabsList>
+                            <TabsList id='tab-header'>
                                 <TabsTrigger
                                     value='guide'
                                     fontSize='1.3em'
