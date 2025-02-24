@@ -3,7 +3,7 @@ import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMut
 import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
@@ -11,7 +11,6 @@ import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
 import { Field } from '../../ui/field';
-import { Radio, RadioGroup } from '../../ui/radio';
 
 type Props = {
     guideId: number;
@@ -54,8 +53,6 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
 
     const inatCriteria = watch('inaturalistCriteria');
     const [debouncedInatCriteria] = useDebounce(inatCriteria, 500);
-
-    const visibility = watch('visibility');
 
     const onSubmit = handleSubmit(async (data) => {
         doUpdate({ guideId, guideBase: data })
@@ -104,34 +101,6 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                     })}
                                     placeholder={t('newGuideNamePlaceholder')}
                                     variant='outline'
-                                />
-                            </Field>
-                            <Field
-                                label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
-                                invalid={!!errors.visibility || isError}
-                                errorText={errors.visibility?.message}
-                                helperText={t(`newGuideVisibilityHelp${visibility}`)}
-                            >
-                                <Controller
-                                    name='visibility'
-                                    control={control}
-                                    render={({ field }) => (
-                                        <RadioGroup
-                                            name={field.name}
-                                            value={field.value}
-                                            onValueChange={({ value }) => field.onChange(value)}
-                                            variant='subtle'
-                                        >
-                                            <HStack gap={8}>
-                                                <Radio value='PUBLIC'>
-                                                    {t('newGuideVisibilityPUBLIC')}
-                                                </Radio>
-                                                <Radio value='PRIVATE'>
-                                                    {t('newGuideVisibilityPRIVATE')}
-                                                </Radio>
-                                            </HStack>
-                                        </RadioGroup>
-                                    )}
                                 />
                             </Field>
                             <Field

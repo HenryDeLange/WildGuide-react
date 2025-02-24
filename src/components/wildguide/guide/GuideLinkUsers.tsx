@@ -1,4 +1,5 @@
-import { useFindGuideMembersQuery, useFindGuideOwnersQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
+import { Radio, RadioGroup } from '@/components/ui/radio';
+import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
 import { DialogRootProvider, Fieldset, HStack, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +21,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
 
     const dialog = useDialog();
 
+    const [visibility, setVisibility] = useState<Guide['visibility']>('PRIVATE');
     const [accessType, setAccessType] = useState<AccessTypes>('OWNER');
     const [username, setUsername] = useState('');
 
@@ -133,6 +135,28 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                             }
                         >
                             <Fieldset.Content gap={8}>
+                                <Field
+                                    label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
+                                    // invalid={!!errors.visibility || isError}
+                                    // errorText={errors.visibility?.message}
+                                    helperText={t(`newGuideVisibilityHelp${visibility}`)}
+                                >
+                                    <RadioGroup
+                                        name='visibility'
+                                        value={visibility}
+                                        onValueChange={({ value }: { value: Guide['visibility'] }) => setVisibility(value)}
+                                        variant='subtle'
+                                    >
+                                        <HStack gap={8}>
+                                            <Radio value='PUBLIC'>
+                                                {t('newGuideVisibilityPUBLIC')}
+                                            </Radio>
+                                            <Radio value='PRIVATE'>
+                                                {t('newGuideVisibilityPRIVATE')}
+                                            </Radio>
+                                        </HStack>
+                                    </RadioGroup>
+                                </Field>
                                 <Field label={<Text fontSize='md'>{t('editGuideAccessMembershipType')}</Text>}>
                                     <SegmentedControl
                                         value={accessType}
