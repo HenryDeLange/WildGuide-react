@@ -1,6 +1,6 @@
-import { Radio, RadioGroup } from '@/components/ui/radio';
-import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
-import { DialogRootProvider, Fieldset, HStack, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
+import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
+import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useFindGuideQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, useUpdateGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
+import { DialogRootProvider, Fieldset, HStack, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuUsersRound } from 'react-icons/lu';
@@ -9,7 +9,6 @@ import { FloatingInput } from '../../custom/FloatingInput';
 import { Button } from '../../ui/button';
 import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Field } from '../../ui/field';
-import { SegmentedControl } from '../../ui/segmented-control';
 import { Tag } from '../../ui/tag';
 
 type Props = {
@@ -21,7 +20,6 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
 
     const dialog = useDialog();
 
-    const [visibility, setVisibility] = useState<Guide['visibility']>('PRIVATE');
     const [accessType, setAccessType] = useState<AccessTypes>('OWNER');
     const [username, setUsername] = useState('');
 
@@ -31,6 +29,21 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
             isError: userInfoIsError
         }
     ] = wildguideApi.useLazyFindUserInfoQuery();
+
+    const [
+        doUpdateGuide, {
+            isLoading: updateIsLoading,
+            isError: updateIsError,
+            error: updateError
+        }
+    ] = useUpdateGuideMutation();
+
+    const {
+        data: guideData,
+        isLoading: guideIsLoading,
+        isError: guideIsError,
+        error: guideError
+    } = useFindGuideQuery({ guideId });
 
     const {
         data: ownerData,
@@ -95,6 +108,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     }, [accessType, doFindUserInfo, doMemberJoin, doOwnerJoin, guideId, username]);
 
     const handleLeave = useCallback((userId: number) => () => {
+        // TODO: Confirm dialog
         if (accessType === 'OWNER') {
             doOwnerLeave({ guideId, ownerId: userId });
         }
@@ -103,8 +117,24 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         }
     }, [accessType, doMemberLeave, doOwnerLeave, guideId]);
 
+    const handleVisibilityChange = useCallback(({ value }: { value: Guide['visibility'] }) => {
+        if (guideData) {
+            doUpdateGuide({
+                guideId,
+                guideBase: {
+                    ...guideData,
+                    visibility: value
+                }
+            });
+        }
+    }, [doUpdateGuide, guideData, guideId]);
+
+    const isLoading = guideIsLoading || updateIsLoading || userInfoIsLoading
+        || ownerJoinIsLoading || memberJoinIsLoading
+        || ownerLeaveIsLoading || memberLeaveIsLoading;
+
     return (
-        <Show when={!ownerIsLoading && !memberIsLoading} fallback={<Spinner size='lg' margin={8} />}>
+        <Show when={!guideIsLoading && !ownerIsLoading && !memberIsLoading} fallback={<Spinner size='lg' margin={8} />}>
             <DialogRootProvider value={dialog} placement='center' lazyMount={true}>
                 <DialogTrigger asChild>
                     <Button
@@ -127,45 +157,47 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                     </DialogHeader>
                     <DialogCloseTrigger />
                     <DialogBody>
-                        <ErrorDisplay error={ownerIsError ? ownerError : memberIsError ? memberError : undefined} />
-                        <Fieldset.Root
-                            disabled={
-                                ownerJoinIsLoading || memberJoinIsLoading || userInfoIsLoading
-                                || ownerLeaveIsLoading || memberLeaveIsLoading
-                            }
-                        >
+                        <ErrorDisplay error={ownerIsError ? ownerError : memberIsError ? memberError : guideIsError ? guideError : undefined} />
+                        <Fieldset.Root disabled={isLoading}>
                             <Fieldset.Content gap={8}>
-                                <Field
-                                    label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
-                                    // invalid={!!errors.visibility || isError}
-                                    // errorText={errors.visibility?.message}
-                                    helperText={t(`newGuideVisibilityHelp${visibility}`)}
-                                >
-                                    <RadioGroup
-                                        name='visibility'
-                                        value={visibility}
-                                        onValueChange={({ value }: { value: Guide['visibility'] }) => setVisibility(value)}
-                                        variant='subtle'
+                                <Field label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}>
+                                    <RadioCardRoot
+                                        defaultValue={guideData?.visibility ?? 'PUBLIC'}
+                                        onValueChange={handleVisibilityChange}
                                     >
-                                        <HStack gap={8}>
-                                            <Radio value='PUBLIC'>
-                                                {t('newGuideVisibilityPUBLIC')}
-                                            </Radio>
-                                            <Radio value='PRIVATE'>
-                                                {t('newGuideVisibilityPRIVATE')}
-                                            </Radio>
+                                        <HStack align='stretch'>
+                                            <RadioCardItem
+                                                label={t('newGuideVisibilityPUBLIC')}
+                                                description={t('newGuideVisibilityHelpPUBLIC')}
+                                                value='PUBLIC'
+                                            />
+                                            <RadioCardItem
+                                                label={t('newGuideVisibilityPRIVATE')}
+                                                description={t('newGuideVisibilityHelpPRIVATE')}
+                                                value='PRIVATE'
+                                            />
                                         </HStack>
-                                    </RadioGroup>
+                                    </RadioCardRoot>
                                 </Field>
+                                <Separator variant='dashed' />
                                 <Field label={<Text fontSize='md'>{t('editGuideAccessMembershipType')}</Text>}>
-                                    <SegmentedControl
-                                        value={accessType}
-                                        items={[
-                                            { label: t('editGuideAccessMembershipTypeOWNER'), value: 'OWNER' },
-                                            { label: t('editGuideAccessMembershipTypeMEMBER'), value: 'MEMBER' }
-                                        ]}
-                                        onValueChange={({ value }) => setAccessType(value as AccessTypes)}
-                                    />
+                                    <RadioCardRoot
+                                        defaultValue='OWNER'
+                                        onValueChange={({ value }: { value: AccessTypes }) => setAccessType(value)}
+                                    >
+                                        <HStack align='stretch'>
+                                            <RadioCardItem
+                                                label={t('editGuideAccessMembershipTypeOWNER')}
+                                                description={t('editGuideAccessMembershipTypeDescriptionOWNER')}
+                                                value='OWNER'
+                                            />
+                                            <RadioCardItem
+                                                label={t('editGuideAccessMembershipTypeMEMBER')}
+                                                description={t('editGuideAccessMembershipTypeDescriptionMEMBER')}
+                                                value='MEMBER'
+                                            />
+                                        </HStack>
+                                    </RadioCardRoot>
                                 </Field>
                                 <Field
                                     label={<Text fontSize='md' marginBottom={2}>{t('editGuideAccessUsernameHelp')}</Text>}
@@ -189,19 +221,25 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                     </HStack>
                                 </Field>
                                 <Field
-                                    label={<Text fontSize='md'>{t('editGuideAccessUsers')}</Text>}
+                                    label={<Text fontSize='md'>
+                                        {t('editGuideAccessUsers', {
+                                            type: t(`editGuideAccessMembershipType${accessType}`).toLowerCase()
+                                        })}
+                                    </Text>}
                                     invalid={ownerLeaveIsError || memberLeaveIsError}
                                 >
-                                    {users.map(user =>
-                                        <Tag
-                                            key={user.userId}
-                                            onClose={handleLeave(user.userId)}
-                                            size='lg'
-                                            closable={!ownerLeaveIsLoading && (accessType === 'MEMBER' || (accessType === 'OWNER' && users.length > 1))}
-                                        >
-                                            {user.username}
-                                        </Tag>
-                                    )}
+                                    <HStack>
+                                        {users.map(user =>
+                                            <Tag
+                                                key={user.userId}
+                                                onClose={handleLeave(user.userId)}
+                                                size='lg'
+                                                closable={!isLoading && (accessType === 'MEMBER' || (accessType === 'OWNER' && users.length > 1))}
+                                            >
+                                                {user.username}
+                                            </Tag>
+                                        )}
+                                    </HStack>
                                 </Field>
                             </Fieldset.Content>
                         </Fieldset.Root>
