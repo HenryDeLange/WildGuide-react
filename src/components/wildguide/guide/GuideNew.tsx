@@ -1,7 +1,7 @@
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
-import { Radio, RadioGroup } from '@/components/ui/radio';
+import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
 import { GuideBase, useCreateGuideMutation } from '@/redux/api/wildguideApi';
 import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -27,8 +27,6 @@ export function GuideNew() {
     const inatCriteria = watch('inaturalistCriteria');
     const [debouncedInatCriteria] = useDebounce(inatCriteria, 500);
 
-    const visibility = watch('visibility');
-
     const handleBack = useCallback(() => navigate({ to: '/guides', replace: true }), [navigate]);
 
     const onSubmit = handleSubmit(async (data) => {
@@ -51,6 +49,36 @@ export function GuideNew() {
                     <Separator />
                     <Fieldset.Content gap={8} >
                         <Field
+                            label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
+                            invalid={!!errors.visibility || isError}
+                            errorText={errors.visibility?.message}
+                        >
+                            <Controller
+                                name='visibility'
+                                control={control}
+                                render={({ field }) => (
+                                    <RadioCardRoot
+                                        name={field.name}
+                                        value={field.value}
+                                        onValueChange={({ value }) => field.onChange(value)}
+                                    >
+                                        <HStack align='stretch' >
+                                            <RadioCardItem
+                                                label={t('newGuideVisibilityPUBLIC')}
+                                                description={t('newGuideVisibilityHelpPUBLIC')}
+                                                value='PUBLIC'
+                                            />
+                                            <RadioCardItem
+                                                label={t('newGuideVisibilityPRIVATE')}
+                                                description={t('newGuideVisibilityHelpPRIVATE')}
+                                                value='PRIVATE'
+                                            />
+                                        </HStack>
+                                    </RadioCardRoot>
+                                )}
+                            />
+                        </Field>
+                        <Field
                             label={<Text fontSize='md'>{t('newGuideName')}</Text>}
                             invalid={!!errors.name || isError}
                             errorText={errors.name?.message}
@@ -63,34 +91,6 @@ export function GuideNew() {
                                 })}
                                 placeholder={t('newGuideNamePlaceholder')}
                                 variant='outline'
-                            />
-                        </Field>
-                        <Field
-                            label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
-                            invalid={!!errors.visibility || isError}
-                            errorText={errors.visibility?.message}
-                            helperText={t(`newGuideVisibilityHelp${visibility}`)}
-                        >
-                            <Controller
-                                name='visibility'
-                                control={control}
-                                render={({ field }) => (
-                                    <RadioGroup
-                                        name={field.name}
-                                        value={field.value}
-                                        onValueChange={({ value }) => field.onChange(value)}
-                                        variant='subtle'
-                                    >
-                                        <HStack gap={8}>
-                                            <Radio value='PUBLIC'>
-                                                {t('newGuideVisibilityPUBLIC')}
-                                            </Radio>
-                                            <Radio value='PRIVATE'>
-                                                {t('newGuideVisibilityPRIVATE')}
-                                            </Radio>
-                                        </HStack>
-                                    </RadioGroup>
-                                )}
                             />
                         </Field>
                         <Field
