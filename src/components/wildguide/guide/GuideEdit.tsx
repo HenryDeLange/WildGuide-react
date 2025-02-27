@@ -104,17 +104,6 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 />
                             </Field>
                             <Field
-                                label={<Text fontSize='md'>{t('newGuideInaturalistCriteria')}</Text>}
-                                invalid={!!errors.inaturalistCriteria || isError}
-                                errorText={errors.inaturalistCriteria?.message}
-                            >
-                                <Input
-                                    {...register('inaturalistCriteria')}
-                                    placeContent={t('newGuideInaturalistCriteriaPlaceholder')}
-                                    variant='outline'
-                                />
-                            </Field>
-                            <Field
                                 label={<Text fontSize='md'>{t('newGuideSummary')}</Text>}
                                 invalid={!!errors.summary || isError}
                                 errorText={errors.summary?.message}

@@ -47,7 +47,7 @@ export function GuideNew() {
                         <Text>{t('newGuideSubTitle')}</Text>
                     </Fieldset.HelperText>
                     <Separator />
-                    <Fieldset.Content gap={8} >
+                    <Fieldset.Content gap={8}>
                         <Field
                             label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
                             invalid={!!errors.visibility || isError}

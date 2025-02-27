@@ -3,7 +3,7 @@ import { EntryBase, useDeleteEntryMutation, useFindEntryQuery, useUpdateEntryMut
 import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
@@ -11,7 +11,6 @@ import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
 import { Field } from '../../ui/field';
-import { SegmentedControl } from '../../ui/segmented-control';
 
 type Props = {
     guideId: number;
@@ -94,7 +93,6 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                 label={<Text fontSize='md'>{t('newEntryName')}</Text>}
                                 invalid={!!errors.name || isError}
                                 errorText={errors.name?.message}
-                                helperText={t('newEntryNameHelper')}
                             >
                                 <Input
                                     {...register('name', {
@@ -103,59 +101,6 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                         maxLength: { value: 128, message: t('newEntryNameInvalid') }
                                     })}
                                     placeholder={t('newEntryNamePlaceholder')}
-                                    variant='outline'
-                                />
-                            </Field>
-                            <Field
-                                label={<Text fontSize='md'>{t('newEntryScientificName')}</Text>}
-                                invalid={!!errors.name || isError}
-                                errorText={errors.name?.message}
-                            >
-                                <Input
-                                    {...register('scientificName', {
-                                        required: t('newEntryScientificNameRequired'),
-                                        minLength: { value: 3, message: t('newEntryScientificInvalid') },
-                                        maxLength: { value: 256, message: t('newEntryScientificInvalid') }
-                                    })}
-                                    placeholder={t('newEntryScientificNamePlaceholder')}
-                                    variant='outline'
-                                />
-                            </Field>
-                            <Controller
-                                control={control}
-                                name='scientificRank'
-                                rules={{
-                                    required: t('newEntryScientificRankRequired')
-                                }}
-                                render={({ field }) => (
-                                    <Field
-                                        label={<Text fontSize='md'>{t('newEntryScientificRank')}</Text>}
-                                        invalid={!!errors.scientificRank || isError}
-                                        errorText={errors.scientificRank?.message}
-                                    >
-                                        <SegmentedControl
-                                            onBlur={field.onBlur}
-                                            name={field.name}
-                                            value={field.value}
-                                            items={[
-                                                { label: t('entryScientificRankFAMILY'), value: 'FAMILY' },
-                                                { label: t('entryScientificRankGENUS'), value: 'GENUS' },
-                                                { label: t('entryScientificRankSPECIES'), value: 'SPECIES' },
-                                                { label: t('entryScientificRankSUBSPECIES'), value: 'SUBSPECIES' }
-                                            ]}
-                                            onValueChange={({ value }) => field.onChange(value)}
-                                        />
-                                    </Field>
-                                )}
-                            />
-                            <Field
-                                label={<Text fontSize='md'>{t('newEntryInaturalistTaxon')}</Text>}
-                                invalid={!!errors.inaturalistTaxon || isError}
-                                errorText={errors.inaturalistTaxon?.message}
-                            >
-                                <Input
-                                    {...register('inaturalistTaxon')}
-                                    placeContent={t('newEntryInaturalistTaxonPlaceholder')}
                                     variant='outline'
                                 />
                             </Field>

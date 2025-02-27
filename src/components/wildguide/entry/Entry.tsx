@@ -1,13 +1,13 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
+import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useFindEntryQuery, useFindGuideOwnersQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Image, Separator, Show, Spinner, Stack, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Image, Show, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw } from 'react-icons/lu';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
@@ -53,92 +53,91 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
 
     // RENDER
     return (
-        <Box display='flex' justifyContent='center'>
+        <Box display='flex' flexDirection='column' alignItems='center'>
             <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : undefined} />
             <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
-                    <VStack width='100%'>
-                        <Box width='100%' paddingTop={4} paddingX={4}>
-                            <Stack direction='row'>
-                                <Heading flex={1}>
+                    <Box width='100%' paddingX={4} paddingY={2}>
+                        <Box id='page-header'>
+                            <HStack flex={1} flexWrap='wrap'>
+                                <Heading size='3xl'>
                                     {data.name}
                                 </Heading>
-                                {isOwner &&
-                                    <Button
-                                        size='lg'
-                                        variant='ghost'
-                                        color='fg.info'
-                                        onClick={handleEdit}
-                                        whiteSpace='nowrap'
-                                    >
-                                        <MdEdit />
-                                        <Text>
-                                            {t('editEntry')}
-                                        </Text>
-                                    </Button>
-                                }
-                                <Button
-                                    aria-label={t('guideGridRefresh')}
-                                    size='md'
-                                    variant='ghost'
-                                    onClick={handleRefresh}
-                                    loading={isFetching || ownerIsFetching}
-                                >
-                                    <LuRefreshCcw />
-                                </Button>
-                            </Stack>
-                            <HStack gap={4} color='fg.muted' fontSize='md'>
-                                <Text>
-                                    {t(`entryScientificRank${data.scientificRank}`)}:
-                                </Text>
-                                <Text fontStyle='italic' fontWeight='semibold'>
+                                <HStack flex={1} justifyContent='flex-end'>
+                                    {isOwner &&
+                                        <Button
+                                            size='lg'
+                                            variant='ghost'
+                                            color='fg.info'
+                                            onClick={handleEdit}
+                                            whiteSpace='nowrap'
+                                        >
+                                            <MdEdit />
+                                            <Text>
+                                                {t('editEntry')}
+                                            </Text>
+                                        </Button>
+                                    }
+                                    <OptionsMenu
+                                        type='entry'
+                                        guideId={guideId}
+                                        entryId={entryId}
+                                        handleRefresh={handleRefresh}
+                                        isFetching={isFetching || ownerIsFetching}
+                                    />
+                                </HStack>
+                            </HStack>
+                            <HStack gap={6} color='fg.muted' marginTop={2} marginBottom={6}>
+                                <Text fontSize='md' fontStyle='italic' fontWeight='semibold'>
                                     {data.scientificName}
                                 </Text>
-                                {data.inaturalistTaxon &&
-                                    <Box width='fit-content' marginLeft={8}>
-                                        <a
-                                            aria-label='iNaturalist'
-                                            href={`https://www.inaturalist.org/taxa/${data.inaturalistTaxon}`}
-                                            target='_blank'
-                                            rel='noopener'
-                                        >
-                                            <HStack>
-                                                <Image
-                                                    src={inatLogo}
-                                                    alt='iNaturalist'
-                                                    boxSize={6}
-                                                    borderRadius='full'
-                                                    fit='cover'
-                                                    loading='lazy'
-                                                />
-                                                <Text>
-                                                    {t('newEntryInaturalistTaxon')}
-                                                </Text>
-                                            </HStack>
-                                        </a>
-                                    </Box>
-                                }
+                                <Text fontSize='sm'>
+                                    {`(${t(`entryScientificRank${data.scientificRank}`).toLowerCase()})`}
+                                </Text>
                             </HStack>
                             {data.summary &&
-                                <Box marginY={4}>
-                                    <Heading size='sm'>
-                                        {t('newEntrySummary')}
-                                    </Heading>
-                                    <Separator variant='dashed' />
-                                    <Text paddingY={2}>
+                                <Box
+                                    marginY={4}
+                                    marginBottom={6}
+                                    paddingX={4}
+                                    paddingY={2}
+                                    borderWidth={1}
+                                    borderRadius='sm'
+                                    boxShadow='xs'
+                                    borderColor='border.muted'
+                                >
+                                    <Text fontSize='lg'>
                                         {data.summary}
                                     </Text>
-                                    <Separator variant='dashed' />
+                                </Box>
+                            }
+                            {data.inaturalistTaxon &&
+                                <Box width='fit-content'>
+                                    <a
+                                        aria-label='iNaturalist'
+                                        href={`https://www.inaturalist.org/taxa/${data.inaturalistTaxon}`}
+                                        target='_blank'
+                                        rel='noopener'
+                                    >
+                                        <HStack>
+                                            <Image
+                                                src={inatLogo}
+                                                alt='iNaturalist'
+                                                boxSize={6}
+                                                borderRadius='full'
+                                                fit='cover'
+                                                loading='lazy'
+                                            />
+                                            <Text>
+                                                {t('newEntryInaturalistTaxon')}
+                                            </Text>
+                                        </HStack>
+                                    </a>
                                 </Box>
                             }
                             {data.description &&
-                                <Box marginY={4}>
-                                    <Heading size='sm'>
-                                        {t('newEntryDescription')}
-                                    </Heading>
-                                    <Separator variant='dashed' />
+                                <Box width='100%'>
                                     <ExtendedMarkdown content={data.description} />
-                                    <Separator variant='dashed' />
                                 </Box>
                             }
                         </Box>
@@ -146,7 +145,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                             <MdKeyboardBackspace />
                             <Text>{t('entryBack')}</Text>
                         </Button>
-                    </VStack>
+                    </Box>
                 }
             </Show>
         </Box>
