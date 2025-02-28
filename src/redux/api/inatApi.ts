@@ -22,30 +22,21 @@ export const inatApi = createApi({
         usersAutocomplete: builder.query<UserAutocomplete, UserAutocompleteArgs>({
             query: (queryArg) => ({
                 url: 'users/autocomplete',
-                params: {
-                    q: queryArg.q,
-                    per_page: queryArg.per_page
-                }
+                params: { ...queryArg }
             }),
             providesTags: ['Users']
         }),
         taxaAutocomplete: builder.query<TaxaAutocomplete, TaxaAutocompleteArgs>({
             query: (queryArg) => ({
                 url: 'taxa/autocomplete',
-                params: {
-                    q: queryArg.q,
-                    per_page: queryArg.per_page
-                }
+                params: { ...queryArg }
             }),
             providesTags: ['Taxa']
         }),
         projectsAutocomplete: builder.query<ProjectsAutocomplete, ProjectsAutocompleteArgs>({
             query: (queryArg) => ({
                 url: 'projects/autocomplete',
-                params: {
-                    q: queryArg.q,
-                    per_page: queryArg.per_page
-                }
+                params: { ...queryArg }
             }),
             providesTags: ['Projects']
         }),
@@ -109,10 +100,10 @@ export type TaxaAutocompleteArgs = {
     taxon_id?: string[];
     rank?: string[];
     rank_level?: number;
-    per_page?: number;
     locale?: string;
     preferred_place_id?: number;
     all_names?: boolean;
+    per_page: number;
 };
 
 export type TaxaAutocomplete = ResponseBase & {
@@ -159,10 +150,10 @@ export type ProjectsAutocompleteArgs = {
     rule_details?: boolean;
     type?: 'collection' | 'umbrella' | 'bioblitz' | 'traditional'; // TODO: Confirm these???
     member_id?: number;
-    per_page?: number;
+    per_page: number;
 };
 
-export type ProjectsAutocomplete = {
+export type ProjectsAutocomplete = ResponseBase & {
     results: Project[];
 };
 

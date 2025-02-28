@@ -1,6 +1,7 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { EditButton } from '@/components/custom/EditButton';
+import { InaturalistSelector } from '@/components/custom/InaturalistSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
@@ -72,12 +73,13 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         </Icon>
                                     </Tooltip>
                                 </Show>
-                                <Heading size='4xl'>
+                                <Heading size='4xl' alignSelf='flex-start'>
                                     {data.name}
                                 </Heading>
-                                <HStack flex={1} justifyContent='flex-end'>
+                                <HStack flex={1} justifyContent='flex-end' flexWrap='wrap'>
                                     {isOwner &&
                                         <>
+                                            <InaturalistSelector type='PROJECT' select={(id) => console.log('selected', id)} />
                                             <GuideLinkUsers guideId={guideId} />
                                             <EditButton handleEdit={handleEdit} />
                                         </>

@@ -1,5 +1,6 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
+import { InaturalistSelector } from '@/components/custom/InaturalistSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useFindEntryQuery, useFindGuideOwnersQuery } from '@/redux/api/wildguideApi';
@@ -60,23 +61,26 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                     <Box width='100%' paddingX={4} paddingY={2}>
                         <Box id='page-header'>
                             <HStack flex={1} flexWrap='wrap'>
-                                <Heading size='3xl'>
+                                <Heading size='4xl' alignSelf='flex-start'>
                                     {data.name}
                                 </Heading>
                                 <HStack flex={1} justifyContent='flex-end'>
                                     {isOwner &&
-                                        <Button
-                                            size='lg'
-                                            variant='ghost'
-                                            color='fg.info'
-                                            onClick={handleEdit}
-                                            whiteSpace='nowrap'
-                                        >
-                                            <MdEdit />
-                                            <Text>
-                                                {t('editEntry')}
-                                            </Text>
-                                        </Button>
+                                        <>
+                                            <InaturalistSelector type='TAXON' select={(id) => console.log('selected', id)} />
+                                            <Button
+                                                size='lg'
+                                                variant='ghost'
+                                                color='fg.info'
+                                                onClick={handleEdit}
+                                                whiteSpace='nowrap'
+                                            >
+                                                <MdEdit />
+                                                <Text>
+                                                    {t('editEntry')}
+                                                </Text>
+                                            </Button>
+                                        </>
                                     }
                                     <OptionsMenu
                                         type='entry'

@@ -21,7 +21,7 @@
         "@emotion/styled": "^11.14.0",
         "@reduxjs/toolkit": "^2.6.0",
         "@tanstack/react-router": "^1.111.3",
-        "@tanstack/react-virtual": "^3.13.0",
+        "@tanstack/react-virtual": "^3.13.2",
         "@tanstack/router": "^0.0.1-beta.53",
         "async-mutex": "^0.5.0",
         "crypto-js": "^4.2.0",

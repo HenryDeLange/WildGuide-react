@@ -7,7 +7,7 @@ import { LuUsersRound } from 'react-icons/lu';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { FloatingInput } from '../../custom/FloatingInput';
 import { Button } from '../../ui/button';
-import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
+import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Field } from '../../ui/field';
 import { Tag } from '../../ui/tag';
 
@@ -244,13 +244,6 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                             </Fieldset.Content>
                         </Fieldset.Root>
                     </DialogBody>
-                    <DialogFooter>
-                        <DialogActionTrigger asChild>
-                            <Button variant='subtle'>
-                                {t('dialogClose')}
-                            </Button>
-                        </DialogActionTrigger>
-                    </DialogFooter>
                 </DialogContent>
             </DialogRootProvider>
         </Show>

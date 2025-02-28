@@ -59,7 +59,7 @@
     "newGuideDescription": "Description",
     "newGuideDescriptionPlaceholder": "guide description",
     "newGuideInaturalistCriteria": "iNaturalist Project",
-    "newGuideInaturalistCriteriaPlaceholder": "inaturalist project",
+    "newGuideInaturalistCriteriaPlaceholder": "inaturalist project name",
     "newGuideVisibility": "Access",
     "newGuideVisibilityPUBLIC": "Public",
     "newGuideVisibilityHelpPUBLIC": "Visible to everybody.",
@@ -100,7 +100,7 @@
     "newEntryNameRequired": "Display Name is required.",
     "newEntryNameInvalid": "Display Name is invalid.",
     "newEntryInaturalistTaxon": "iNaturalist Taxon",
-    "newEntryInaturalistTaxonPlaceholder": "inaturalist taxon",
+    "newEntryInaturalistTaxonPlaceholder": "inaturalist taxon name",
     "newEntryScientificName": "Scientific Name",
     "newEntryScientificNamePlaceholder": "scientific name",
     "newEntryScientificNameRequired": "Scientific Name is required.",
@@ -164,5 +164,8 @@
     "markdownSnippetsInatTaxonError": "iNaturalist taxon not found!",
     "markdownSnippetsPopup": "Popup",
     "markdownSnippetsPopupText": "Label",
-    "markdownSnippetsPopupContent": "Content"
+    "markdownSnippetsPopupContent": "Content",
+    "inaturalistLink": "Link",
+    "inaturalistLinkTitle": "Link to iNaturalist",
+    "inaturalistNoResults": "No results found."
 }

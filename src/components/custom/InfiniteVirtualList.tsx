@@ -2,7 +2,6 @@ import { Box, Spinner, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ENTRY_LIST_ITEM_HEIGHT } from '../wildguide/entry/EntryListItem';
 import { useHeights } from '../wildguide/hooks/uiHooks';
 
 // TODO: Maybe try to make the item sizes dynamic? (depends on how much of the summary to allow to be shown?)
@@ -15,7 +14,9 @@ type Props<T> = {
     loading: boolean;
     pageSize: number;
     totalCount: number;
-    heightDelta: number;
+    itemHeight: number;
+    height?: number;
+    heightDelta?: number;
 };
 
 export function InfiniteVirtualList<T>({
@@ -26,10 +27,10 @@ export function InfiniteVirtualList<T>({
     loading,
     pageSize,
     totalCount,
+    itemHeight,
+    height,
     heightDelta = 0
 }: Readonly<Props<T>>) {
-    const { t } = useTranslation();
-
     const { grid } = useHeights();
 
     const parentRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ export function InfiniteVirtualList<T>({
         count: hasNextPage ? data.length + 1 : data.length,
         // count: data.length,
         getScrollElement: () => parentRef.current,
-        estimateSize: () => ENTRY_LIST_ITEM_HEIGHT,
+        estimateSize: () => itemHeight,
         // estimateSize: index => (data[index] as any).summary ? 150 : 80,
         overscan: 1
     });
@@ -58,7 +59,7 @@ export function InfiniteVirtualList<T>({
             <div
                 ref={parentRef}
                 style={{
-                    height: grid - heightDelta,
+                    height: (height ?? grid) - heightDelta,
                     width: '100%',
                     overflowY: 'auto',
                     contain: 'strict'
@@ -80,6 +81,9 @@ export function InfiniteVirtualList<T>({
                             transform: `translateY(${virtualizer.getVirtualItems()[0]?.start ?? 0}px)`
                         }}
                     > */}
+                    {virtualizer.getVirtualItems().length === 0 && loading &&
+                        <LoadingIndicator />
+                    }
                     {virtualizer.getVirtualItems().map(virtualRow => {
                         const isLoaderRow = virtualRow.index > data.length - 1;
                         return (
@@ -96,13 +100,9 @@ export function InfiniteVirtualList<T>({
                                     transform: `translateY(${virtualRow.start}px)`
                                 }}
                             >
-                                <Box height={ENTRY_LIST_ITEM_HEIGHT} position='absolute' width='100%'>
+                                <Box height={itemHeight} position='absolute' width='100%'>
                                     {isLoaderRow &&
-                                        <Box textAlign='center' marginTop={16}>
-                                            <Spinner size='md' />
-                                            <Text>{t('loading')}</Text>
-                                            {/* {loading ? '...fetching...' : '!!! not fetching !!!'} */}
-                                        </Box>
+                                        <LoadingIndicator />
                                     }
                                     {!isLoaderRow &&
                                         renderItem(data[virtualRow.index], virtualRow.index)
@@ -114,6 +114,16 @@ export function InfiniteVirtualList<T>({
                     {/* </div> */}
                 </div>
             </div>
+        </Box>
+    );
+}
+
+function LoadingIndicator() {
+    const { t } = useTranslation();
+    return (
+        <Box textAlign='center' marginTop={16}>
+            <Spinner size='md' />
+            <Text>{t('loading')}</Text>
         </Box>
     );
 }

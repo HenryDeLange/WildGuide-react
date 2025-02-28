@@ -12,7 +12,7 @@ import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
 import { Button } from '../../ui/button';
-import { EntryListItem } from './EntryListItem';
+import { ENTRY_LIST_ITEM_HEIGHT, EntryListItem } from './EntryListItem';
 
 type Props = {
     guideId: number;
@@ -93,8 +93,9 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
         // TODO: Implement the rest of the filter logic
     }, []);
 
-    const renderItem = useCallback((item: Entry, index: number) => <EntryListItem guideId={guideId} entry={item} index={index} />,
-        [guideId]);
+    const renderItem = useCallback((item: Entry, index: number) => (
+        <EntryListItem guideId={guideId} entry={item} index={index} />
+    ), [guideId]);
 
     const hasNextPage = items.length < (data?.totalRecords ?? 0);
 
@@ -141,6 +142,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     loading={isFetching}
                     pageSize={data?.pageSize ?? 0}
                     totalCount={data?.totalRecords ?? 0}
+                    itemHeight={ENTRY_LIST_ITEM_HEIGHT}
                     heightDelta={18}
                 />
             </Show>
