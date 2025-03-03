@@ -167,5 +167,6 @@
     "markdownSnippetsPopupContent": "Content",
     "inaturalistLink": "Link",
     "inaturalistLinkTitle": "Link to iNaturalist",
-    "inaturalistNoResults": "No results found."
+    "inaturalistNoResults": "No results found.",
+    "inaturalistClearResult": "Don't link to iNaturalist"
 }

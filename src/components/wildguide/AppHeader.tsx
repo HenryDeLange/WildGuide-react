@@ -106,7 +106,7 @@ function InaturalistLink() {
                     alt='iNaturalist'
                     boxSize={6}
                     borderRadius='full'
-                    fit='cover'
+                    fit='contain'
                     loading='lazy'
                 />
             </IconButton>

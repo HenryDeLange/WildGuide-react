@@ -1,12 +1,13 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
+import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { EditButton } from '@/components/custom/EditButton';
-import { InaturalistSelector } from '@/components/custom/InaturalistSelector';
+import { InatResultCard, InaturalistSelector } from '@/components/custom/InaturalistSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
-import { useFindGuideOwnersQuery, useFindGuideQuery } from '@/redux/api/wildguideApi';
+import { useProjectFindQuery } from '@/redux/api/inatApi';
+import { useFindGuideOwnersQuery, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, IconButton, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,8 +45,23 @@ export function Guide({ guideId }: Readonly<Props>) {
         error: ownerError,
         refetch: ownerRefetch
     } = useFindGuideOwnersQuery({ guideId });
-
     const isOwner = ownerData?.map(owner => owner.userId).includes(userId ?? -1) ?? false;
+
+    const [
+        doUpdate, {
+            isLoading: updateIsLoading,
+            isError: updateIsError,
+            error: updateError
+        }
+    ] = useUpdateGuideMutation();
+
+    const {
+        data: projectData,
+        isLoading: projectIsLoading
+    } = useProjectFindQuery({ id: Number(data?.inaturalistCriteria ?? '0') }, {
+        skip: !data?.inaturalistCriteria
+    });
+    const project = projectData?.total_results === 1 ? projectData.results[0] : undefined;
 
     const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/edit' }), [navigate]);
 
@@ -57,11 +73,23 @@ export function Guide({ guideId }: Readonly<Props>) {
         ownerRefetch();
     }, [ownerRefetch, refetch]);
 
+    const handleInatLink = useCallback((item: InatResultCard | null) => {
+        if (data) {
+            doUpdate({
+                guideId,
+                guideBase: {
+                    ...data,
+                    inaturalistCriteria: item?.id.toString() ?? undefined
+                }
+            });
+        }
+    }, [data, doUpdate, guideId]);
+
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
-            <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : undefined} />
-            <Show when={!isLoading && !ownerIsLoading} fallback={<Spinner size='lg' margin={8} />}>
+            <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : updateIsError ? updateError : undefined} />
+            <Show when={!isLoading && !ownerIsLoading && !updateIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
                     <Box width='100%' paddingX={4} paddingY={2}>
                         <Box id='page-header'>
@@ -79,7 +107,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 <HStack flex={1} justifyContent='flex-end' flexWrap='wrap'>
                                     {isOwner &&
                                         <>
-                                            <InaturalistSelector type='PROJECT' select={(id) => console.log('selected', id)} />
+                                            <InaturalistSelector type='PROJECT' select={handleInatLink} />
                                             <GuideLinkUsers guideId={guideId} />
                                             <EditButton handleEdit={handleEdit} />
                                         </>
@@ -142,26 +170,43 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 <VStack width='100%'>
                                     <Box width='100%' paddingTop={4} paddingX={4}>
                                         {data.inaturalistCriteria &&
-                                            <Box width='fit-content'>
-                                                <a
-                                                    aria-label='iNaturalist'
-                                                    href={`https://www.inaturalist.org/projects/${data.inaturalistCriteria}`}
-                                                    target='_blank'
-                                                    rel='noopener'
-                                                >
-                                                    <HStack>
-                                                        <Image
-                                                            src={inatLogo}
-                                                            alt='iNaturalist'
-                                                            boxSize={6}
-                                                            borderRadius='full'
-                                                            fit='cover'
-                                                            loading='lazy'
-                                                        />
-                                                        <Text>{t('newGuideInaturalistCriteria')}</Text>
-                                                    </HStack>
-                                                </a>
-                                            </Box>
+                                            <Show when={!projectIsLoading} fallback={<Spinner size='sm' margin={2} />}>
+                                                {project &&
+                                                    <Box padding={2} borderWidth={1} borderRadius='sm' boxShadow='sm'>
+                                                        <HStack>
+                                                            <a
+                                                                aria-label='iNaturalist'
+                                                                href={`https://www.inaturalist.org/projects/${project.id}`}
+                                                                target='_blank'
+                                                                rel='noopener'
+                                                            >
+                                                                <IconButton aria-label='iNaturalist' variant='ghost'>
+                                                                    <Image
+                                                                        src={inatLogo}
+                                                                        alt='iNaturalist'
+                                                                        objectFit='contain'
+                                                                        borderRadius='md'
+                                                                        width='40px'
+                                                                        height='40px'
+                                                                        loading='lazy'
+                                                                    />
+                                                                </IconButton>
+                                                            </a>
+                                                            <Image
+                                                                src={project.icon ?? inatLogo}
+                                                                alt={project.title}
+                                                                objectFit='cover'
+                                                                borderRadius='md'
+                                                                width='60px'
+                                                                height='60px'
+                                                            />
+                                                            <Heading size='md'>
+                                                                {project.title}
+                                                            </Heading>
+                                                        </HStack>
+                                                    </Box>
+                                                }
+                                            </Show>
                                         }
                                         {data.description &&
                                             <ExtendedMarkdown content={data.description} />

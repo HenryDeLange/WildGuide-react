@@ -26,13 +26,6 @@ export const inatApi = createApi({
             }),
             providesTags: ['Users']
         }),
-        taxaAutocomplete: builder.query<TaxaAutocomplete, TaxaAutocompleteArgs>({
-            query: (queryArg) => ({
-                url: 'taxa/autocomplete',
-                params: { ...queryArg }
-            }),
-            providesTags: ['Taxa']
-        }),
         projectsAutocomplete: builder.query<ProjectsAutocomplete, ProjectsAutocompleteArgs>({
             query: (queryArg) => ({
                 url: 'projects/autocomplete',
@@ -40,17 +33,30 @@ export const inatApi = createApi({
             }),
             providesTags: ['Projects']
         }),
-        observationFind: builder.query<ObservationFind, ObservationFindArgs>({
+        projectFind: builder.query<ProjectFind, ProjectFindArgs>({
             query: (queryArg) => ({
-                url: `observations/${queryArg.id}`,
+                url: `projects/${queryArg.id}`,
             }),
-            providesTags: ['Observation']
+            providesTags: ['Projects']
+        }),
+        taxaAutocomplete: builder.query<TaxaAutocomplete, TaxaAutocompleteArgs>({
+            query: (queryArg) => ({
+                url: 'taxa/autocomplete',
+                params: { ...queryArg }
+            }),
+            providesTags: ['Taxa']
         }),
         taxonFind: builder.query<TaxonFind, TaxonFindArgs>({
             query: (queryArg) => ({
                 url: `taxa/${queryArg.id}`,
             }),
             providesTags: ['Taxon']
+        }),
+        observationFind: builder.query<ObservationFind, ObservationFindArgs>({
+            query: (queryArg) => ({
+                url: `observations/${queryArg.id}`,
+            }),
+            providesTags: ['Observation']
         })
     }),
     keepUnusedDataFor: 300 // 5 minutes
@@ -59,9 +65,10 @@ export const inatApi = createApi({
 export const {
     useUsersAutocompleteQuery,
     useTaxaAutocompleteQuery,
+    useTaxonFindQuery,
     useProjectsAutocompleteQuery,
-    useObservationFindQuery,
-    useTaxonFindQuery
+    useProjectFindQuery,
+    useObservationFindQuery
 } = inatApi;
 
 type ResponseBase = {
@@ -140,6 +147,14 @@ export type Taxon = {
     }[];
 };
 
+export type TaxonFindArgs = {
+    id: number;
+};
+
+export type TaxonFind = ResponseBase & {
+    results: Taxon[];
+};
+
 export type ProjectsAutocompleteArgs = {
     q: string;
     id?: number[];
@@ -166,6 +181,14 @@ export type Project = {
     banner_color: string;
     icon: string;
     header_image_url: string;
+};
+
+export type ProjectFindArgs = {
+    id: number
+};
+
+export type ProjectFind = ResponseBase & {
+    results: Project[];
 };
 
 export type ObservationFindArgs = {
@@ -220,12 +243,4 @@ export type Photo = {
         width: number;
         height: number;
     };
-};
-
-export type TaxonFindArgs = {
-    id: number;
-};
-
-export type TaxonFind = ResponseBase & {
-    results: Taxon[];
 };

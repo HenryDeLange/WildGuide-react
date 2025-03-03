@@ -1,17 +1,18 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
+import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useProjectsAutocompleteQuery, useTaxaAutocompleteQuery } from '@/redux/api/inatApi';
-import { Box, DialogRootProvider, Fieldset, Heading, Image, Input, Text, useDialog } from '@chakra-ui/react';
+import { Box, DialogRootProvider, Fieldset, Heading, IconButton, Image, Input, Text, useDialog } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FiTrash } from 'react-icons/fi';
 import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
-import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Field } from '../ui/field';
 import { InfiniteVirtualList } from './InfiniteVirtualList';
 
 type Props = {
     type: 'PROJECT' | 'TAXON';
-    select: (id: number) => void;
+    select: (item: InatResultCard | null) => void;
 }
 
 export function InaturalistSelector({ type, select }: Readonly<Props>) {
@@ -45,6 +46,20 @@ export function InaturalistSelector({ type, select }: Readonly<Props>) {
                 <DialogBody>
                     <InaturalistSearch type={type} select={select} closeDialog={handleCloseDialog} />
                 </DialogBody>
+                <DialogFooter>
+                    <IconButton
+                        _hover={{ color: 'fg.info' }}
+                        variant='ghost'
+                        size='xs'
+                        onClick={() => {
+                            select(null);
+                            handleCloseDialog();
+                        }}
+                    >
+                        <FiTrash />
+                        <Text>{t('inaturalistClearResult')}</Text>
+                    </IconButton>
+                </DialogFooter>
             </DialogContent>
         </DialogRootProvider>
     );
@@ -77,16 +92,14 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
     const pageSize = (type === 'PROJECT' ? projectData?.per_page : taxaData?.per_page) ?? 0;
     const totalCount = (type === 'PROJECT' ? projectData?.total_results : taxaData?.total_results) ?? 0;
 
-    const handleSelect = useCallback((id: number) => () => {
-        select(id);
-        closeDialog();
-    }, [closeDialog, select]);
-
     const renderItem = useCallback((item: InatResultCard) => (
         <Button
             padding={1}
             height={ITEM_HEIGHT}
-            onClick={handleSelect(item.id)}
+            onClick={() => {
+                select(item);
+                closeDialog();
+            }}
             width='100%'
             textAlign='left'
             variant='surface'
@@ -111,27 +124,28 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
                 </Text>
             </Box>
         </Button>
-    ), [handleSelect]);
+    ), [closeDialog, select]);
 
     const handleLoadMoreItems = useCallback(() => console.warn('pagination of autocomplete not supported by iNaturalist'), []);
 
     const items: InatResultCard[] = useMemo(() => (
-        loading ? [] : (type === 'PROJECT'
-            ? projectData?.results.map(result => ({
-                id: result.id,
-                title: result.title,
-                subTitle: result.description,
-                icon: result.icon,
-                category: result.project_type
-            }))
-            : taxaData?.results.map(result => ({
-                id: result.id,
-                title: result.preferred_common_name ?? result.name,
-                subTitle: result.name,
-                icon: result.default_photo?.square_url,
-                category: result.rank
-            }))) ?? [])
-        , [loading, projectData?.results, taxaData?.results, type]);
+        (loading || debouncedInatText.trim().length === 0) ? []
+            : (type === 'PROJECT'
+                ? projectData?.results.map(result => ({
+                    id: result.id,
+                    title: result.title,
+                    subTitle: result.description,
+                    icon: result.icon,
+                    category: result.project_type
+                })) ?? []
+                : taxaData?.results.map(result => ({
+                    id: result.id,
+                    title: result.preferred_common_name ?? result.name,
+                    subTitle: result.name,
+                    icon: result.default_photo?.square_url,
+                    category: t(`entryScientificRank${result.rank.toUpperCase()}`)
+                })) ?? []))
+        , [debouncedInatText, loading, projectData?.results, t, taxaData?.results, type]);
 
     return (
         <Fieldset.Root disabled={false}>
@@ -141,6 +155,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
                         value={inatText}
                         onChange={event => setInatText(event.target.value)}
                         placeholder={type === 'PROJECT' ? t('newGuideInaturalistCriteriaPlaceholder') : t('newEntryInaturalistTaxonPlaceholder')}
+                        autoFocus
                     />
                 </Field>
                 {(items.length === 0 && !loading) &&
@@ -168,7 +183,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
     );
 }
 
-type InatResultCard = {
+export type InatResultCard = {
     id: number;
     title: string;
     subTitle?: string;
