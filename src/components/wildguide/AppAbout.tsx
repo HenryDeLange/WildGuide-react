@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 export function AppAbout() {
     const { t } = useTranslation();
-    
+
     const {
         data,
         isFetching
@@ -41,6 +41,12 @@ export function AppAbout() {
                                 {dateFormatter.format(new Date(import.meta.env.VITE_COMMIT_DATE))}
                             </Text>
                         </StatValueText>
+                        <StatValueText alignItems='baseline'>
+                            <StatValueUnit>{t('aboutCode')}</StatValueUnit>
+                            <Text fontSize='md'>
+                                {`${import.meta.env.VITE_BRANCH_NAME} (${import.meta.env.VITE_COMMIT_HASH})`}
+                            </Text>
+                        </StatValueText>
                     </StatRoot>
                 </Box>
                 <Box>
@@ -63,6 +69,12 @@ export function AppAbout() {
                                     <StatValueUnit>{t('aboutDate')}</StatValueUnit>
                                     <Text fontSize='md'>
                                         {dateFormatter.format(new Date(data.commitTime))}
+                                    </Text>
+                                </StatValueText>
+                                <StatValueText alignItems='baseline'>
+                                    <StatValueUnit>{t('aboutCode')}</StatValueUnit>
+                                    <Text fontSize='md'>
+                                        {`${data.branch} (${data.commitId})`}
                                     </Text>
                                 </StatValueText>
                             </>
