@@ -33,8 +33,8 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     const [
         doUpdateGuide, {
             isLoading: updateIsLoading,
-            isError: updateIsError,
-            error: updateError
+            // isError: updateIsError,
+            // error: updateError
         }
     ] = useUpdateGuideMutation();
 
@@ -48,7 +48,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     const {
         data: ownerData,
         isLoading: ownerIsLoading,
-        isFetching: ownerIsFetching,
+        // isFetching: ownerIsFetching,
         isError: ownerIsError,
         error: ownerError
     } = useFindGuideOwnersQuery({ guideId });
@@ -56,7 +56,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     const {
         data: memberData,
         isLoading: memberIsLoading,
-        isFetching: memberIsFetching,
+        // isFetching: memberIsFetching,
         isError: memberIsError,
         error: memberError
     } = useFindGuideMembersQuery({ guideId });
@@ -65,7 +65,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         doOwnerJoin, {
             isLoading: ownerJoinIsLoading,
             isError: ownerJoinIsError,
-            error: ownerJoinError
+            // error: ownerJoinError
         }
     ] = useOwnerJoinGuideMutation();
 
@@ -73,7 +73,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         doMemberJoin, {
             isLoading: memberJoinIsLoading,
             isError: memberJoinIsError,
-            error: memberJoinError
+            // error: memberJoinError
         }
     ] = useMemberJoinGuideMutation();
 
@@ -81,7 +81,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         doOwnerLeave, {
             isLoading: ownerLeaveIsLoading,
             isError: ownerLeaveIsError,
-            error: ownerLeaveError
+            // error: ownerLeaveError
         }
     ] = useOwnerLeaveGuideMutation();
 
@@ -89,7 +89,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         doMemberLeave, {
             isLoading: memberLeaveIsLoading,
             isError: memberLeaveIsError,
-            error: memberLeaveError
+            // error: memberLeaveError
         }
     ] = useMemberLeaveGuideMutation();
 

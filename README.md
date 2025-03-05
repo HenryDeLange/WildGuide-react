@@ -1,13 +1,12 @@
-# TODO:
-- TODO: Start using Chakra UI's Combobox when it is released, for loading the iNat project/taxon
-- TODO: Make the guide grid virtualised for performance concerns
-- TODO: Try to add a iNat rate limiter that works n client side (75 requests per minute)
+# TODOs:
+- TODO: Make the guide grid virtualized for performance concerns
+- TODO: Try to add an iNat rate limiter that works on client side (75 requests per minute)
 
 # WildGuide-react
 ![App Version](https://img.shields.io/github/package-json/v/HenryDeLange/WildGuide-react)
 ![GitHub License](https://img.shields.io/github/license/HenryDeLange/WildGuide-react)
 
-The React frontend for WildGuide.
+This repository is for the WildGuide frontend (React, TypeScript). Also see the related [WildGuide backend](https://github.com/HenryDeLange/WildGuide-spring).
 
 **Live Site:**\
 TODO

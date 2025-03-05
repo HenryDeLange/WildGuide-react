@@ -125,7 +125,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     {data.scientificName}
                                 </Text>
                                 <Text fontSize='sm'>
-                                    {`(${t(`entryScientificRank${data.scientificRank}`).toLowerCase()})`}
+                                    {`(${t(`entryScientificRank${data.scientificRank}`)})`}
                                 </Text>
                             </HStack>
                             {data.summary &&

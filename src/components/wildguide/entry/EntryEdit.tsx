@@ -6,7 +6,6 @@ import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
-import { useDebounce } from 'use-debounce';
 import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Button } from '../../ui/button';
@@ -33,27 +32,24 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         doUpdate, {
             isLoading: updateIsLoading,
             isError: updateIsError,
-            error: updateError
+            // error: updateError
         }
     ] = useUpdateEntryMutation();
 
     const [
         doDelete, {
             isLoading: deleteIsLoading,
-            isError: deleteIsError,
-            error: deleteError
+            // isError: deleteIsError,
+            // error: deleteError
         }
     ] = useDeleteEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<EntryBase>();
+    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
         }
     }, [data, isSuccess, reset]);
-
-    const inatTaxon = watch('inaturalistTaxon');
-    const [debouncedInatTaxon] = useDebounce(inatTaxon, 500);
 
     const onSubmit = handleSubmit(async (data) => {
         doUpdate({ guideId, entryId, entryBase: data })

@@ -8,7 +8,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LuCirclePlus } from 'react-icons/lu';
 import { MdKeyboardBackspace } from 'react-icons/md';
-import { useDebounce } from 'use-debounce';
 import { Field } from '../../ui/field';
 import { SegmentedControl } from '../../ui/segmented-control';
 
@@ -27,9 +26,6 @@ export function EntryNew({ guideId }: Readonly<Props>) {
             scientificRank: 'SPECIES'
         }
     });
-
-    const inatTaxon = watch('inaturalistTaxon');
-    const [debouncedInatTaxon] = useDebounce(inatTaxon, 500);
 
     const onSubmit = handleSubmit(async (data) => {
         doCreate({ guideId, entryBase: data })
@@ -111,17 +107,6 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                                 )}
                             />
                         </Stack>
-                        <Field
-                            label={<Text fontSize='md'>{t('newEntryInaturalistTaxon')}</Text>}
-                            invalid={!!errors.inaturalistTaxon || isError}
-                            errorText={errors.inaturalistTaxon?.message}
-                        >
-                            <Input
-                                {...register('inaturalistTaxon')}
-                                placeContent={t('newEntryInaturalistTaxonPlaceholder')}
-                                variant='outline'
-                            />
-                        </Field>
                         <Field
                             label={<Text fontSize='md'>{t('newEntrySummary')}</Text>}
                             invalid={!!errors.summary || isError}

@@ -7,7 +7,7 @@ export interface InputGroupProps extends BoxProps {
   endElementProps?: InputElementProps
   startElement?: React.ReactNode
   endElement?: React.ReactNode
-  children: React.ReactElement
+  children: React.ReactElement<InputElementProps>
   startOffset?: InputElementProps["paddingStart"]
   endOffset?: InputElementProps["paddingEnd"]
 }
@@ -40,7 +40,7 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(
             ps: `calc(var(--input-height) - ${startOffset})`,
           }),
           ...(endElement && { pe: `calc(var(--input-height) - ${endOffset})` }),
-          ...children.props,
+          ...Object.assign({}, children.props),
         })}
         {endElement && (
           <InputElement placement="end" {...endElementProps}>

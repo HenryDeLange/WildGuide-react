@@ -66,7 +66,7 @@ export const store = configureStore({
             userId: null,
             username: null,
             accessToken: null,
-            refreshToken: await loadAuthData(REFRESH_TOKEN) ?? null
+            refreshToken: loadAuthData(REFRESH_TOKEN) ?? null
         }
     },
     reducer: {

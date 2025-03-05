@@ -10,7 +10,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LuCirclePlus } from 'react-icons/lu';
 import { MdKeyboardBackspace } from 'react-icons/md';
-import { useDebounce } from 'use-debounce';
 
 export function GuideNew() {
     const { t } = useTranslation();
@@ -23,9 +22,6 @@ export function GuideNew() {
             visibility: 'PUBLIC'
         }
     });
-
-    const inatCriteria = watch('inaturalistCriteria');
-    const [debouncedInatCriteria] = useDebounce(inatCriteria, 500);
 
     const handleBack = useCallback(() => navigate({ to: '/guides', replace: true }), [navigate]);
 
@@ -90,17 +86,6 @@ export function GuideNew() {
                                     maxLength: { value: 128, message: t('newGuideNameInvalid') }
                                 })}
                                 placeholder={t('newGuideNamePlaceholder')}
-                                variant='outline'
-                            />
-                        </Field>
-                        <Field
-                            label={<Text fontSize='md'>{t('newGuideInaturalistCriteria')}</Text>}
-                            invalid={!!errors.inaturalistCriteria || isError}
-                            errorText={errors.inaturalistCriteria?.message}
-                        >
-                            <Input
-                                {...register('inaturalistCriteria')}
-                                placeContent={t('newGuideInaturalistCriteriaPlaceholder')}
                                 variant='outline'
                             />
                         </Field>
