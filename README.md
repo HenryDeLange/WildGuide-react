@@ -9,13 +9,14 @@
 This repository is for the WildGuide frontend (React, TypeScript). Also see the related [WildGuide backend](https://github.com/HenryDeLange/WildGuide-spring).
 
 **Live Site:**\
-TODO
+[https://wildguide.mywild.co.za](https://wildguide.mywild.co.za)
 
 ## Development
 
 ### Build
 ![Top Language](https://img.shields.io/github/languages/top/HenryDeLange/WildGuide-react)
-![TODO: Web Deploy](https://img.shields.io/github/actions/workflow/status/HenryDeLange/WildGuide-react/TODO)
+![Vite Build](https://img.shields.io/github/actions/workflow/status/HenryDeLange/WildGuide-react/react-source-build.yml?label=vite%20build)
+![Web Deploy](https://img.shields.io/github/actions/workflow/status/HenryDeLange/WildGuide-react/azure-static-web-apps-jolly-beach-0d7ffc003.yml?label=static%20web%20deploy)
 
 This project is written in `Typescript` using React and Vite to build.
 
