@@ -11,7 +11,7 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
         <Link to='/guides/$guideId' params={{ guideId: item.id.toString() }} >
             <VStack
                 _hover={{
-                    backgroundColor: 'gray.100',
+                    backgroundColor: 'bg.muted',
                     transform: 'scale(1.05)',
                     transition: 'all 0.2s ease-in-out'
                 }}

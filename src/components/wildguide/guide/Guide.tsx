@@ -84,7 +84,7 @@ export function Guide({ guideId }: Readonly<Props>) {
             });
         }
     }, [data, doUpdate, guideId]);
-
+    
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
@@ -137,7 +137,15 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 </Box>
                             }
                         </Box>
-                        <TabsRoot marginTop={2} size='lg' fitted width='100%' defaultValue='guide' variant='outline'>
+                        <TabsRoot
+                            marginTop={2}
+                            size='lg' fitted
+                            width='100%'
+                            defaultValue={window.location.hash && window.location.hash.length > 1
+                                ? window.location.hash.substring(1) : 'guide'}
+                            variant='outline'
+                            onValueChange={details => window.location.hash = details.value}
+                        >
                             <TabsList id='tab-header'>
                                 <TabsTrigger
                                     value='guide'

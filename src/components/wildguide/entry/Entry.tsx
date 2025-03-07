@@ -61,7 +61,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
     const taxon = taxonData?.total_results === 1 ? taxonData.results[0] : undefined;
 
     const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/entries/$entryId/edit' }), [navigate]);
-    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
+    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', hash: 'entries' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
         refetch();

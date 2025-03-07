@@ -25,7 +25,7 @@ export const EntryListItem = memo(function EntryListItem({ guideId, entry, inatT
             <Link to='/guides/$guideId/entries/$entryId' params={{ guideId: guideId.toString(), entryId: entry.id.toString() }} >
                 <VStack
                     _hover={{
-                        backgroundColor: 'gray.100',
+                        backgroundColor: 'bg.muted',
                         transform: 'scale(1.05)',
                         transition: 'all 0.2s ease-in-out'
                     }}
@@ -40,15 +40,15 @@ export const EntryListItem = memo(function EntryListItem({ guideId, entry, inatT
                         <Heading fontWeight='bold' truncate>
                             {entry.name}
                         </Heading>
-                        <HStack gap={4} marginTop={-1}>
-                            <Heading color='fg.subtle' truncate>
+                        <HStack gap={4}>
+                            <Text color='fg.subtle' truncate>
                                 {t(`entryScientificRank${entry.scientificRank}`)}
-                            </Heading>
-                            <Heading color='fg.muted' truncate fontStyle='italic'>
+                            </Text>
+                            <Text color='fg.muted' truncate fontStyle='italic'>
                                 {entry.scientificName}
-                            </Heading>
+                            </Text>
                         </HStack>
-                        <Separator />
+                        <Separator marginY={0.5} />
                         <Text truncate>
                             {(entry.summary && entry.summary.trim().length > 0) ? entry.summary.trim() : ''}
                         </Text>
