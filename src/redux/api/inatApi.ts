@@ -46,6 +46,13 @@ export const inatApi = createApi({
             }),
             providesTags: ['Taxa']
         }),
+        taxaFind:  builder.query<TaxaFind, TaxaFindArgs>({
+            query: (queryArg) => ({
+                url: 'taxa',
+                params: { ...queryArg }
+            }),
+            providesTags: ['Taxa']
+        }),
         taxonFind: builder.query<TaxonFind, TaxonFindArgs>({
             query: (queryArg) => ({
                 url: `taxa/${queryArg.id}`,
@@ -64,16 +71,18 @@ export const inatApi = createApi({
 
 export const {
     useUsersAutocompleteQuery,
-    useTaxaAutocompleteQuery,
-    useTaxonFindQuery,
     useProjectsAutocompleteQuery,
     useProjectFindQuery,
+    useTaxaAutocompleteQuery,
+    useTaxaFindQuery,
+    useTaxonFindQuery,
     useObservationFindQuery
 } = inatApi;
 
 type ResponseBase = {
     total_results: number;
-    page: number; // Starts at 1
+    /** Starts at 1 */
+    page: number;
     per_page: number;
 }
 
@@ -104,12 +113,14 @@ export type User = {
 export type TaxaAutocompleteArgs = {
     q: string;
     is_active?: boolean;
-    taxon_id?: string[];
+    /** NOTE: iNat returns all taxa with these ids as ancestor, unfortunately there doesn't seem to be a way to only return the requested ids... */
+    taxon_id?: number[]; // string[] on the API docs
     rank?: string[];
     rank_level?: number;
     locale?: string;
     preferred_place_id?: number;
     all_names?: boolean;
+    /** NOTE: Unfortunately it seems pagination is not supported for these endpoints. Limit to 30 for autocomplete, and 200 (or 500?) for find. */
     per_page: number;
 };
 
@@ -146,6 +157,10 @@ export type Taxon = {
         photo: Photo;
     }[];
 };
+
+export type TaxaFindArgs = Partial<TaxaAutocompleteArgs>;
+
+export type TaxaFind = TaxaAutocomplete;
 
 export type TaxonFindArgs = {
     id: number;

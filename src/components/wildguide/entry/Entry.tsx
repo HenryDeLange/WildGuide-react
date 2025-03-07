@@ -1,6 +1,6 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
-import { InatResultCard, InaturalistSelector } from '@/components/custom/InaturalistSelector';
+import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
@@ -96,7 +96,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 <HStack flex={1} justifyContent='flex-end'>
                                     {isOwner &&
                                         <>
-                                            <InaturalistSelector type='TAXON' select={handleInatLink} />
+                                            <InatSelector type='TAXON' select={handleInatLink} />
                                             <Button
                                                 size='lg'
                                                 variant='ghost'

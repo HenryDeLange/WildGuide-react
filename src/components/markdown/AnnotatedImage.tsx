@@ -7,6 +7,7 @@ import { DialogBody, DialogCloseTrigger, DialogContent, DialogTitle, DialogTrigg
 import { Tooltip } from '../ui/tooltip';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 
+const IMAGE_SIZE = 180;
 const LINE_SIZE = 3;
 
 type Props = {
@@ -40,9 +41,9 @@ export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
                 <Image
                     src={url}
                     objectFit='contain'
-                    minWidth={250 * scale}
-                    width={250 * scale}
-                    height={250 * scale}
+                    minWidth={IMAGE_SIZE * scale}
+                    width={IMAGE_SIZE * scale}
+                    height={IMAGE_SIZE * scale}
                 />
                 <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size='cover'>
                     <DialogTrigger asChild>
@@ -52,7 +53,7 @@ export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
                             </IconButton>
                         </Box>
                     </DialogTrigger>
-                    <DialogContent bgColor='gray' width='100%' height='100%'>
+                    <DialogContent width='100%' height='100%'>
                         <DialogTitle>
                             <HStack margin={2}>
                                 <IconButton variant='ghost' onClick={() => setZoom(zoom * 1.5)}>
@@ -152,6 +153,7 @@ function Annotation({ annotation, scale }: Readonly<AnnotationProps>) {
                 backgroundColor={annotation.type === 'line' ? annotation.color : undefined}
                 transform={annotation.rotation ? `rotate(${annotation.rotation}deg)` : undefined}
                 boxShadow={`0 0 0 ${LINE_SIZE / 3 * scale}px ${annotation.border}`}
+                cursor={annotation.text ? 'pointer' : undefined}
             />
         </Tooltip>
     );

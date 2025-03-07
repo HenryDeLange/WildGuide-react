@@ -1,7 +1,7 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { EditButton } from '@/components/custom/EditButton';
-import { InatResultCard, InaturalistSelector } from '@/components/custom/InaturalistSelector';
+import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useProjectFindQuery } from '@/redux/api/inatApi';
@@ -107,7 +107,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 <HStack flex={1} justifyContent='flex-end' flexWrap='wrap'>
                                     {isOwner &&
                                         <>
-                                            <InaturalistSelector type='PROJECT' select={handleInatLink} />
+                                            <InatSelector type='PROJECT' select={handleInatLink} />
                                             <GuideLinkUsers guideId={guideId} />
                                             <EditButton handleEdit={handleEdit} />
                                         </>

@@ -15,7 +15,7 @@ type Props = {
     select: (item: InatResultCard | null) => void;
 }
 
-export function InaturalistSelector({ type, select }: Readonly<Props>) {
+export function InatSelector({ type, select }: Readonly<Props>) {
     const { t } = useTranslation();
     const dialog = useDialog();
     const handleCloseDialog = useCallback(() => dialog.setOpen(false), [dialog]);
@@ -116,7 +116,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
                 <Heading size='sm' truncate marginTop={-1}>
                     {item.title}
                 </Heading>
-                <Text fontSize='xs' truncate>
+                <Text fontStyle='italic' fontSize='xs' truncate>
                     {item.subTitle}
                 </Text>
                 <Text fontSize='xs' color='fg.subtle' truncate>

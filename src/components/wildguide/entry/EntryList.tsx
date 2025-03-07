@@ -1,5 +1,6 @@
 import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
+import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
@@ -28,16 +29,34 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
 
     const [page, setPage] = useState<number>(0);
     const [pageQueue, setPageQueue] = useState<number[]>([]);
-    const [items, setItems] = useState<Entry[]>([]);
+    const [items, setItems] = useState<ListEntry[]>([]);
+    const [taxaToLoad, setTaxaToLoad] = useState<number[]>([]);
 
     // TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
 
-    const { data, isLoading, isFetching, isError, error, refetch } = useFindEntriesQuery({
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        error,
+        refetch
+    } = useFindEntriesQuery({
         guideId,
         page,
         name: debouncedFilter ?? undefined
+    });
+
+    const {
+        data: taxaData,
+        isFetching: taxaIsFetching
+    } = useTaxaFindQuery({
+        taxon_id: taxaToLoad,
+        per_page: 500
+    }, {
+        skip: taxaToLoad.length === 0
     });
 
     useEffect(() => {
@@ -50,16 +69,44 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     useEffect(() => {
         if (!isFetching) {
             setItems((prev) => {
-                const existingIds = new Set(prev.map(item => item.id));
-                const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
-                return [...prev, ...newItems];
+                const existingIds = new Set(prev.map(listEntry => listEntry.entry.id));
+                const newEntries = (data?.data ?? []).filter(dataItem => !existingIds.has(dataItem.id));
+                const newEntryListItems: ListEntry[] = newEntries.map(entry => ({
+                    entry: entry,
+                    taxon: taxaData?.results.find(taxon => taxon.id === entry.inaturalistTaxon)
+                }));
+                const newItems = [...prev, ...newEntryListItems];
+                setTaxaToLoad(newItems
+                    .filter(listEntry => listEntry.taxon === undefined && listEntry.entry.inaturalistTaxon)
+                    .map(listEntry => listEntry.entry.inaturalistTaxon!));
+                return newItems;
             });
         }
-    }, [data?.data, isFetching]);
+    }, [isFetching, data?.data, taxaData?.results]);
+
+    useEffect(() => {
+        if (!taxaIsFetching && taxaData) {
+            setItems((prev) => {
+                const newItems = prev.map(listEntry => {
+                    if (listEntry.entry.inaturalistTaxon && !listEntry.taxon) {
+                        const taxon = taxaData.results.find(taxon => taxon.id === listEntry.entry.inaturalistTaxon);
+                        return taxon ? { ...listEntry, taxon } : listEntry;
+                    }
+                    return listEntry;
+                });
+                setTaxaToLoad(newItems
+                    .filter(listEntry => listEntry.taxon === undefined && listEntry.entry.inaturalistTaxon)
+                    .map(listEntry => listEntry.entry.inaturalistTaxon!));
+                return newItems;
+            }
+            );
+        }
+    }, [taxaIsFetching, taxaData]);
 
     useEffect(() => {
         if (debouncedFilter || debouncedFilter === null) {
             setItems([]);
+            setTaxaToLoad([]);
             setPage(0);
             // dispatch(wildguideApi.util.invalidateTags(['Entries']));
             refetch();
@@ -78,6 +125,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
         setPage(0);
         setPageQueue([]);
         setItems([]);
+        setTaxaToLoad([]);
         // dispatch(wildguideApi.util.invalidateTags(['Entries']));
         refetch();
     }, [triggerRefresh, refetch]);
@@ -90,11 +138,10 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
 
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setFilter(event.target.value.length > 0 ? event.target.value : null);
-        // TODO: Implement the rest of the filter logic
     }, []);
 
-    const renderItem = useCallback((item: Entry, index: number) => (
-        <EntryListItem guideId={guideId} entry={item} index={index} />
+    const renderItem = useCallback((listEntry: ListEntry) => (
+        <EntryListItem guideId={guideId} entry={listEntry.entry} inatTaxon={listEntry.taxon} />
     ), [guideId]);
 
     const hasNextPage = items.length < (data?.totalRecords ?? 0);
@@ -148,4 +195,9 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
             </Show>
         </Box>
     );
+}
+
+export type ListEntry = {
+    entry: Entry;
+    taxon?: Taxon;
 }
