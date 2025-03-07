@@ -36,4 +36,4 @@ See the [.env.production](./.env.production) file.
 
 ### Deploy
 
-Manually run the `Azure Static Web Apps CI/CD` GitHub Action in order to build the code and deploy the web app to Azure.
+Manually run the [Azure Static Web Apps CI/CD](https://github.com/HenryDeLange/WildGuide-react/actions/workflows/azure-static-web-apps-jolly-beach-0d7ffc003.yml) GitHub Action in order to build the code and deploy the web app to Azure.
