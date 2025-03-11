@@ -7,7 +7,7 @@ export function useHeights() {
         const handleResize = () => {
             setHeights(calcHeights());
         };
-
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -25,15 +25,15 @@ function calcHeights() {
     };
 }
 
+function calcContentHeight() {
+    return window.innerHeight
+        - (document.getElementById('app-header')?.offsetHeight ?? 0);
+}
+
 function calcGridHeight() {
     return window.innerHeight
         - (document.getElementById('app-header')?.offsetHeight ?? 0)
         - (document.getElementById('page-header')?.offsetHeight ?? 0)
         - (document.getElementById('tab-header')?.offsetHeight ?? 0)
         - (document.getElementById('grid-header')?.offsetHeight ?? 0);
-}
-
-function calcContentHeight() {
-    return window.innerHeight
-        - (document.getElementById('app-header')?.offsetHeight ?? 0);
 }

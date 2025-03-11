@@ -1,10 +1,14 @@
 import myWildLogo from '@/assets/images/mywild/mywild-logo.svg';
 import { useGetVersionQuery } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, Image, Separator, Spinner, StatLabel, StatRoot, StatValueText, StatValueUnit, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, HStack, Image, Separator, Spinner, StatLabel, StatRoot, StatValueText, StatValueUnit, Text, VStack } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
+import aboutImage from '../../assets/images/wildguide/about.jpg';
+import { useHeights } from './hooks/uiHooks';
 
 export function AppAbout() {
     const { t } = useTranslation();
+
+    const { content } = useHeights();
 
     const {
         data,
@@ -12,8 +16,8 @@ export function AppAbout() {
     } = useGetVersionQuery();
 
     return (
-        <Box margin={4}>
-            <Box textAlign='center' marginX={6} marginBottom={4} paddingX={4} paddingBottom={4}>
+        <Container height={content} marginTop={2}>
+            <Box paddingBottom={4}>
                 <Heading>
                     {t('aboutTitle')}
                 </Heading>
@@ -90,7 +94,14 @@ export function AppAbout() {
                     height={100}
                     alt='MyWild' />
             </VStack>
-        </Box>
+            <Image
+                src={aboutImage}
+                width={{ base: '90%', sm: '70%', md: '55%', lg: '50%', xl: '40%' }}
+                fit='cover'
+                marginX='auto'
+                paddingBottom={12}
+            />
+        </Container>
     );
 }
 

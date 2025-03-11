@@ -1,12 +1,10 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import logo from '@/assets/images/wildguide/logo.png';
-import { authLogout, selectAuthRefreshToken, selectAuthUserId } from '@/auth/authSlice';
+import { authLogout, selectAuthUserId } from '@/auth/authSlice';
 import { ChangeLanguage } from '@/i18n/ChangeLanguage';
-import { useRefreshMutation } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Flex, Heading, HStack, IconButton, Image, Show, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaGithub } from 'react-icons/fa';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
@@ -23,19 +21,7 @@ export function AppHeader() {
         navigate({ to: '/' });
     };
 
-    // Automatically login the user, if there is a stored refresh token
-    const [
-        doUserRefresh, {
-            isLoading: refreshIsLoading
-        }
-    ] = useRefreshMutation();
     const userId = useAppSelector(selectAuthUserId);
-    const refreshToken = useAppSelector(selectAuthRefreshToken);
-    useEffect(() => {
-        if (!userId && refreshToken && refreshToken !== '' && !refreshIsLoading) {
-            doUserRefresh();
-        }
-    }, [doUserRefresh, refreshIsLoading, refreshToken, userId]);
 
     return (
         <Box id='app-header' as='header' bg={{ base: 'gray.100', _dark: 'gray.900' }} paddingY={2} paddingX={4}>

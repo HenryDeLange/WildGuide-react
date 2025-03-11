@@ -2,7 +2,7 @@ import { AppRootState } from '@/redux/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 
-type AuthFullState = {
+export type AuthFullState = {
     userId: number | null;
     username: string | null;
     accessToken: string | null;
@@ -35,9 +35,6 @@ const authSlice = createSlice({
         authLogout: () => ({ ...initialState }),
         authReplaceAccessToken: (state, action: PayloadAction<string | null>) => {
             state.accessToken = action.payload;
-        },
-        authSetRefreshToken: (state, action: PayloadAction<string | null>) => {
-            state.refreshToken = action.payload;
         }
     }
 });
@@ -46,8 +43,7 @@ export const {
     authLogin,
     authRefresh,
     authLogout,
-    authReplaceAccessToken,
-    authSetRefreshToken
+    authReplaceAccessToken
 } = authSlice.actions;
 
 export const selectAuth = (state: AppRootState) => state.auth;

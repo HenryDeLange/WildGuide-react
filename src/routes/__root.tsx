@@ -8,9 +8,7 @@ export const Route = createRootRoute({
     component: () => (
         <Box display='flex' flexDirection='column' height='100vh'>
             <AppHeader />
-            <Box flex='1' overflow='auto'>
-                <Outlet />
-            </Box>
+            <Outlet />
             {/* <TanStackRouterDevtools /> */}
         </Box>
     ),
