@@ -2,9 +2,9 @@ import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
 import { Guide, useFindGuidesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, Input, Separator, Show, Spinner, Stack, StackProps, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, Input, Separator, Show, Spinner, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuRefreshCcw, LuSearch } from 'react-icons/lu';
 import { MdAddCircleOutline } from 'react-icons/md';
@@ -90,56 +90,56 @@ export function GuideList() {
         setFilter(event.target.value.length > 0 ? event.target.value : null);
     }, []);
 
-    const controlDirection = useMemo<StackProps['direction']>(() => ({ base: 'column', md: 'row' }), []);
-
     // RENDER
     return (
         <Box height={content}>
             <Box id='grid-header'>
-                <Stack direction='row' justifyContent='space-between' gap={8}>
+                <HStack wrap={{ base: 'wrap', lg: 'nowrap' }}>
                     <Box marginX={4} marginY={2}>
                         <Heading>
                             {t('guideGridTitle')}
                         </Heading>
-                        <Text>
+                        <Text fontSize='sm'>
                             {t('guideGridSubTitle')}
                         </Text>
                     </Box>
-                    <Stack
-                        direction={controlDirection}
-                        alignItems='flex-end'
-                        justifyContent='flex-end'
-                        margin={1}
-                        marginRight={4}
-                    >
-                        {userId !== null &&
-                            <Button
-                                size='lg'
-                                variant='ghost'
-                                color='fg.info'
-                                onClick={handleCreate}
-                                whiteSpace='nowrap'
-                            >
-                                <MdAddCircleOutline />
-                                <Text>
-                                    {t('newGuide')}
-                                </Text>
-                            </Button>
-                        }
-                        <Button
-                            aria-label={t('guideGridRefresh')}
-                            size='md'
-                            variant='ghost'
-                            onClick={handleRefresh}
-                            loading={isFetching}
+                    <Box flex='1' display='flex' justifyContent='flex-end'>
+                        <HStack
+                            wrap={{ base: 'wrap', sm: 'nowrap' }}
+                            alignItems='flex-end'
+                            justifyContent='flex-end'
+                            margin={1}
+                            marginRight={4}
                         >
-                            <LuRefreshCcw />
-                        </Button>
-                        <InputGroup startElement={<LuSearch />}>
-                            <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
-                        </InputGroup>
-                    </Stack>
-                </Stack>
+                            {userId !== null &&
+                                <Button
+                                    size='lg'
+                                    variant='ghost'
+                                    color='fg.info'
+                                    onClick={handleCreate}
+                                    whiteSpace='nowrap'
+                                >
+                                    <MdAddCircleOutline />
+                                    <Text>
+                                        {t('newGuide')}
+                                    </Text>
+                                </Button>
+                            }
+                            <Button
+                                aria-label={t('guideGridRefresh')}
+                                size='md'
+                                variant='ghost'
+                                onClick={handleRefresh}
+                                loading={isFetching}
+                            >
+                                <LuRefreshCcw />
+                            </Button>
+                            <InputGroup startElement={<LuSearch />} minWidth={150}>
+                                <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
+                            </InputGroup>
+                        </HStack>
+                    </Box>
+                </HStack>
                 <Separator />
             </Box>
             <ErrorDisplay error={isError ? error : undefined} />

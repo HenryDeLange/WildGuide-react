@@ -1,5 +1,6 @@
+import { BackButton } from '@/components/custom/BackButton';
+import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
-import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
 import { GuideBase, useCreateGuideMutation } from '@/redux/api/wildguideApi';
@@ -8,8 +9,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { LuCirclePlus } from 'react-icons/lu';
-import { MdKeyboardBackspace } from 'react-icons/md';
 
 export function GuideNew() {
     const { t } = useTranslation();
@@ -33,17 +32,32 @@ export function GuideNew() {
     });
 
     return (
-        <Container padding={6}>
+        <Container paddingTop={2} paddingBottom={6}>
             <form onSubmit={onSubmit}>
+                <HStack paddingBottom={2} wrap={{ base: 'wrap', sm: 'nowrap' }}>
+                    <HStack>
+                        <BackButton handleBack={handleBack} />
+                        <Box width='full'>
+                            <Heading>
+                                {t('newGuideTitle')}
+                            </Heading>
+                            <Text fontSize='sm' color='fg.muted'>
+                                {t('newGuideSubTitle')}
+                            </Text>
+                        </Box>
+                    </HStack>
+                    <Box flex='1' display='flex' justifyContent='flex-end' alignSelf='flex-end'>
+                        <SaveButton titleKey='newGuideConfirm' loading={isLoading} />
+                    </Box>
+                </HStack>
+                <Separator />
                 <Fieldset.Root invalid={isError} disabled={isLoading}>
-                    <Fieldset.Legend>
-                        <Heading>{t('newGuideTitle')}</Heading>
-                    </Fieldset.Legend>
-                    <Fieldset.HelperText marginBottom={4}>
-                        <Text>{t('newGuideSubTitle')}</Text>
-                    </Fieldset.HelperText>
-                    <Separator />
-                    <Fieldset.Content gap={8}>
+                    <Fieldset.Content gap={6}>
+                        <Fieldset.ErrorText>
+                            <Text marginTop={6}>
+                                {t('newGuideError')}
+                            </Text>
+                        </Fieldset.ErrorText>
                         <Field
                             label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}
                             invalid={!!errors.visibility || isError}
@@ -114,19 +128,6 @@ export function GuideNew() {
                                 placeholder='newGuideDescriptionPlaceholder'
                             />
                         </Field>
-                        <Box marginTop={6}>
-                            <Fieldset.ErrorText>
-                                <Text>{t('newGuideError')}</Text>
-                            </Fieldset.ErrorText>
-                            <Button type='submit' width='full' loading={isLoading} size='lg'>
-                                <LuCirclePlus />
-                                <Text>{t('newGuideConfirm')}</Text>
-                            </Button>
-                            <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
-                                <MdKeyboardBackspace />
-                                <Text>{t('newGuideBack')}</Text>
-                            </Button>
-                        </Box>
                     </Fieldset.Content>
                 </Fieldset.Root>
             </form>

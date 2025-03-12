@@ -14,7 +14,15 @@ type Props = {
 export function ExtendedMarkdown({ content }: Readonly<Props>) {
     return (
         <MarkdownErrorBoundary>
-            <Box marginY={4} paddingY={1} paddingX={3} borderWidth={1} borderRadius='sm' boxShadow='md'>
+            <Box
+                marginY={4}
+                paddingY={1}
+                paddingX={3}
+                borderWidth={1}
+                borderRadius='sm'
+                boxShadow='md'
+                borderColor='border'
+            >
                 <Markdown
                     className='markdown'
                     options={{

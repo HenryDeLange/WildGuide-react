@@ -17,10 +17,10 @@ export function DeleteButton({ handleDelete, loading, buttonText, popupText }: R
         <DialogRoot role='alertdialog' lazyMount>
             <DialogTrigger asChild>
                 <Button
-                    _hover={{ color: 'fg.info' }}
+                    _hover={{ color: 'fg.error' }}
                     size='lg'
                     variant='ghost'
-                    color='fg.muted'
+                    // color='fg.muted'
                     whiteSpace='nowrap'
                     loading={loading}
                 >

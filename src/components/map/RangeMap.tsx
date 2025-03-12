@@ -26,7 +26,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     const storedMapLayers = localStorage.getItem('mapLayers');
 
     const [selectedLayers, setSelectedLayers] = useState<string[]>(storedMapLayers ? JSON.parse(storedMapLayers) : [observationsLayer, rangeLayer]);
-    
+
     const MapEvents = () => {
         useMapEvents({
             moveend: (e) => {
@@ -71,7 +71,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             <AttributionControl
                 position='bottomleft'
                 prefix={`<a href='https://www.inaturalist.org'>iNaturalist</a>, 
-                         <a href='https://leafletjs.com' >Leaflet</a>, 
+                         <a href='https://leafletjs.com'>Leaflet</a>, 
                          <a href='https://www.google.co.za/maps/about'>Google Maps</a>`}
             />
             <LocateControl />

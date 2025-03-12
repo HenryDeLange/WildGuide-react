@@ -84,16 +84,16 @@ export function Guide({ guideId }: Readonly<Props>) {
             });
         }
     }, [data, doUpdate, guideId]);
-    
+
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
             <ErrorDisplay error={isError ? error : ownerIsError ? ownerError : updateIsError ? updateError : undefined} />
             <Show when={!isLoading && !ownerIsLoading && !updateIsLoading} fallback={<Spinner size='lg' margin={8} />}>
                 {data &&
-                    <Box width='100%' paddingX={4} paddingY={2}>
+                    <Box width='100%'>
                         <Box id='page-header'>
-                            <HStack flex={1} flexWrap='wrap'>
+                            <HStack flex={1} flexWrap='wrap' paddingX={4} paddingTop={2}>
                                 <Show when={data.visibility === 'PRIVATE'}>
                                     <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
                                         <Icon size='md'>
@@ -120,22 +120,6 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     />
                                 </HStack>
                             </HStack>
-                            {data.summary &&
-                                <Box
-                                    marginY={2}
-                                    marginBottom={4}
-                                    paddingX={4}
-                                    paddingY={2}
-                                    borderWidth={1}
-                                    borderRadius='sm'
-                                    boxShadow='xs'
-                                    borderColor='border.muted'
-                                >
-                                    <Text fontSize='lg'>
-                                        {data.summary}
-                                    </Text>
-                                </Box>
-                            }
                         </Box>
                         <TabsRoot
                             marginTop={2}
@@ -177,10 +161,31 @@ export function Guide({ guideId }: Readonly<Props>) {
                             >
                                 <VStack width='100%'>
                                     <Box width='100%' paddingTop={4} paddingX={4}>
+                                        {data.summary &&
+                                            <Box
+                                                marginBottom={4}
+                                                paddingX={4}
+                                                paddingY={2}
+                                                borderWidth={1}
+                                                borderRadius='sm'
+                                                boxShadow='sm'
+                                                borderColor='border'
+                                            >
+                                                <Text fontSize='lg'>
+                                                    {data.summary}
+                                                </Text>
+                                            </Box>
+                                        }
                                         {data.inaturalistCriteria &&
                                             <Show when={!projectIsLoading} fallback={<Spinner size='sm' margin={2} />}>
                                                 {project &&
-                                                    <Box padding={2} borderWidth={1} borderRadius='sm' boxShadow='sm'>
+                                                    <Box
+                                                        padding={2}
+                                                        borderWidth={1}
+                                                        borderRadius='sm'
+                                                        boxShadow='sm'
+                                                        borderColor='border'
+                                                    >
                                                         <HStack>
                                                             <a
                                                                 aria-label='iNaturalist'

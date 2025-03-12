@@ -21,7 +21,8 @@ function calcHeights() {
         appHeader: (document.getElementById('app-header')?.offsetHeight ?? 0),
         content: calcContentHeight(),
         gridHeader: (document.getElementById('grid-header')?.offsetHeight ?? 0),
-        grid: calcGridHeight()
+        grid: calcGridHeight(),
+        pageHeader: (document.getElementById('page-header')?.offsetHeight ?? 0)
     };
 }
 

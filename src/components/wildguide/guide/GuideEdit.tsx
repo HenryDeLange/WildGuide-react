@@ -1,14 +1,14 @@
+import { BackButton } from '@/components/custom/BackButton';
+import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
-import { Button } from '../../ui/button';
 import { Field } from '../../ui/field';
 
 type Props = {
@@ -65,25 +65,46 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
     }, [doDelete, guideId, navigate]);
 
     return (
-        <Container padding={6}>
+        <Container paddingTop={2} paddingBottom={6}>
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
+                    <HStack paddingBottom={2} wrap={{ base: 'wrap', md: 'nowrap' }}>
+                        <HStack width='100%' >
+                            <BackButton handleBack={handleBack} />
+                            <Box width='full'>
+                                <Heading whiteSpace={{ base: 'wrap', sm: 'nowrap' }}>
+                                    {t('editGuideTitle')}
+                                </Heading>
+                            </Box>
+                        </HStack>
+                        <HStack width='100%' wrap={{ base: 'wrap', sm: 'nowrap' }} justifyContent='flex-end' justifySelf='flex-end'>
+                            <SaveButton titleKey='editGuideConfirm' loading={updateIsLoading || deleteIsLoading} />
+                            <DeleteButton
+                                handleDelete={handleDelete}
+                                loading={updateIsLoading || deleteIsLoading}
+                                buttonText='editGuideDelete'
+                                popupText='editGuideDeleteDetails'
+                            />
+                        </HStack>
+
+                    </HStack>
+                    <Separator />
                     <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
                         <Fieldset.Legend width='100%'>
                             <HStack justifyContent='space-between'>
                                 <Heading>
                                     {t('editGuideTitle')}
                                 </Heading>
-                                <DeleteButton
-                                    handleDelete={handleDelete}
-                                    loading={updateIsLoading || deleteIsLoading}
-                                    buttonText='editGuideDelete'
-                                    popupText='editGuideDeleteDetails'
-                                />
+
                             </HStack>
                         </Fieldset.Legend>
-                        <Fieldset.Content gap={8} >
+                        <Fieldset.Content gap={6}>
+                            <Fieldset.ErrorText>
+                                <Text marginTop={6}>
+                                    {t('editGuideError')}
+                                </Text>
+                            </Fieldset.ErrorText>
                             <Field
                                 label={<Text fontSize='md'>{t('newGuideName')}</Text>}
                                 invalid={!!errors.name || isError}
@@ -124,19 +145,6 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                     placeholder='newGuideDescriptionPlaceholder'
                                 />
                             </Field>
-                            <Box marginTop={6}>
-                                <Fieldset.ErrorText>
-                                    <Text>{t('editGuideError')}</Text>
-                                </Fieldset.ErrorText>
-                                <Button type='submit' width='full' size='lg' loading={updateIsLoading || deleteIsLoading}>
-                                    <MdEdit />
-                                    <Text>{t('editGuideConfirm')}</Text>
-                                </Button>
-                                <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
-                                    <MdKeyboardBackspace />
-                                    <Text>{t('editGuideBack')}</Text>
-                                </Button>
-                            </Box>
                         </Fieldset.Content>
                     </Fieldset.Root>
                 </form>

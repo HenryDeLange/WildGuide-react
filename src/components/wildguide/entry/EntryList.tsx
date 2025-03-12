@@ -13,6 +13,7 @@ import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
 import { Button } from '../../ui/button';
+import { useHeights } from '../hooks/uiHooks';
 import { ENTRY_LIST_ITEM_HEIGHT, EntryListItem } from './EntryListItem';
 
 type Props = {
@@ -25,6 +26,8 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
 
+    const { window, appHeader, pageHeader } = useHeights();
+
     const userId = useAppSelector(selectAuthUserId);
 
     const [page, setPage] = useState<number>(0);
@@ -35,7 +38,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     // TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
-
+    console.log(window)
     const {
         data,
         isLoading,
@@ -180,7 +183,8 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     <Box textAlign='center' margin={4}>
                         <Spinner size='lg' />
                     </Box>
-                }>
+                }
+            >
                 <InfiniteVirtualList
                     data={items}
                     renderItem={renderItem}
@@ -190,7 +194,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     pageSize={data?.pageSize ?? 0}
                     totalCount={data?.totalRecords ?? 0}
                     itemHeight={ENTRY_LIST_ITEM_HEIGHT}
-                    heightDelta={18}
+                    heightDelta={window < 700 ? (-1 * (appHeader + pageHeader)) : 9}
                 />
             </Show>
         </Box>
