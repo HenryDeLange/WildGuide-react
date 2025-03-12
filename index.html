@@ -4,27 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Website Info -->
-    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
     <title>WildGuide</title>
     <meta name="WildGuide" content="A wildlife field guide for species observed on iNaturalist." />
-
-    <!-- PWA -->
-    <link rel="manifest" href="/manifest.json" />
-
-    <!-- Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(error => {
-                    console.error('Service Worker registration failed:', error);
-                });
-        }
-    </script>
 </head>
 
 <body>

@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { PwaReloadPrompt } from './PwaReloadPrompt';
 
 export type PwaContextType = {
     isPwa: boolean;
@@ -59,15 +60,18 @@ export function PwaProvider({ children }: Readonly<Props>) {
 
     // RENDER
     return (
-        <PwaContext.Provider value={
-            useMemo<PwaContextType>(() => ({
-                isPwa,
-                showPwaInstallButton,
-                handleInstallClick
-            }), [isPwa, showPwaInstallButton, handleInstallClick])
-        }>
-            {children}
-        </PwaContext.Provider>
+        <>
+            <PwaReloadPrompt />
+            <PwaContext.Provider value={
+                useMemo<PwaContextType>(() => ({
+                    isPwa,
+                    showPwaInstallButton,
+                    handleInstallClick
+                }), [isPwa, showPwaInstallButton, handleInstallClick])
+            }>
+                {children}
+            </PwaContext.Provider>
+        </>
     );
 }
 

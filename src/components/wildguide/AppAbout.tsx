@@ -35,7 +35,6 @@ export function AppAbout() {
                         <StatValueText alignItems='baseline'>
                             <StatValueUnit>{t('aboutVersion')}</StatValueUnit>
                             <Text fontSize='md'>
-                                {/* @ts-expect-error ...added it to vite-env.d.ts but still getting a TypeScript error... */}
                                 {VITE_APP_VERSION}
                             </Text>
                         </StatValueText>
