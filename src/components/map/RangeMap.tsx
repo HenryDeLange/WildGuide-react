@@ -1,4 +1,5 @@
 import { Entry } from '@/redux/api/wildguideApi';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AttributionControl, LayersControl, MapContainer, TileLayer, useMapEvents, ZoomControl } from 'react-leaflet';
 import { LocateControl } from './LocateControl';
@@ -13,19 +14,19 @@ type Props = {
 export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     const { t } = useTranslation();
 
-    // Fix height
-    // const [mapHeight, setMapHeight] = useState(window.innerHeight);
-    // useEffect(() => {
-    //     const updateDimensions = () => {
-    //         setMapHeight(window.innerHeight);
-    //     };
-    //     window.addEventListener('resize', updateDimensions);
-    //     return () => window.removeEventListener('resize', updateDimensions);
-    // }, []);
+    const useParentId = rank === 'SUBSPECIES' && parentId;
+    const geoModelLayer = `${t('mapOverlayGeoModel')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`;
+    const rangeLayer = `${t('mapOverlayRange')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`;
+    const heatLayer = t('mapOverlayHeat');
+    const observationsLayer = t('mapOverlayObservations');
 
-    // Remember map position
+    // Remember map position and selected layers
     const center = JSON.parse(localStorage.getItem('mapCenter') ?? JSON.stringify(startPosition));
     const zoom = Number(localStorage.getItem('mapZoom') ?? 11);
+    const storedMapLayers = localStorage.getItem('mapLayers');
+
+    const [selectedLayers, setSelectedLayers] = useState<string[]>(storedMapLayers ? JSON.parse(storedMapLayers) : [observationsLayer, rangeLayer]);
+    
     const MapEvents = () => {
         useMapEvents({
             moveend: (e) => {
@@ -33,13 +34,30 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             },
             zoomend: (e) => {
                 localStorage.setItem('mapZoom', JSON.stringify(e.target.getZoom()));
+            },
+            overlayadd: (e) => {
+                if (selectedLayers.indexOf(e.name) < 0) {
+                    setSelectedLayers(prev => {
+                        const newSelection = [...prev, e.name];
+                        localStorage.setItem('mapLayers', JSON.stringify(newSelection));
+                        return newSelection;
+                    });
+                }
+            },
+            overlayremove: (e) => {
+                if (selectedLayers.indexOf(e.name) >= 0) {
+                    setSelectedLayers(prev => {
+                        const newSelection = prev.filter((layer) => layer !== e.name);
+                        localStorage.setItem('mapLayers', JSON.stringify(newSelection));
+                        return newSelection;
+                    });
+                }
             }
         });
         return null;
     };
 
     // RENDER
-    const useParentId = rank === 'SUBSPECIES' && parentId;
     return (
         <MapContainer
             center={center}
@@ -61,7 +79,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             {/* Layers */}
             <LayersControl position='topright'>
                 {/* Base */}
-                <LayersControl.BaseLayer name={t('mapBaseStreet')} checked={true}>
+                <LayersControl.BaseLayer name={t('mapBaseStreet')} checked>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}'
                         maxZoom={maxZoom}
@@ -85,14 +103,14 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                 {/* Overlays */}
                 {(rank === 'SPECIES' || useParentId) &&
                     <>
-                        <LayersControl.Overlay name={`${t('mapOverlayGeoModel')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`}>
+                        <LayersControl.Overlay name={geoModelLayer} checked={selectedLayers.indexOf(geoModelLayer) >= 0}>
                             <TileLayer
                                 url={`https://api.inaturalist.org/v1/geomodel/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?thresholded=true`}
                                 attribution={`<a href='https://www.inaturalist.org/geo_model/${useParentId ? parentId : taxonId}/explain'>GeoModel</a>`}
                                 maxZoom={maxZoom}
                             />
                         </LayersControl.Overlay>
-                        <LayersControl.Overlay name={`${t('mapOverlayRange')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`} checked>
+                        <LayersControl.Overlay name={rangeLayer} checked={selectedLayers.indexOf(rangeLayer) >= 0}>
                             <TileLayer
                                 url={`https://api.inaturalist.org/v1/taxon_ranges/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?color=${useParentId ? 'orange' : 'red'}`}
                                 attribution={`<a href='https://www.inaturalist.org/taxa/${useParentId ? parentId : taxonId}/range.html'>Range</a>`}
@@ -101,14 +119,14 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                         </LayersControl.Overlay>
                     </>
                 }
-                <LayersControl.Overlay name={t('mapOverlayHeat')}>
+                <LayersControl.Overlay name={heatLayer} checked={selectedLayers.indexOf(heatLayer) >= 0}>
                     <TileLayer
                         url={`https://api.inaturalist.org/v1/heatmap/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}
                         maxZoom={maxZoom}
                     />
                 </LayersControl.Overlay>
-                <LayersControl.Overlay name={t('mapOverlayObservations')} checked>
+                <LayersControl.Overlay name={observationsLayer} checked={selectedLayers.indexOf(observationsLayer) >= 0}>
                     <TileLayer
                         url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}

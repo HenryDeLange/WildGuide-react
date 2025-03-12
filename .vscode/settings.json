@@ -22,6 +22,8 @@
         "locatecontrol",
         "moveend",
         "mywild",
+        "overlayadd",
+        "overlayremove",
         "overscan",
         "precache",
         "revparse",
