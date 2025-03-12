@@ -1,4 +1,5 @@
 import { Entry } from '@/redux/api/wildguideApi';
+import { useTranslation } from 'react-i18next';
 import { AttributionControl, LayersControl, MapContainer, TileLayer, useMapEvents, ZoomControl } from 'react-leaflet';
 import { LocateControl } from './LocateControl';
 import './rangeMap.css';
@@ -10,6 +11,8 @@ type Props = {
 }
 
 export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
+    const { t } = useTranslation();
+
     // Fix height
     // const [mapHeight, setMapHeight] = useState(window.innerHeight);
     // useEffect(() => {
@@ -19,7 +22,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     //     window.addEventListener('resize', updateDimensions);
     //     return () => window.removeEventListener('resize', updateDimensions);
     // }, []);
-    
+
     // Remember map position
     const center = JSON.parse(localStorage.getItem('mapCenter') ?? JSON.stringify(startPosition));
     const zoom = Number(localStorage.getItem('mapZoom') ?? 11);
@@ -30,7 +33,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             },
             zoomend: (e) => {
                 localStorage.setItem('mapZoom', JSON.stringify(e.target.getZoom()));
-            },
+            }
         });
         return null;
     };
@@ -46,32 +49,33 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             zoomControl={false}
         // style={{ height: mapHeight }}
         >
+            {/* Controls */}
             <AttributionControl
                 position='bottomleft'
                 prefix={`<a href='https://www.inaturalist.org'>iNaturalist</a>, 
-                    <a href='https://leafletjs.com' >Leaflet</a>, 
-                    <a href='https://www.google.co.za/maps/about'>Google Maps</a>`}
+                         <a href='https://leafletjs.com' >Leaflet</a>, 
+                         <a href='https://www.google.co.za/maps/about'>Google Maps</a>`}
             />
             <LocateControl />
             <ZoomControl position='bottomright' />
-
+            {/* Layers */}
             <LayersControl position='topright'>
-                {/* Base Layers */}
-                <LayersControl.BaseLayer name='Google Maps - Street' checked={true}>
+                {/* Base */}
+                <LayersControl.BaseLayer name={t('mapBaseStreet')} checked={true}>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}'
                         maxZoom={maxZoom}
                         subdomains={subdomains}
                     />
                 </LayersControl.BaseLayer>
-                <LayersControl.BaseLayer name='Google Maps - Hybrid'>
+                <LayersControl.BaseLayer name={t('mapBaseHybrid')}>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}'
                         maxZoom={maxZoom}
                         subdomains={subdomains}
                     />
                 </LayersControl.BaseLayer>
-                <LayersControl.BaseLayer name='Google Maps - Satellite'>
+                <LayersControl.BaseLayer name={t('mapBaseSatellite')}>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}'
                         maxZoom={maxZoom}
@@ -81,14 +85,14 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                 {/* Overlays */}
                 {(rank === 'SPECIES' || useParentId) &&
                     <>
-                        <LayersControl.Overlay name={`Potential Range${useParentId ? ' (parent species)' : ''}`}>
+                        <LayersControl.Overlay name={`${t('mapOverlayGeoModel')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`}>
                             <TileLayer
                                 url={`https://api.inaturalist.org/v1/geomodel/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?thresholded=true`}
                                 attribution={`<a href='https://www.inaturalist.org/geo_model/${useParentId ? parentId : taxonId}/explain'>GeoModel</a>`}
                                 maxZoom={maxZoom}
                             />
                         </LayersControl.Overlay>
-                        <LayersControl.Overlay name={`Taxon Range${useParentId ? ' (parent species)' : ''}`} checked>
+                        <LayersControl.Overlay name={`${t('mapOverlayRange')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`} checked>
                             <TileLayer
                                 url={`https://api.inaturalist.org/v1/taxon_ranges/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?color=${useParentId ? 'orange' : 'red'}`}
                                 attribution={`<a href='https://www.inaturalist.org/taxa/${useParentId ? parentId : taxonId}/range.html'>Range</a>`}
@@ -97,14 +101,14 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                         </LayersControl.Overlay>
                     </>
                 }
-                <LayersControl.Overlay name='Observations - Heatmap'>
+                <LayersControl.Overlay name={t('mapOverlayHeat')}>
                     <TileLayer
                         url={`https://api.inaturalist.org/v1/heatmap/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}
                         maxZoom={maxZoom}
                     />
                 </LayersControl.Overlay>
-                <LayersControl.Overlay name='Observations - Grid' checked>
+                <LayersControl.Overlay name={t('mapOverlayObservations')} checked>
                     <TileLayer
                         url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}

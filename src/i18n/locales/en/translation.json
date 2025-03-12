@@ -172,6 +172,14 @@
     "inaturalistClearResult": "Don't link to iNaturalist",
     "homeWelcome": "Welcome to WildGuide",
     "homeMessage": "Here you can create your own species identification guides, and share it with others.",
-    "homeLinkGuides": "View available guides"
+    "homeLinkGuides": "View available guides",
+    "mapBaseStreet": "Google Maps - Street",
+    "mapBaseHybrid": "Google Maps - Hybrid",
+    "mapBaseSatellite": "Google Maps - Satellite",
+    "mapOverlayParent": "Parent species",
+    "mapOverlayGeoModel": "Potential Range",
+    "mapOverlayRange": "Taxon Range",
+    "mapOverlayHeat": "Heatmap",
+    "mapOverlayObservations": "Observations"
 
 }
