@@ -4,10 +4,11 @@ import { MdEdit } from 'react-icons/md';
 import { Button } from '../ui/button';
 
 type Props = {
+    titleKey: string;
     handleEdit: () => void;
 }
 
-export function EditButton({ handleEdit }: Readonly<Props>) {
+export function EditButton({ titleKey, handleEdit }: Readonly<Props>) {
     const { t } = useTranslation();
     return (
         <Button
@@ -19,7 +20,7 @@ export function EditButton({ handleEdit }: Readonly<Props>) {
         >
             <MdEdit />
             <Text>
-                {t('editGuide')}
+                {t(titleKey)}
             </Text>
         </Button>
     );

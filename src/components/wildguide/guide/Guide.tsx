@@ -116,7 +116,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             <>
                                                 <InatSelector type='PROJECT' select={handleInatLink} />
                                                 <GuideLinkUsers guideId={guideId} />
-                                                <EditButton handleEdit={handleEdit} />
+                                                <EditButton titleKey='editGuide' handleEdit={handleEdit} />
                                             </>
                                         }
                                         <OptionsMenu

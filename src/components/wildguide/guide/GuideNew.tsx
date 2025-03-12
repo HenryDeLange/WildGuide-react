@@ -36,7 +36,7 @@ export function GuideNew() {
             <form onSubmit={onSubmit}>
                 <HStack paddingBottom={2} wrap={{ base: 'wrap', sm: 'nowrap' }}>
                     <HStack>
-                        <BackButton handleBack={handleBack} />
+                        <BackButton titleKey='newGuideBack' handleBack={handleBack} />
                         <Box width='full'>
                             <Heading>
                                 {t('newGuideTitle')}

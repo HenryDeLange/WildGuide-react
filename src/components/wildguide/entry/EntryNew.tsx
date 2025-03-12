@@ -1,13 +1,12 @@
+import { BackButton } from '@/components/custom/BackButton';
+import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
-import { Button } from '@/components/ui/button';
 import { EntryBase, useCreateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, Input, Separator, Stack, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Stack, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { LuCirclePlus } from 'react-icons/lu';
-import { MdKeyboardBackspace } from 'react-icons/md';
 import { Field } from '../../ui/field';
 import { SegmentedControl } from '../../ui/segmented-control';
 
@@ -30,15 +29,32 @@ export function EntryNew({ guideId }: Readonly<Props>) {
     const onSubmit = handleSubmit(async (data) => {
         doCreate({ guideId, entryBase: data })
             .unwrap().then(() => {
-                navigate({ to: '/guides/$guideId' });
+                navigate({ to: '/guides/$guideId', hash: 'entries' });
             });
     });
 
-    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
+    const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', hash: 'entries', replace: true }), [navigate]);
 
     return (
-        <Container padding={6}>
+        <Container paddingTop={2} paddingBottom={6}>
             <form onSubmit={onSubmit}>
+                <HStack paddingBottom={2} wrap={{ base: 'wrap', sm: 'nowrap' }}>
+                    <HStack>
+                        <BackButton titleKey='newEntryBack' handleBack={handleBack} />
+                        <Box width='full'>
+                            <Heading>
+                                {t('newEntryTitle')}
+                            </Heading>
+                            <Text fontSize='sm' color='fg.muted'>
+                                {t('newEntrySubTitle')}
+                            </Text>
+                        </Box>
+                    </HStack>
+                    <Box flex='1' display='flex' justifyContent='flex-end' alignSelf='flex-end'>
+                        <SaveButton titleKey='newEntryConfirm' loading={isLoading} />
+                    </Box>
+                </HStack>
+                <Separator />
                 <Fieldset.Root invalid={isError} disabled={isLoading}>
                     <Fieldset.Legend>
                         <Heading>{t('newEntryTitle')}</Heading>
@@ -47,7 +63,12 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                         <Text>{t('newEntrySubTitle')}</Text>
                     </Fieldset.HelperText>
                     <Separator />
-                    <Fieldset.Content gap={8}>
+                    <Fieldset.Content gap={6}>
+                        <Fieldset.ErrorText>
+                            <Text marginTop={6}>
+                                {t('newEntryError')}
+                            </Text>
+                        </Fieldset.ErrorText>
                         <Field
                             label={<Text fontSize='md'>{t('newEntryName')}</Text>}
                             invalid={!!errors.name || isError}
@@ -132,19 +153,6 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                                 placeholder='newEntryDescriptionPlaceholder'
                             />
                         </Field>
-                        <Box marginTop={6}>
-                            <Fieldset.ErrorText>
-                                <Text>{t('newEntryError')}</Text>
-                            </Fieldset.ErrorText>
-                            <Button type='submit' width='full' loading={isLoading} size='lg'>
-                                <LuCirclePlus />
-                                <Text>{t('newEntryConfirm')}</Text>
-                            </Button>
-                            <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
-                                <MdKeyboardBackspace />
-                                <Text>{t('editGuideBack')}</Text>
-                            </Button>
-                        </Box>
                     </Fieldset.Content>
                 </Fieldset.Root>
             </form>

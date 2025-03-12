@@ -1,14 +1,14 @@
+import { BackButton } from '@/components/custom/BackButton';
+import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { EntryBase, useDeleteEntryMutation, useFindEntryQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, HStack, Input, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { MdEdit, MdKeyboardBackspace } from 'react-icons/md';
 import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
-import { Button } from '../../ui/button';
 import { Field } from '../../ui/field';
 
 type Props = {
@@ -66,25 +66,42 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
     }, [doDelete, entryId, guideId, navigate]);
 
     return (
-        <Container padding={6}>
+        <Container paddingTop={2} paddingBottom={6}>
             <ErrorDisplay error={isError ? error : undefined} />
             <Show when={!isLoading} fallback={<Spinner size='lg' margin={8} />}>
                 <form onSubmit={onSubmit}>
-                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
-                        <Fieldset.Legend width='100%'>
-                            <HStack justifyContent='space-between'>
-                                <Heading>
+                    <HStack paddingBottom={2} wrap={{ base: 'wrap', md: 'nowrap' }}>
+                        <HStack width='100%' >
+                            <BackButton titleKey='editEntryBack' handleBack={handleBack} />
+                            <Box width='full'>
+                                <Heading whiteSpace={{ base: 'wrap', sm: 'nowrap' }}>
                                     {t('editGuideTitle')}
                                 </Heading>
-                                <DeleteButton
-                                    handleDelete={handleDelete}
-                                    loading={updateIsLoading || deleteIsLoading}
-                                    buttonText='editEntryDelete'
-                                    popupText='editEntryDeleteDetails'
-                                />
-                            </HStack>
-                        </Fieldset.Legend>
-                        <Fieldset.Content gap={8} >
+                            </Box>
+                        </HStack>
+                        <HStack
+                            width='100%'
+                            wrap={{ base: 'wrap', sm: 'nowrap' }}
+                            justifyContent='flex-end'
+                            justifySelf='flex-end'
+                        >
+                            <DeleteButton
+                                handleDelete={handleDelete}
+                                loading={updateIsLoading || deleteIsLoading}
+                                buttonText='editEntryDelete'
+                                popupText='editEntryDeleteDetails'
+                            />
+                            <SaveButton titleKey='editEntryConfirm' loading={updateIsLoading || deleteIsLoading} />
+                        </HStack>
+                    </HStack>
+                    <Separator />
+                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
+                        <Fieldset.Content gap={6}>
+                            <Fieldset.ErrorText>
+                                <Text marginTop={6}>
+                                    {t('editEntryError')}
+                                </Text>
+                            </Fieldset.ErrorText>
                             <Field
                                 label={<Text fontSize='md'>{t('newEntryName')}</Text>}
                                 invalid={!!errors.name || isError}
@@ -123,19 +140,6 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                     placeholder='newEntryDescriptionPlaceholder'
                                 />
                             </Field>
-                            <Box marginTop={6}>
-                                <Fieldset.ErrorText>
-                                    <Text>{t('editEntryError')}</Text>
-                                </Fieldset.ErrorText>
-                                <Button type='submit' width='full' loading={updateIsLoading} size='lg'>
-                                    <MdEdit />
-                                    <Text>{t('editEntryConfirm')}</Text>
-                                </Button>
-                                <Button variant='plain' width='full' marginTop={6} onClick={handleBack} color='fg.muted'>
-                                    <MdKeyboardBackspace />
-                                    <Text>{t('editEntryBack')}</Text>
-                                </Button>
-                            </Box>
                         </Fieldset.Content>
                     </Fieldset.Root>
                 </form>

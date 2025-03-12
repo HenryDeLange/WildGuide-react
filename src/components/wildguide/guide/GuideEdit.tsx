@@ -71,7 +71,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                 <form onSubmit={onSubmit}>
                     <HStack paddingBottom={2} wrap={{ base: 'wrap', md: 'nowrap' }}>
                         <HStack width='100%' >
-                            <BackButton handleBack={handleBack} />
+                            <BackButton titleKey='editGuideBack' handleBack={handleBack} />
                             <Box width='full'>
                                 <Heading whiteSpace={{ base: 'wrap', sm: 'nowrap' }}>
                                     {t('editGuideTitle')}
