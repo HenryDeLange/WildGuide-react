@@ -38,7 +38,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
     // TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
-    console.log(window)
+
     const {
         data,
         isLoading,
@@ -194,7 +194,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     pageSize={data?.pageSize ?? 0}
                     totalCount={data?.totalRecords ?? 0}
                     itemHeight={ENTRY_LIST_ITEM_HEIGHT}
-                    heightDelta={window < 700 ? (-1 * (appHeader + pageHeader)) : 9}
+                    heightDelta={(window < 700 ? (-1 * (appHeader + pageHeader) + 16) : 9) + 8}
                 />
             </Show>
         </Box>

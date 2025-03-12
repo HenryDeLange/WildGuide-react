@@ -78,16 +78,20 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 </Heading>
                             </Box>
                         </HStack>
-                        <HStack width='100%' wrap={{ base: 'wrap', sm: 'nowrap' }} justifyContent='flex-end' justifySelf='flex-end'>
-                            <SaveButton titleKey='editGuideConfirm' loading={updateIsLoading || deleteIsLoading} />
+                        <HStack
+                            width='100%'
+                            wrap={{ base: 'wrap', sm: 'nowrap' }}
+                            justifyContent='flex-end'
+                            justifySelf='flex-end'
+                        >
                             <DeleteButton
                                 handleDelete={handleDelete}
                                 loading={updateIsLoading || deleteIsLoading}
                                 buttonText='editGuideDelete'
                                 popupText='editGuideDeleteDetails'
                             />
+                            <SaveButton titleKey='editGuideConfirm' loading={updateIsLoading || deleteIsLoading} />
                         </HStack>
-
                     </HStack>
                     <Separator />
                     <Fieldset.Root invalid={updateIsError} disabled={isLoading}>

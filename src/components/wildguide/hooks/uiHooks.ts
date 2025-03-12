@@ -8,6 +8,7 @@ export function useHeights() {
             setHeights(calcHeights());
         };
         handleResize();
+        setTimeout(() => handleResize(), 100);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);

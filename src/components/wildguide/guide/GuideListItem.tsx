@@ -28,11 +28,13 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
                             </Icon>
                         </Tooltip>
                     </Show>
-                    <Heading>
-                        {item.name}
-                    </Heading>
+                    <Tooltip content={item.name} showArrow>
+                        <Heading truncate lineClamp={2}>
+                            {item.name}
+                        </Heading>
+                    </Tooltip>
                 </HStack>
-                <Flex maxWidth='100%'>
+                <Flex maxWidth='100%' marginTop={-1}>
                     <Text
                         truncate
                         lineClamp={5}

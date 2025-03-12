@@ -93,42 +93,50 @@ export function Guide({ guideId }: Readonly<Props>) {
                 {data &&
                     <Box width='100%'>
                         <Box id='page-header'>
-                            <HStack flex={1} flexWrap='wrap' paddingX={4} paddingTop={2}>
-                                <Show when={data.visibility === 'PRIVATE'}>
-                                    <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
-                                        <Icon size='md'>
-                                            <MdOutlineLock />
-                                        </Icon>
-                                    </Tooltip>
-                                </Show>
-                                <Heading size='4xl' alignSelf='flex-start'>
-                                    {data.name}
-                                </Heading>
-                                <HStack flex={1} justifyContent='flex-end' flexWrap='wrap'>
-                                    {isOwner &&
-                                        <>
-                                            <InatSelector type='PROJECT' select={handleInatLink} />
-                                            <GuideLinkUsers guideId={guideId} />
-                                            <EditButton handleEdit={handleEdit} />
-                                        </>
-                                    }
-                                    <OptionsMenu
-                                        type='guide'
-                                        guideId={guideId}
-                                        handleRefresh={handleRefresh}
-                                        isFetching={isFetching || ownerIsFetching || entriesRefresh}
-                                    />
+                            <HStack width='100%' flexWrap='wrap' paddingX={4} paddingTop={2}>
+                                <HStack>
+                                    <Show when={data.visibility === 'PRIVATE'}>
+                                        <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
+                                            <Icon size='md'>
+                                                <MdOutlineLock />
+                                            </Icon>
+                                        </Tooltip>
+                                    </Show>
+                                    <Heading size='3xl' alignSelf='flex-start'>
+                                        {data.name}
+                                    </Heading>
                                 </HStack>
+                                <Box flex='1' display='flex' justifyContent='flex-end'>
+                                    <HStack
+                                        wrap={{ base: 'wrap', sm: 'nowrap' }}
+                                        alignItems='flex-end'
+                                        justifyContent='flex-end'
+                                    >
+                                        {isOwner &&
+                                            <>
+                                                <InatSelector type='PROJECT' select={handleInatLink} />
+                                                <GuideLinkUsers guideId={guideId} />
+                                                <EditButton handleEdit={handleEdit} />
+                                            </>
+                                        }
+                                        <OptionsMenu
+                                            type='guide'
+                                            guideId={guideId}
+                                            handleRefresh={handleRefresh}
+                                            isFetching={isFetching || ownerIsFetching || entriesRefresh}
+                                        />
+                                    </HStack>
+                                </Box>
                             </HStack>
                         </Box>
                         <TabsRoot
-                            marginTop={2}
                             size='lg' fitted
                             width='100%'
                             defaultValue={window.location.hash && window.location.hash.length > 1
                                 ? window.location.hash.substring(1) : 'guide'}
                             variant='outline'
                             onValueChange={details => window.location.hash = details.value}
+                            padding={2}
                         >
                             <TabsList id='tab-header'>
                                 <TabsTrigger
