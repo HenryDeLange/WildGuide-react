@@ -1,7 +1,7 @@
 import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
-import { Guide, useFindGuidesQuery, wildguideApi } from '@/redux/api/wildguideApi';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Guide, useFindGuidesQuery } from '@/redux/api/wildguideApi';
+import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, Input, Separator, Show, Spinner, Stack, StackProps, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -18,7 +18,6 @@ import { GuideListItem } from './GuideListItem';
 export function GuideList() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/' });
-    const dispatch = useAppDispatch();
 
     const { content } = useHeights();
 
@@ -31,7 +30,14 @@ export function GuideList() {
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
 
-    const { data, isLoading, isFetching, isError, error } = useFindGuidesQuery({
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        error,
+        refetch
+    } = useFindGuidesQuery({
         page,
         name: debouncedFilter ?? undefined
     });
@@ -44,20 +50,23 @@ export function GuideList() {
     }, [isFetching, pageQueue]);
 
     useEffect(() => {
-        setItems((prev) => {
-            const existingIds = new Set(prev.map(item => item.id));
-            const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
-            return [...prev, ...newItems];
-        });
-    }, [data?.data]);
+        if (!isFetching) {
+            setItems((prev) => {
+                const existingIds = new Set(prev.map(item => item.id));
+                const newItems = (data?.data ?? []).filter(item => !existingIds.has(item.id));
+                return [...prev, ...newItems];
+            });
+        }
+    }, [data?.data, isFetching]);
 
     useEffect(() => {
         if (debouncedFilter || debouncedFilter === null) {
-            dispatch(wildguideApi.util.invalidateTags(['Guides']));
             setItems([]);
             setPage(0);
+            // dispatch(wildguideApi.util.invalidateTags(['Guides']));
+            refetch();
         }
-    }, [debouncedFilter, dispatch]);
+    }, [debouncedFilter, refetch]);
 
     const handleLoadMoreItems = useCallback(() => {
         const nextPage = page + 1;
@@ -71,10 +80,11 @@ export function GuideList() {
     const handleCreate = useCallback(() => navigate({ to: '/guides/create' }), [navigate]);
 
     const handleRefresh = useCallback(() => {
-        dispatch(wildguideApi.util.invalidateTags(['Guides']));
         setItems([]);
         setPage(0);
-    }, [dispatch]);
+        // dispatch(wildguideApi.util.invalidateTags(['Guides']));
+        refetch();
+    }, [refetch]);
 
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setFilter(event.target.value.length > 0 ? event.target.value : null);

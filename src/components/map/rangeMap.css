@@ -1,0 +1,86 @@
+/* LEAFLET */
+#map {
+    height: 50vh;
+}
+
+.leaflet-container {
+    height: 50vh;
+    width: 80vw;
+}
+
+.leaflet-div-icon {
+    background: transparent;
+    border: none;
+}
+
+/* TEXT MARKER */
+.text-marker {
+    color: #FFF;
+    font-size: 2em;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;
+}
+
+.spot-marker {
+    color: #c6dfeb;
+    font-size: 1.3em;
+    text-align: center;
+    font-weight: 300;
+    text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;
+}
+
+/* LOGO */
+.logo {
+    position: absolute;
+    top: 0.85em;
+    left: 0.85em;
+    z-index: 999999;
+    background-color: #000;
+    border-color: #000;
+    border-radius: 0.4em;
+    border-width: 0.2em;
+    cursor: pointer;
+}
+
+.logo-image {
+    border-radius: 0.4em;
+    padding: 0.1em;
+}
+
+/* INAT */
+.inat-button {
+    position: absolute;
+    top: 13em;
+    left: 0.85em;
+    z-index: 999999;
+    background-color: #e8f3e7;
+    border-color: #2b3b29;
+    border-radius: 0.4em;
+    border-width: 0.2em;
+    cursor: pointer;
+}
+
+.inat-button-image {
+    border-radius: 0.4em;
+    padding: 0.1em;
+}
+
+/* LOCATIONS */
+.locations-button {
+    position: absolute;
+    top: 8.4em;
+    left: 0.85em;
+    z-index: 999999;
+    background-color: #f3e7e7;
+    border-color: #3b2929;
+    color: #770b0b;
+    border-radius: 0.4em;
+    border-width: 0.2em;
+    cursor: pointer;
+}
+
+.locations-button-image {
+    border-radius: 0.4em;
+    padding: 0.1em;
+}

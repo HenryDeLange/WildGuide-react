@@ -19,11 +19,15 @@
         "iucn",
         "Lange",
         "languagedetector",
+        "locatecontrol",
+        "moveend",
         "mywild",
         "overscan",
         "precache",
         "revparse",
+        "thresholded",
         "VITE",
-        "WildGuide"
+        "WildGuide",
+        "zoomend"
     ]
 }

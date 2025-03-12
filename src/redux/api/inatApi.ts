@@ -133,7 +133,7 @@ export type Taxon = {
     is_active: boolean;
     name: string;
     preferred_common_name: string;
-    rank: string; // TODO: Confirm these???
+    rank: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
     rank_level: number;
     parent_id: number;
     ancestor_ids: number[];

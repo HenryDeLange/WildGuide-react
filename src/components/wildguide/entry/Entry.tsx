@@ -2,7 +2,9 @@ import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { selectAuthUserId } from '@/auth/authSlice';
 import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
+import { RangeMap } from '@/components/map/RangeMap';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
+import { convertInatRanks } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideOwnersQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
@@ -202,6 +204,14 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                             <MdKeyboardBackspace />
                             <Text>{t('entryBack')}</Text>
                         </Button>
+                        {data.inaturalistTaxon && taxon &&
+                            <Box>
+                                <RangeMap
+                                    taxonId={data.inaturalistTaxon}
+                                    rank={convertInatRanks(taxon.rank) ?? data.scientificRank}
+                                    parentId={taxon.parent_id} />
+                            </Box>
+                        }
                     </Box>
                 }
             </Show>
