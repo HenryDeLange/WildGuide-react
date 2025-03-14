@@ -3,7 +3,6 @@ import { useLoginMutation, useRegisterMutation, UserLogin } from '@/redux/api/wi
 import { useAppDispatch } from '@/redux/hooks';
 import { Box, Container, Fieldset, Heading, Image, Input, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import CryptoJS from 'crypto-js';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -56,7 +55,16 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
     }, [confirmPassword, registerMode, trigger]);
 
     const onSubmit = handleSubmit(async (data) => {
-        const hashedPassword = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Base64);
+        // TODO: Decide on hashing on client side or not...
+        const hashedPassword = data.password;
+        // or
+        // const hashedPassword = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Base64);
+        // or
+        // const encoder = new TextEncoder();
+        // const dataBuffer = encoder.encode(data.password);
+        // const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+        // const hashArray = Array.from(new Uint8Array(hashBuffer));
+        // const hashedPassword = btoa(String.fromCharCode(...hashArray));
         const user = { ...data, password: hashedPassword };
         if (registerMode) {
             doUserRegister({ user })

@@ -15,7 +15,6 @@ export default defineConfig({
             devOptions: {
                 enabled: true
             },
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
             manifest: {
                 name: 'WildGuide',
                 short_name: 'WildGuide',
@@ -33,6 +32,21 @@ export default defineConfig({
                         type: 'image/png'
                     }
                 ],
+                screenshots: [
+                    {
+                        src: 'pwa/screenshot-small.jpg',
+                        sizes: '459x320',
+                        type: 'image/png',
+                        label: 'WildGuide'
+                    },
+                    {
+                        src: 'pwa/screenshot-large.jpg',
+                        sizes: '1296x904',
+                        type: 'image/png',
+                        label: 'WildGuide',
+                        form_factor: 'wide'
+                    }
+                ],
                 background_color: '#6E6F25',
                 display: 'standalone',
                 launch_handler: {
@@ -41,6 +55,21 @@ export default defineConfig({
                         'auto'
                     ]
                 }
+            },
+            workbox: {
+                runtimeCaching: [
+                    {
+                        // @ts-expect-error: assume it will be fine...
+                        urlPattern: ({ url }) => url.pathname.startsWith('/api/v1'),
+                        handler: 'NetworkFirst',
+                        options: {
+                            cacheName: 'api-cache',
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    }
+                ]
             }
         }),
         TanStackRouterVite(),
@@ -80,8 +109,10 @@ export default defineConfig({
                         'i18next-browser-languagedetector',
                         'react-i18next'
                     ],
-                    crypto: [
-                        'crypto-js'
+                    leaflet: [
+                        'leaflet',
+                        'react-leaflet',
+                        'leaflet.locatecontrol'
                     ]
                 }
             }

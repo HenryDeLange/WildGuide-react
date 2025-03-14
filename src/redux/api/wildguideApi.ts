@@ -12,12 +12,12 @@ const injectedRtkApi = api
   .injectEndpoints({
     endpoints: (build) => ({
       findGuide: build.query<FindGuideApiResponse, FindGuideApiArg>({
-        query: (queryArg) => ({ url: `/guides/${queryArg.guideId}` }),
+        query: (queryArg) => ({ url: `/api/v1/guides/${queryArg.guideId}` }),
         providesTags: ["Guides"],
       }),
       updateGuide: build.mutation<UpdateGuideApiResponse, UpdateGuideApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}`,
+          url: `/api/v1/guides/${queryArg.guideId}`,
           method: "PUT",
           body: queryArg.guideBase,
         }),
@@ -25,20 +25,20 @@ const injectedRtkApi = api
       }),
       deleteGuide: build.mutation<DeleteGuideApiResponse, DeleteGuideApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}`,
+          url: `/api/v1/guides/${queryArg.guideId}`,
           method: "DELETE",
         }),
         invalidatesTags: ["Guides"],
       }),
       findEntry: build.query<FindEntryApiResponse, FindEntryApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
         }),
         providesTags: ["Entries"],
       }),
       updateEntry: build.mutation<UpdateEntryApiResponse, UpdateEntryApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
           method: "PUT",
           body: queryArg.entryBase,
         }),
@@ -46,26 +46,26 @@ const injectedRtkApi = api
       }),
       deleteEntry: build.mutation<DeleteEntryApiResponse, DeleteEntryApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/entries/${queryArg.entryId}`,
           method: "DELETE",
         }),
         invalidatesTags: ["Entries"],
       }),
       register: build.mutation<RegisterApiResponse, RegisterApiArg>({
         query: (queryArg) => ({
-          url: `/users/register`,
+          url: `/api/v1/users/register`,
           method: "POST",
           body: queryArg.user,
         }),
         invalidatesTags: ["User Authentication"],
       }),
       refresh: build.mutation<RefreshApiResponse, RefreshApiArg>({
-        query: () => ({ url: `/users/refresh`, method: "POST" }),
+        query: () => ({ url: `/api/v1/users/refresh`, method: "POST" }),
         invalidatesTags: ["User Authentication"],
       }),
       login: build.mutation<LoginApiResponse, LoginApiArg>({
         query: (queryArg) => ({
-          url: `/users/login`,
+          url: `/api/v1/users/login`,
           method: "POST",
           body: queryArg.userLogin,
         }),
@@ -73,7 +73,7 @@ const injectedRtkApi = api
       }),
       findGuides: build.query<FindGuidesApiResponse, FindGuidesApiArg>({
         query: (queryArg) => ({
-          url: `/guides`,
+          url: `/api/v1/guides`,
           params: {
             page: queryArg.page,
             name: queryArg.name,
@@ -83,9 +83,29 @@ const injectedRtkApi = api
       }),
       createGuide: build.mutation<CreateGuideApiResponse, CreateGuideApiArg>({
         query: (queryArg) => ({
-          url: `/guides`,
+          url: `/api/v1/guides`,
           method: "POST",
           body: queryArg.guideBase,
+        }),
+        invalidatesTags: ["Guides"],
+      }),
+      createGuideStar: build.mutation<
+        CreateGuideStarApiResponse,
+        CreateGuideStarApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/guides/${queryArg.guideId}/stars`,
+          method: "POST",
+        }),
+        invalidatesTags: ["Guides"],
+      }),
+      deleteGuideStar: build.mutation<
+        DeleteGuideStarApiResponse,
+        DeleteGuideStarApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/guides/${queryArg.guideId}/stars`,
+          method: "DELETE",
         }),
         invalidatesTags: ["Guides"],
       }),
@@ -94,7 +114,7 @@ const injectedRtkApi = api
         OwnerJoinGuideApiArg
       >({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/owners/${queryArg.ownerId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/owners/${queryArg.ownerId}`,
           method: "POST",
         }),
         invalidatesTags: ["Guides"],
@@ -104,7 +124,7 @@ const injectedRtkApi = api
         OwnerLeaveGuideApiArg
       >({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/owners/${queryArg.ownerId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/owners/${queryArg.ownerId}`,
           method: "DELETE",
         }),
         invalidatesTags: ["Guides"],
@@ -114,7 +134,7 @@ const injectedRtkApi = api
         MemberJoinGuideApiArg
       >({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/members/${queryArg.memberId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/members/${queryArg.memberId}`,
           method: "POST",
         }),
         invalidatesTags: ["Guides"],
@@ -124,14 +144,14 @@ const injectedRtkApi = api
         MemberLeaveGuideApiArg
       >({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/members/${queryArg.memberId}`,
+          url: `/api/v1/guides/${queryArg.guideId}/members/${queryArg.memberId}`,
           method: "DELETE",
         }),
         invalidatesTags: ["Guides"],
       }),
       findEntries: build.query<FindEntriesApiResponse, FindEntriesApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/entries`,
+          url: `/api/v1/guides/${queryArg.guideId}/entries`,
           params: {
             page: queryArg.page,
             name: queryArg.name,
@@ -141,19 +161,19 @@ const injectedRtkApi = api
       }),
       createEntry: build.mutation<CreateEntryApiResponse, CreateEntryApiArg>({
         query: (queryArg) => ({
-          url: `/guides/${queryArg.guideId}/entries`,
+          url: `/api/v1/guides/${queryArg.guideId}/entries`,
           method: "POST",
           body: queryArg.entryBase,
         }),
         invalidatesTags: ["Entries"],
       }),
       getVersion: build.query<GetVersionApiResponse, GetVersionApiArg>({
-        query: () => ({ url: `/version` }),
+        query: () => ({ url: `/api/v1/version` }),
         providesTags: ["WildGuide Version"],
       }),
       findUserInfo: build.query<FindUserInfoApiResponse, FindUserInfoApiArg>({
         query: (queryArg) => ({
-          url: `/users/`,
+          url: `/api/v1/users`,
           params: {
             username: queryArg.username,
           },
@@ -164,14 +184,25 @@ const injectedRtkApi = api
         FindGuideOwnersApiResponse,
         FindGuideOwnersApiArg
       >({
-        query: (queryArg) => ({ url: `/guides/${queryArg.guideId}/owners` }),
+        query: (queryArg) => ({
+          url: `/api/v1/guides/${queryArg.guideId}/owners`,
+        }),
         providesTags: ["Guides"],
       }),
       findGuideMembers: build.query<
         FindGuideMembersApiResponse,
         FindGuideMembersApiArg
       >({
-        query: (queryArg) => ({ url: `/guides/${queryArg.guideId}/members` }),
+        query: (queryArg) => ({
+          url: `/api/v1/guides/${queryArg.guideId}/members`,
+        }),
+        providesTags: ["Guides"],
+      }),
+      findStarredGuides: build.query<
+        FindStarredGuidesApiResponse,
+        FindStarredGuidesApiArg
+      >({
+        query: () => ({ url: `/api/v1/guides/stars` }),
         providesTags: ["Guides"],
       }),
     }),
@@ -226,6 +257,14 @@ export type CreateGuideApiResponse = /** status 200 OK */ Guide;
 export type CreateGuideApiArg = {
   guideBase: GuideBase;
 };
+export type CreateGuideStarApiResponse = /** status 200 OK */ boolean;
+export type CreateGuideStarApiArg = {
+  guideId: number;
+};
+export type DeleteGuideStarApiResponse = /** status 200 OK */ boolean;
+export type DeleteGuideStarApiArg = {
+  guideId: number;
+};
 export type OwnerJoinGuideApiResponse = /** status 200 OK */ boolean;
 export type OwnerJoinGuideApiArg = {
   guideId: number;
@@ -272,6 +311,8 @@ export type FindGuideMembersApiResponse =
 export type FindGuideMembersApiArg = {
   guideId: number;
 };
+export type FindStarredGuidesApiResponse = /** status 200 OK */ Guide[];
+export type FindStarredGuidesApiArg = void;
 export type Guide = {
   name: string;
   summary?: string;
@@ -279,6 +320,7 @@ export type Guide = {
   visibility: "PUBLIC" | "PRIVATE";
   inaturalistCriteria?: string;
   id: number;
+  starredByUser: boolean;
 };
 export type GuideBase = {
   name: string;
@@ -376,6 +418,8 @@ export const {
   useLoginMutation,
   useFindGuidesQuery,
   useCreateGuideMutation,
+  useCreateGuideStarMutation,
+  useDeleteGuideStarMutation,
   useOwnerJoinGuideMutation,
   useOwnerLeaveGuideMutation,
   useMemberJoinGuideMutation,
@@ -386,4 +430,5 @@ export const {
   useFindUserInfoQuery,
   useFindGuideOwnersQuery,
   useFindGuideMembersQuery,
+  useFindStarredGuidesQuery,
 } = injectedRtkApi;

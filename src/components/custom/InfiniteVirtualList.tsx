@@ -46,10 +46,12 @@ export function InfiniteVirtualList<T>({
 
     const virtualItemsOnScreen = virtualizer.getVirtualItems();
     useEffect(() => {
-        const lastItem = virtualItemsOnScreen[virtualItemsOnScreen.length - 1];
-        if (data.length > 0 && hasNextPage && !loading && (lastItem.index >= (data.length - 1))) {
-            const nextPage = Math.ceil(data.length / pageSize);
-            loadNextPage(nextPage);
+        if (virtualItemsOnScreen.length > 0) {
+            const lastItem = virtualItemsOnScreen[virtualItemsOnScreen.length - 1];
+            if (data.length > 0 && hasNextPage && !loading && (lastItem.index >= (data.length - 1))) {
+                const nextPage = Math.ceil(data.length / pageSize);
+                loadNextPage(nextPage);
+            }
         }
     }, [hasNextPage, data.length, loading, virtualItemsOnScreen, loadNextPage, totalCount, pageSize]);
 

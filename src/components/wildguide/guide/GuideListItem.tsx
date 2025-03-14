@@ -4,6 +4,7 @@ import { Flex, Heading, HStack, Icon, Show, Text, VStack } from '@chakra-ui/reac
 import { Link } from '@tanstack/react-router';
 import { t } from 'i18next';
 import { memo } from 'react';
+import { FaStar } from 'react-icons/fa';
 import { MdOutlineLock } from 'react-icons/md';
 
 export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ item: Guide }>) {
@@ -33,6 +34,10 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
                             {item.name}
                         </Heading>
                     </Tooltip>
+                    {item.starredByUser &&
+                        <Icon size='md' color='fg.info'>
+                            <FaStar />
+                        </Icon>}
                 </HStack>
                 <Flex maxWidth='100%' marginTop={-1}>
                     <Text

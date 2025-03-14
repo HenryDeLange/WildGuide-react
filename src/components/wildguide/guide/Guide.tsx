@@ -5,12 +5,13 @@ import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { useProjectFindQuery } from '@/redux/api/inatApi';
-import { useFindGuideOwnersQuery, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
+import { useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideOwnersQuery, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Icon, IconButton, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaRegStar, FaStar } from 'react-icons/fa';
 import { LuBookText, LuLayoutList } from 'react-icons/lu';
 import { MdOutlineLock } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
@@ -55,6 +56,18 @@ export function Guide({ guideId }: Readonly<Props>) {
         }
     ] = useUpdateGuideMutation();
 
+    const [
+        doCreateStar, {
+            isLoading: createStarIsLoading
+        }
+    ] = useCreateGuideStarMutation();
+
+    const [
+        doDeleteStar, {
+            isLoading: deleteStarIsLoading
+        }
+    ] = useDeleteGuideStarMutation();
+
     const {
         data: projectData,
         isLoading: projectIsLoading
@@ -85,6 +98,15 @@ export function Guide({ guideId }: Readonly<Props>) {
         }
     }, [data, doUpdate, guideId]);
 
+    const handleStar = useCallback(() => {
+        if (data?.starredByUser) {
+            doDeleteStar({ guideId });
+        }
+        else {
+            doCreateStar({ guideId });
+        }
+    }, [data?.starredByUser, doCreateStar, doDeleteStar, guideId]);
+
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
@@ -105,6 +127,14 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     <Heading size='3xl' alignSelf='flex-start'>
                                         {data.name}
                                     </Heading>
+                                    <IconButton
+                                        variant='plain'
+                                        onClick={handleStar}
+                                        loading={createStarIsLoading || deleteStarIsLoading}
+                                        color={data.starredByUser ? 'fg.info' : undefined}
+                                    >
+                                        {data.starredByUser ? <FaStar /> : <FaRegStar />}
+                                    </IconButton>
                                 </HStack>
                                 <Box flex='1' display='flex' justifyContent='flex-end'>
                                     <HStack
