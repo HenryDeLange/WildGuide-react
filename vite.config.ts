@@ -59,11 +59,36 @@ export default defineConfig({
             workbox: {
                 runtimeCaching: [
                     {
-                        // @ts-expect-error: assume it will be fine...
-                        urlPattern: ({ url }) => url.pathname.startsWith('/api/v1'),
+                        urlPattern: /\.(?:png|jpg|svg|gif)$/,
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'image-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            }
+                        }
+                    },
+                    {
+                        urlPattern: /^https?:\/\/.*\/api\/v1\/.*/i,
                         handler: 'NetworkFirst',
                         options: {
-                            cacheName: 'api-cache',
+                            cacheName: 'wildguide-api-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    },
+                    {
+                        urlPattern: /^https:\/\/api\.inaturalist\.org\/.*/i,
+                        handler: 'NetworkFirst',
+                        options: {
+                            cacheName: 'inaturalist-api-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            },
                             cacheableResponse: {
                                 statuses: [0, 200]
                             }
