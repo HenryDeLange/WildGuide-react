@@ -2134,6 +2134,171 @@ define(['exports'], (function (exports) { 'use strict';
       }
     }
 
+    // @ts-ignore
+    try {
+      self['workbox:cacheable-response:7.2.0'] && _();
+    } catch (e) {}
+
+    /*
+      Copyright 2018 Google LLC
+
+      Use of this source code is governed by an MIT-style
+      license that can be found in the LICENSE file or at
+      https://opensource.org/licenses/MIT.
+    */
+    /**
+     * This class allows you to set up rules determining what
+     * status codes and/or headers need to be present in order for a
+     * [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response)
+     * to be considered cacheable.
+     *
+     * @memberof workbox-cacheable-response
+     */
+    class CacheableResponse {
+      /**
+       * To construct a new CacheableResponse instance you must provide at least
+       * one of the `config` properties.
+       *
+       * If both `statuses` and `headers` are specified, then both conditions must
+       * be met for the `Response` to be considered cacheable.
+       *
+       * @param {Object} config
+       * @param {Array<number>} [config.statuses] One or more status codes that a
+       * `Response` can have and be considered cacheable.
+       * @param {Object<string,string>} [config.headers] A mapping of header names
+       * and expected values that a `Response` can have and be considered cacheable.
+       * If multiple headers are provided, only one needs to be present.
+       */
+      constructor(config = {}) {
+        {
+          if (!(config.statuses || config.headers)) {
+            throw new WorkboxError('statuses-or-headers-required', {
+              moduleName: 'workbox-cacheable-response',
+              className: 'CacheableResponse',
+              funcName: 'constructor'
+            });
+          }
+          if (config.statuses) {
+            finalAssertExports.isArray(config.statuses, {
+              moduleName: 'workbox-cacheable-response',
+              className: 'CacheableResponse',
+              funcName: 'constructor',
+              paramName: 'config.statuses'
+            });
+          }
+          if (config.headers) {
+            finalAssertExports.isType(config.headers, 'object', {
+              moduleName: 'workbox-cacheable-response',
+              className: 'CacheableResponse',
+              funcName: 'constructor',
+              paramName: 'config.headers'
+            });
+          }
+        }
+        this._statuses = config.statuses;
+        this._headers = config.headers;
+      }
+      /**
+       * Checks a response to see whether it's cacheable or not, based on this
+       * object's configuration.
+       *
+       * @param {Response} response The response whose cacheability is being
+       * checked.
+       * @return {boolean} `true` if the `Response` is cacheable, and `false`
+       * otherwise.
+       */
+      isResponseCacheable(response) {
+        {
+          finalAssertExports.isInstance(response, Response, {
+            moduleName: 'workbox-cacheable-response',
+            className: 'CacheableResponse',
+            funcName: 'isResponseCacheable',
+            paramName: 'response'
+          });
+        }
+        let cacheable = true;
+        if (this._statuses) {
+          cacheable = this._statuses.includes(response.status);
+        }
+        if (this._headers && cacheable) {
+          cacheable = Object.keys(this._headers).some(headerName => {
+            return response.headers.get(headerName) === this._headers[headerName];
+          });
+        }
+        {
+          if (!cacheable) {
+            logger.groupCollapsed(`The request for ` + `'${getFriendlyURL(response.url)}' returned a response that does ` + `not meet the criteria for being cached.`);
+            logger.groupCollapsed(`View cacheability criteria here.`);
+            logger.log(`Cacheable statuses: ` + JSON.stringify(this._statuses));
+            logger.log(`Cacheable headers: ` + JSON.stringify(this._headers, null, 2));
+            logger.groupEnd();
+            const logFriendlyHeaders = {};
+            response.headers.forEach((value, key) => {
+              logFriendlyHeaders[key] = value;
+            });
+            logger.groupCollapsed(`View response status and headers here.`);
+            logger.log(`Response status: ${response.status}`);
+            logger.log(`Response headers: ` + JSON.stringify(logFriendlyHeaders, null, 2));
+            logger.groupEnd();
+            logger.groupCollapsed(`View full response details here.`);
+            logger.log(response.headers);
+            logger.log(response);
+            logger.groupEnd();
+            logger.groupEnd();
+          }
+        }
+        return cacheable;
+      }
+    }
+
+    /*
+      Copyright 2018 Google LLC
+
+      Use of this source code is governed by an MIT-style
+      license that can be found in the LICENSE file or at
+      https://opensource.org/licenses/MIT.
+    */
+    /**
+     * A class implementing the `cacheWillUpdate` lifecycle callback. This makes it
+     * easier to add in cacheability checks to requests made via Workbox's built-in
+     * strategies.
+     *
+     * @memberof workbox-cacheable-response
+     */
+    class CacheableResponsePlugin {
+      /**
+       * To construct a new CacheableResponsePlugin instance you must provide at
+       * least one of the `config` properties.
+       *
+       * If both `statuses` and `headers` are specified, then both conditions must
+       * be met for the `Response` to be considered cacheable.
+       *
+       * @param {Object} config
+       * @param {Array<number>} [config.statuses] One or more status codes that a
+       * `Response` can have and be considered cacheable.
+       * @param {Object<string,string>} [config.headers] A mapping of header names
+       * and expected values that a `Response` can have and be considered cacheable.
+       * If multiple headers are provided, only one needs to be present.
+       */
+      constructor(config) {
+        /**
+         * @param {Object} options
+         * @param {Response} options.response
+         * @return {Response|null}
+         * @private
+         */
+        this.cacheWillUpdate = async ({
+          response
+        }) => {
+          if (this._cacheableResponse.isResponseCacheable(response)) {
+            return response;
+          }
+          return null;
+        };
+        this._cacheableResponse = new CacheableResponse(config);
+      }
+    }
+
     /*
       Copyright 2020 Google LLC
       Use of this source code is governed by an MIT-style
@@ -3085,171 +3250,6 @@ define(['exports'], (function (exports) { 'use strict';
       }
     }
 
-    // @ts-ignore
-    try {
-      self['workbox:cacheable-response:7.2.0'] && _();
-    } catch (e) {}
-
-    /*
-      Copyright 2018 Google LLC
-
-      Use of this source code is governed by an MIT-style
-      license that can be found in the LICENSE file or at
-      https://opensource.org/licenses/MIT.
-    */
-    /**
-     * This class allows you to set up rules determining what
-     * status codes and/or headers need to be present in order for a
-     * [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response)
-     * to be considered cacheable.
-     *
-     * @memberof workbox-cacheable-response
-     */
-    class CacheableResponse {
-      /**
-       * To construct a new CacheableResponse instance you must provide at least
-       * one of the `config` properties.
-       *
-       * If both `statuses` and `headers` are specified, then both conditions must
-       * be met for the `Response` to be considered cacheable.
-       *
-       * @param {Object} config
-       * @param {Array<number>} [config.statuses] One or more status codes that a
-       * `Response` can have and be considered cacheable.
-       * @param {Object<string,string>} [config.headers] A mapping of header names
-       * and expected values that a `Response` can have and be considered cacheable.
-       * If multiple headers are provided, only one needs to be present.
-       */
-      constructor(config = {}) {
-        {
-          if (!(config.statuses || config.headers)) {
-            throw new WorkboxError('statuses-or-headers-required', {
-              moduleName: 'workbox-cacheable-response',
-              className: 'CacheableResponse',
-              funcName: 'constructor'
-            });
-          }
-          if (config.statuses) {
-            finalAssertExports.isArray(config.statuses, {
-              moduleName: 'workbox-cacheable-response',
-              className: 'CacheableResponse',
-              funcName: 'constructor',
-              paramName: 'config.statuses'
-            });
-          }
-          if (config.headers) {
-            finalAssertExports.isType(config.headers, 'object', {
-              moduleName: 'workbox-cacheable-response',
-              className: 'CacheableResponse',
-              funcName: 'constructor',
-              paramName: 'config.headers'
-            });
-          }
-        }
-        this._statuses = config.statuses;
-        this._headers = config.headers;
-      }
-      /**
-       * Checks a response to see whether it's cacheable or not, based on this
-       * object's configuration.
-       *
-       * @param {Response} response The response whose cacheability is being
-       * checked.
-       * @return {boolean} `true` if the `Response` is cacheable, and `false`
-       * otherwise.
-       */
-      isResponseCacheable(response) {
-        {
-          finalAssertExports.isInstance(response, Response, {
-            moduleName: 'workbox-cacheable-response',
-            className: 'CacheableResponse',
-            funcName: 'isResponseCacheable',
-            paramName: 'response'
-          });
-        }
-        let cacheable = true;
-        if (this._statuses) {
-          cacheable = this._statuses.includes(response.status);
-        }
-        if (this._headers && cacheable) {
-          cacheable = Object.keys(this._headers).some(headerName => {
-            return response.headers.get(headerName) === this._headers[headerName];
-          });
-        }
-        {
-          if (!cacheable) {
-            logger.groupCollapsed(`The request for ` + `'${getFriendlyURL(response.url)}' returned a response that does ` + `not meet the criteria for being cached.`);
-            logger.groupCollapsed(`View cacheability criteria here.`);
-            logger.log(`Cacheable statuses: ` + JSON.stringify(this._statuses));
-            logger.log(`Cacheable headers: ` + JSON.stringify(this._headers, null, 2));
-            logger.groupEnd();
-            const logFriendlyHeaders = {};
-            response.headers.forEach((value, key) => {
-              logFriendlyHeaders[key] = value;
-            });
-            logger.groupCollapsed(`View response status and headers here.`);
-            logger.log(`Response status: ${response.status}`);
-            logger.log(`Response headers: ` + JSON.stringify(logFriendlyHeaders, null, 2));
-            logger.groupEnd();
-            logger.groupCollapsed(`View full response details here.`);
-            logger.log(response.headers);
-            logger.log(response);
-            logger.groupEnd();
-            logger.groupEnd();
-          }
-        }
-        return cacheable;
-      }
-    }
-
-    /*
-      Copyright 2018 Google LLC
-
-      Use of this source code is governed by an MIT-style
-      license that can be found in the LICENSE file or at
-      https://opensource.org/licenses/MIT.
-    */
-    /**
-     * A class implementing the `cacheWillUpdate` lifecycle callback. This makes it
-     * easier to add in cacheability checks to requests made via Workbox's built-in
-     * strategies.
-     *
-     * @memberof workbox-cacheable-response
-     */
-    class CacheableResponsePlugin {
-      /**
-       * To construct a new CacheableResponsePlugin instance you must provide at
-       * least one of the `config` properties.
-       *
-       * If both `statuses` and `headers` are specified, then both conditions must
-       * be met for the `Response` to be considered cacheable.
-       *
-       * @param {Object} config
-       * @param {Array<number>} [config.statuses] One or more status codes that a
-       * `Response` can have and be considered cacheable.
-       * @param {Object<string,string>} [config.headers] A mapping of header names
-       * and expected values that a `Response` can have and be considered cacheable.
-       * If multiple headers are provided, only one needs to be present.
-       */
-      constructor(config) {
-        /**
-         * @param {Object} options
-         * @param {Response} options.response
-         * @return {Response|null}
-         * @private
-         */
-        this.cacheWillUpdate = async ({
-          response
-        }) => {
-          if (this._cacheableResponse.isResponseCacheable(response)) {
-            return response;
-          }
-          return null;
-        };
-        this._cacheableResponse = new CacheableResponse(config);
-      }
-    }
-
     /*
       Copyright 2018 Google LLC
 
@@ -3277,6 +3277,116 @@ define(['exports'], (function (exports) { 'use strict';
         return null;
       }
     };
+
+    /*
+      Copyright 2018 Google LLC
+
+      Use of this source code is governed by an MIT-style
+      license that can be found in the LICENSE file or at
+      https://opensource.org/licenses/MIT.
+    */
+    /**
+     * An implementation of a
+     * [stale-while-revalidate](https://developer.chrome.com/docs/workbox/caching-strategies-overview/#stale-while-revalidate)
+     * request strategy.
+     *
+     * Resources are requested from both the cache and the network in parallel.
+     * The strategy will respond with the cached version if available, otherwise
+     * wait for the network response. The cache is updated with the network response
+     * with each successful request.
+     *
+     * By default, this strategy will cache responses with a 200 status code as
+     * well as [opaque responses](https://developer.chrome.com/docs/workbox/caching-resources-during-runtime/#opaque-responses).
+     * Opaque responses are cross-origin requests where the response doesn't
+     * support [CORS](https://enable-cors.org/).
+     *
+     * If the network request fails, and there is no cache match, this will throw
+     * a `WorkboxError` exception.
+     *
+     * @extends workbox-strategies.Strategy
+     * @memberof workbox-strategies
+     */
+    class StaleWhileRevalidate extends Strategy {
+      /**
+       * @param {Object} [options]
+       * @param {string} [options.cacheName] Cache name to store and retrieve
+       * requests. Defaults to cache names provided by
+       * {@link workbox-core.cacheNames}.
+       * @param {Array<Object>} [options.plugins] [Plugins]{@link https://developers.google.com/web/tools/workbox/guides/using-plugins}
+       * to use in conjunction with this caching strategy.
+       * @param {Object} [options.fetchOptions] Values passed along to the
+       * [`init`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters)
+       * of [non-navigation](https://github.com/GoogleChrome/workbox/issues/1796)
+       * `fetch()` requests made by this strategy.
+       * @param {Object} [options.matchOptions] [`CacheQueryOptions`](https://w3c.github.io/ServiceWorker/#dictdef-cachequeryoptions)
+       */
+      constructor(options = {}) {
+        super(options);
+        // If this instance contains no plugins with a 'cacheWillUpdate' callback,
+        // prepend the `cacheOkAndOpaquePlugin` plugin to the plugins list.
+        if (!this.plugins.some(p => 'cacheWillUpdate' in p)) {
+          this.plugins.unshift(cacheOkAndOpaquePlugin);
+        }
+      }
+      /**
+       * @private
+       * @param {Request|string} request A request to run this strategy for.
+       * @param {workbox-strategies.StrategyHandler} handler The event that
+       *     triggered the request.
+       * @return {Promise<Response>}
+       */
+      async _handle(request, handler) {
+        const logs = [];
+        {
+          finalAssertExports.isInstance(request, Request, {
+            moduleName: 'workbox-strategies',
+            className: this.constructor.name,
+            funcName: 'handle',
+            paramName: 'request'
+          });
+        }
+        const fetchAndCachePromise = handler.fetchAndCachePut(request).catch(() => {
+          // Swallow this error because a 'no-response' error will be thrown in
+          // main handler return flow. This will be in the `waitUntil()` flow.
+        });
+        void handler.waitUntil(fetchAndCachePromise);
+        let response = await handler.cacheMatch(request);
+        let error;
+        if (response) {
+          {
+            logs.push(`Found a cached response in the '${this.cacheName}'` + ` cache. Will update with the network response in the background.`);
+          }
+        } else {
+          {
+            logs.push(`No response found in the '${this.cacheName}' cache. ` + `Will wait for the network response.`);
+          }
+          try {
+            // NOTE(philipwalton): Really annoying that we have to type cast here.
+            // https://github.com/microsoft/TypeScript/issues/20006
+            response = await fetchAndCachePromise;
+          } catch (err) {
+            if (err instanceof Error) {
+              error = err;
+            }
+          }
+        }
+        {
+          logger.groupCollapsed(messages.strategyStart(this.constructor.name, request));
+          for (const log of logs) {
+            logger.log(log);
+          }
+          messages.printFinalResponse(response);
+          logger.groupEnd();
+        }
+        if (!response) {
+          throw new WorkboxError('no-response', {
+            url: request.url,
+            error
+          });
+        }
+        return response;
+      }
+    }
 
     /*
       Copyright 2018 Google LLC
@@ -4775,6 +4885,7 @@ define(['exports'], (function (exports) { 'use strict';
     exports.ExpirationPlugin = ExpirationPlugin;
     exports.NavigationRoute = NavigationRoute;
     exports.NetworkFirst = NetworkFirst;
+    exports.StaleWhileRevalidate = StaleWhileRevalidate;
     exports.cleanupOutdatedCaches = cleanupOutdatedCaches;
     exports.clientsClaim = clientsClaim;
     exports.createHandlerBoundToURL = createHandlerBoundToURL;

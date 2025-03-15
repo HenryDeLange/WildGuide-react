@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
-import { Route as FaqImport } from './routes/faq'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as GuidesIndexImport } from './routes/guides/index'
@@ -36,12 +35,6 @@ const RegisterRoute = RegisterImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FaqRoute = FaqImport.update({
-  id: '/faq',
-  path: '/faq',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -127,13 +120,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -212,7 +198,6 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
@@ -228,7 +213,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
@@ -245,7 +229,6 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
@@ -263,7 +246,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/faq'
     | '/login'
     | '/register'
     | '/guides/$guideId'
@@ -278,7 +260,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/faq'
     | '/login'
     | '/register'
     | '/guides/$guideId'
@@ -293,7 +274,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/faq'
     | '/login'
     | '/register'
     | '/guides/$guideId'
@@ -310,7 +290,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   GuidesGuideIdRoute: typeof GuidesGuideIdRoute
@@ -326,7 +305,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   GuidesGuideIdRoute: GuidesGuideIdRoute,
@@ -351,7 +329,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/faq",
         "/login",
         "/register",
         "/guides/$guideId",
@@ -369,9 +346,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/faq": {
-      "filePath": "faq.tsx"
     },
     "/login": {
       "filePath": "login.tsx"

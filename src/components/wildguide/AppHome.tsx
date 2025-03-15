@@ -1,8 +1,11 @@
+import { PwaContext } from '@/pwa/PwaProvider';
 import { useFindStarredGuidesQuery } from '@/redux/api/wildguideApi';
-import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text } from '@chakra-ui/react';
+import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuFileWarning } from 'react-icons/lu';
+import { MdInstallDesktop } from 'react-icons/md';
 import homeImage from '../../assets/images/wildguide/home.jpg';
 import { NavLink } from '../custom/NavLink';
 import { Tag } from '../ui/tag';
@@ -11,11 +14,16 @@ import { useHeights } from './hooks/uiHooks';
 export function AppHome() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/' });
-    const { content, grid } = useHeights();
+
+    const { content } = useHeights();
+
+    const { showPwaInstallButton, handleInstallClick } = useContext(PwaContext);
+
     const {
         data,
         isFetching
     } = useFindStarredGuidesQuery();
+
     return (
         <Container height={content} marginTop={2}>
             <Box id='page-header'>
@@ -44,6 +52,7 @@ export function AppHome() {
                         <HStack wrap='wrap' marginY={4}>
                             {data.map(starredGuide => (
                                 <Tag
+                                    key={starredGuide.id}
                                     size='lg'
                                     cursor='pointer'
                                     onClick={() => navigate({ to: '/guides/$guideId', params: { guideId: starredGuide.id.toString() } })}
@@ -59,11 +68,21 @@ export function AppHome() {
                 </NavLink>
                 <Separator marginY={4} />
             </Box>
+            {showPwaInstallButton &&
+                <>
+                    <Button variant='outline' onClick={handleInstallClick}>
+                        <MdInstallDesktop />
+                        {t('pwaInstall')}
+                    </Button>
+                    <Separator marginY={4} />
+                </>
+            }
             <Image
                 src={homeImage}
-                minHeight={200}
-                height={grid - 50}
+                width={{ base: '90%', sm: '70%', md: '55%', lg: '50%', xl: '40%' }}
+                fit='cover'
                 marginX='auto'
+                paddingBottom={12}
             />
         </Container>
     );

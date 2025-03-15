@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-8bbf5390'], (function (workbox) { 'use strict';
+define(['./workbox-6c6c3b19'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -79,16 +79,42 @@ define(['./workbox-8bbf5390'], (function (workbox) { 'use strict';
    */
   workbox.precacheAndRoute([{
     "url": "index.html",
-    "revision": "0.c6t81p7qji"
+    "revision": "0.h2doi7fdvm8"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/\.(?:png|jpg|jpeg|svg|gif)$/, new workbox.CacheFirst({
-    "cacheName": "image-cache",
+  workbox.registerRoute(/^https:\/\/inaturalist-open-data\.s3\.amazonaws\.com\/.*/i, new workbox.CacheFirst({
+    "cacheName": "inaturalist-open-data-image-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxAgeSeconds: 31536000
+    }), new workbox.CacheableResponsePlugin({
+      statuses: [0, 200]
+    })]
+  }), 'GET');
+  workbox.registerRoute(/^https:\/\/static\.inaturalist\.org\/photos\/.*\.(?:png|jpg|svg|gif)$/i, new workbox.CacheFirst({
+    "cacheName": "inaturalist-static-image-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxAgeSeconds: 31536000
+    }), new workbox.CacheableResponsePlugin({
+      statuses: [0, 200]
+    })]
+  }), 'GET');
+  workbox.registerRoute(/^https:\/\/mt\d\.google\.com\/vt\?.*/i, new workbox.CacheFirst({
+    "cacheName": "google-maps-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxAgeSeconds: 2592000
+    }), new workbox.CacheableResponsePlugin({
+      statuses: [0, 200]
+    })]
+  }), 'GET');
+  workbox.registerRoute(/\.(?:png|jpg|svg|gif)$/i, new workbox.StaleWhileRevalidate({
+    "cacheName": "wildguide-image-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxAgeSeconds: 31536000
+    }), new workbox.CacheableResponsePlugin({
+      statuses: [0, 200]
     })]
   }), 'GET');
   workbox.registerRoute(/^https?:\/\/.*\/api\/v1\/.*/i, new workbox.NetworkFirst({
@@ -99,7 +125,7 @@ define(['./workbox-8bbf5390'], (function (workbox) { 'use strict';
       statuses: [0, 200]
     })]
   }), 'GET');
-  workbox.registerRoute(/^https:\/\/api\.inaturalist\.org\/.*/i, new workbox.NetworkFirst({
+  workbox.registerRoute(/^https:\/\/api\.inaturalist\.org\/.*/i, new workbox.StaleWhileRevalidate({
     "cacheName": "inaturalist-api-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxAgeSeconds: 31536000

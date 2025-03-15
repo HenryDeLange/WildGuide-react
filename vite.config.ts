@@ -59,12 +59,54 @@ export default defineConfig({
             workbox: {
                 runtimeCaching: [
                     {
-                        urlPattern: /\.(?:png|jpg|svg|gif)$/,
+                        urlPattern: /^https:\/\/inaturalist-open-data\.s3\.amazonaws\.com\/.*/i,
                         handler: 'CacheFirst',
                         options: {
-                            cacheName: 'image-cache',
+                            cacheName: 'inaturalist-open-data-image-cache',
                             expiration: {
                                 maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    },
+                    {
+                        urlPattern: /^https:\/\/static\.inaturalist\.org\/photos\/.*\.(?:png|jpg|svg|gif)$/i,
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'inaturalist-static-image-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    },
+                    {
+                        urlPattern: /^https:\/\/mt\d\.google\.com\/vt\?.*/i,
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'google-maps-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
+                            }
+                        }
+                    },
+                    {
+                        urlPattern: /\.(?:png|jpg|svg|gif)$/i,
+                        handler: 'StaleWhileRevalidate',
+                        options: {
+                            cacheName: 'wildguide-image-cache',
+                            expiration: {
+                                maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+                            },
+                            cacheableResponse: {
+                                statuses: [0, 200]
                             }
                         }
                     },
@@ -83,7 +125,7 @@ export default defineConfig({
                     },
                     {
                         urlPattern: /^https:\/\/api\.inaturalist\.org\/.*/i,
-                        handler: 'NetworkFirst',
+                        handler: 'StaleWhileRevalidate',
                         options: {
                             cacheName: 'inaturalist-api-cache',
                             expiration: {
