@@ -1,16 +1,14 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
-import { selectAuthUserId } from '@/auth/authSlice';
 import { BackButton } from '@/components/custom/BackButton';
 import { EditButton } from '@/components/custom/EditButton';
-import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
+import { InatLinkCard } from '@/components/custom/InatLinkCard';
+import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { RangeMap } from '@/components/map/RangeMap';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { convertInatRanks } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
-import { useFindEntryQuery, useFindGuideOwnersQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, IconButton, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
+import { Box, Heading, HStack, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +16,8 @@ import { BsGlobeEuropeAfrica } from 'react-icons/bs';
 import { LuBookText } from 'react-icons/lu';
 import { MdOutlinePhoto } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { useIsOwner } from '../hooks/userHooks';
+import { EntryPhotos } from './EntryPhotos';
 
 type Props = {
     guideId: number;
@@ -28,7 +28,14 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId/entries/$entryId' });
 
-    const userId = useAppSelector(selectAuthUserId);
+    const {
+        isOwner,
+        isLoading: ownerIsLoading,
+        isFetching: ownerIsFetching,
+        isError: ownerIsError,
+        error: ownerError,
+        refetch: ownerRefetch
+    } = useIsOwner(guideId);
 
     const {
         data,
@@ -39,16 +46,6 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
         refetch
     } = useFindEntryQuery({ guideId, entryId });
 
-    const {
-        data: ownerData,
-        isLoading: ownerIsLoading,
-        isFetching: ownerIsFetching,
-        isError: ownerIsError,
-        error: ownerError,
-        refetch: ownerRefetch
-    } = useFindGuideOwnersQuery({ guideId });
-    const isOwner = ownerData?.map(owner => owner.userId).includes(userId ?? -1) ?? false;
-
     const [
         doUpdate, {
             isLoading: updateIsLoading,
@@ -58,8 +55,11 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
     ] = useUpdateEntryMutation();
 
     const {
-        data: taxonData,
-        isLoading: taxonIsLoading
+        data: guideData
+    } = useFindGuideQuery({ guideId });
+
+    const {
+        data: taxonData
     } = useTaxonFindQuery({ id: data?.inaturalistTaxon ?? 0 }, {
         skip: !data?.inaturalistTaxon
     });
@@ -73,14 +73,14 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
         ownerRefetch();
     }, [ownerRefetch, refetch]);
 
-    const handleInatLink = useCallback((item: InatResultCard | null) => {
+    const handleInatLink = useCallback((_type: InatSelectorTypes, inatId: number | null) => {
         if (data) {
             doUpdate({
                 guideId,
                 entryId,
                 entryBase: {
                     ...data,
-                    inaturalistTaxon: item?.id ?? undefined
+                    inaturalistTaxon: inatId ?? undefined
                 }
             });
         }
@@ -109,12 +109,12 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     >
                                         {isOwner &&
                                             <>
-                                                <InatSelector type='TAXON' select={handleInatLink} />
+                                                <InatSelector type='TAXON' select={handleInatLink} restrictRank ancestor={guideData?.inaturalistTaxon} />
                                                 <EditButton titleKey='editEntry' handleEdit={handleEdit} />
                                             </>
                                         }
                                         <OptionsMenu
-                                            type='entry'
+                                            type='ENTRY'
                                             guideId={guideId}
                                             entryId={entryId}
                                             handleRefresh={handleRefresh}
@@ -198,59 +198,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                             </Box>
                                         }
                                         {data.inaturalistTaxon &&
-                                            <Show when={!taxonIsLoading} fallback={<Spinner size='sm' margin={2} />}>
-                                                {taxon &&
-                                                    <Box
-                                                        padding={2}
-                                                        borderWidth={1}
-                                                        borderRadius='sm'
-                                                        boxShadow='sm'
-                                                        borderColor='border'
-                                                    >
-                                                        <HStack>
-                                                            <a
-                                                                aria-label='iNaturalist'
-                                                                href={`https://www.inaturalist.org/taxa/${taxon.id}`}
-                                                                target='_blank'
-                                                                rel='noopener'
-                                                            >
-                                                                <IconButton aria-label='iNaturalist' variant='ghost'>
-                                                                    <Image
-                                                                        src={inatLogo}
-                                                                        alt='iNaturalist'
-                                                                        objectFit='contain'
-                                                                        borderRadius='md'
-                                                                        width='40px'
-                                                                        height='40px'
-                                                                        loading='lazy'
-                                                                    />
-                                                                </IconButton>
-                                                            </a>
-                                                            <Image
-                                                                src={taxon.default_photo?.square_url ?? inatLogo}
-                                                                alt={taxon.preferred_common_name ?? taxon.name}
-                                                                objectFit='cover'
-                                                                borderRadius='md'
-                                                                width='60px'
-                                                                height='60px'
-                                                            />
-                                                            <VStack gap={0} textAlign='left'>
-                                                                <Heading size='lg' width='100%'>
-                                                                    {taxon.preferred_common_name ?? taxon.name}
-                                                                </Heading>
-                                                                <HStack gap={4}>
-                                                                    <Text color='fg.subtle' truncate>
-                                                                        {t(`entryScientificRank${taxon.rank.toUpperCase()}`)}
-                                                                    </Text>
-                                                                    <Text color='fg.muted' truncate fontStyle='italic'>
-                                                                        {taxon.name}
-                                                                    </Text>
-                                                                </HStack>
-                                                            </VStack>
-                                                        </HStack>
-                                                    </Box>
-                                                }
-                                            </Show>
+                                            <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
                                         }
                                         {data.description &&
                                             <ExtendedMarkdown content={data.description} />
@@ -268,10 +216,13 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 padding={0}
                             >
                                 {data.inaturalistTaxon && taxon &&
-                                    <RangeMap
-                                        taxonId={data.inaturalistTaxon}
-                                        rank={convertInatRanks(taxon.rank) ?? data.scientificRank}
-                                        parentId={taxon.parent_id} />
+                                    <Box padding={1}>
+                                        <RangeMap
+                                            taxonId={data.inaturalistTaxon}
+                                            rank={convertInatRanks(taxon.rank) ?? data.scientificRank}
+                                            parentId={taxon.parent_id}
+                                        />
+                                    </Box>
                                 }
                             </TabsContent>
                             <TabsContent
@@ -283,7 +234,10 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 borderRadius='sm'
                                 padding={0}
                             >
-                                <p>todo</p>
+                                <EntryPhotos
+                                    inaturalistTaxon={data.inaturalistTaxon}
+                                    inaturalistProject={guideData?.inaturalistProject}
+                                />
                             </TabsContent>
                         </TabsRoot>
                     </Box>

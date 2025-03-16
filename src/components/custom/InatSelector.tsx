@@ -1,5 +1,5 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
-import { useProjectsAutocompleteQuery, useTaxaAutocompleteQuery } from '@/redux/api/inatApi';
+import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
+import { useProjectsAutocompleteQuery, useTaxaAutocompleteQuery, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Box, DialogRootProvider, Fieldset, Heading, IconButton, Image, Input, Text, useDialog } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +10,20 @@ import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHead
 import { Field } from '../ui/field';
 import { InfiniteVirtualList } from './InfiniteVirtualList';
 
-type Props = {
-    type: 'PROJECT' | 'TAXON';
-    select: (item: InatResultCard | null) => void;
-}
+export type InatSelectorTypes = 'PROJECT' | 'TAXON';
 
-export function InatSelector({ type, select }: Readonly<Props>) {
+type Props = {
+    type: InatSelectorTypes;
+    select: (type: InatSelectorTypes, inatId: number | null) => void;
+} & ({
+    type: 'PROJECT';
+} | {
+    type: 'TAXON';
+    restrictRank?: boolean;
+    ancestor?: number;
+})
+
+export function InatSelector({ type, select, ...conditionalProps }: Readonly<Props>) {
     const { t } = useTranslation();
     const dialog = useDialog();
     const handleCloseDialog = useCallback(() => dialog.setOpen(false), [dialog]);
@@ -32,7 +40,7 @@ export function InatSelector({ type, select }: Readonly<Props>) {
                         loading='lazy'
                     />
                     <Text>
-                        {t('inaturalistLink')}
+                        {t(type === 'PROJECT' ? 'inaturalistLinkProject' : 'inaturalistLinkTaxon')}
                     </Text>
                 </Button>
             </DialogTrigger>
@@ -43,8 +51,8 @@ export function InatSelector({ type, select }: Readonly<Props>) {
                     </DialogTitle>
                 </DialogHeader>
                 <DialogCloseTrigger />
-                <DialogBody>
-                    <InaturalistSearch type={type} select={select} closeDialog={handleCloseDialog} />
+                <DialogBody paddingBottom={2}>
+                    <InaturalistSearch type={type} select={select} closeDialog={handleCloseDialog} {...conditionalProps} />
                 </DialogBody>
                 <DialogFooter>
                     <IconButton
@@ -52,7 +60,7 @@ export function InatSelector({ type, select }: Readonly<Props>) {
                         variant='ghost'
                         size='xs'
                         onClick={() => {
-                            select(null);
+                            select(type, null);
                             handleCloseDialog();
                         }}
                     >
@@ -65,11 +73,12 @@ export function InatSelector({ type, select }: Readonly<Props>) {
     );
 }
 
-function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { closeDialog: () => void; }>) {
+function InaturalistSearch({ type, select, closeDialog, ...conditionalProps }: Readonly<Props & { closeDialog: () => void; }>) {
     const { t } = useTranslation();
 
     const [inatText, setInatText] = useState('');
     const [debouncedInatText] = useDebounce(inatText, 500);
+    const skipNoText = debouncedInatText.trim().length === 0;
 
     const {
         data: projectData,
@@ -77,18 +86,42 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
     } = useProjectsAutocompleteQuery({
         q: debouncedInatText,
         per_page: 200
-    }, { skip: type !== 'PROJECT' || debouncedInatText.trim().length === 0 });
+    }, {
+        skip: skipNoText || type !== 'PROJECT'
+    });
+
+    const restrictRank = type === 'TAXON' && 'restrictRank' in conditionalProps ? conditionalProps.restrictRank : undefined;
+    const ancestor = type === 'TAXON' && 'ancestor' in conditionalProps ? conditionalProps.ancestor ?? null : null;
 
     const {
-        data: taxaData,
-        isFetching: taxaIsFetching
+        data: taxaData1,
+        isFetching: taxaIsFetching1
     } = useTaxaAutocompleteQuery({
         q: debouncedInatText,
-        rank: ['family', 'genus', 'species', 'subspecies'],
+        rank: restrictRank ? ['family', 'subfamily', 'tribe', 'subtribe', 'genus', 'subgenus', 'species', 'subspecies'] : undefined,
         per_page: 30
-    }, { skip: type !== 'TAXON' || debouncedInatText.trim().length === 0 });
+    }, {
+        skip: skipNoText || type !== 'TAXON' || !!ancestor
+    });
 
-    const loading = type === 'PROJECT' ? projectIsFetching : taxaIsFetching;
+    
+    const {
+        data: taxaData2,
+        isFetching: taxaIsFetching2
+    } = useTaxaFindQuery({
+        q: debouncedInatText,
+        rank: restrictRank ? ['family', 'subfamily', 'tribe', 'subtribe', 'genus', 'subgenus', 'species', 'subspecies'] : undefined,
+        // NOTE: The iNat API only checks the direct parent when the parent_id field is used...)
+        // parent_id: ancestor!,
+        // NOTE: Instead of parent_id, use taxon_id, since it will include all children
+        taxon_id: [ancestor!],
+        per_page: 500
+    }, {
+        skip: skipNoText || type !== 'TAXON' || !ancestor
+    });
+
+    const loading = type === 'PROJECT' ? projectIsFetching : (taxaIsFetching1 || taxaIsFetching2);
+    const taxaData = taxaData1 || taxaData2;
     const pageSize = (type === 'PROJECT' ? projectData?.per_page : taxaData?.per_page) ?? 0;
     const totalCount = (type === 'PROJECT' ? projectData?.total_results : taxaData?.total_results) ?? 0;
 
@@ -97,7 +130,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
             padding={1}
             height={ITEM_HEIGHT}
             onClick={() => {
-                select(item);
+                select(type, item.id);
                 closeDialog();
             }}
             width='100%'
@@ -124,7 +157,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
                 </Text>
             </Box>
         </Button>
-    ), [closeDialog, select]);
+    ), [closeDialog, select, type]);
 
     const handleLoadMoreItems = useCallback(() => console.warn('pagination of autocomplete not supported by iNaturalist'), []);
 
@@ -143,7 +176,7 @@ function InaturalistSearch({ type, select, closeDialog }: Readonly<Props & { clo
                     title: result.preferred_common_name ?? result.name,
                     subTitle: result.name,
                     icon: result.default_photo?.square_url,
-                    category: t(`entryScientificRank${result.rank.toUpperCase()}`)
+                    category: t(`entryScientificRank${result.rank.toUpperCase()}`, {defaultValue: result.rank.charAt(0).toUpperCase() + result.rank.slice(1)})
                 })) ?? []))
         , [debouncedInatText, loading, projectData?.results, t, taxaData?.results, type]);
 

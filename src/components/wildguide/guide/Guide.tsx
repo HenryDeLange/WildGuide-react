@@ -1,13 +1,10 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
-import { selectAuthUserId } from '@/auth/authSlice';
 import { EditButton } from '@/components/custom/EditButton';
-import { InatResultCard, InatSelector } from '@/components/custom/InatSelector';
+import { InatLinkCard } from '@/components/custom/InatLinkCard';
+import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
-import { useProjectFindQuery } from '@/redux/api/inatApi';
-import { useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideOwnersQuery, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, IconButton, Image, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
+import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +14,7 @@ import { MdOutlineLock } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Tooltip } from '../../ui/tooltip';
 import { EntryList } from '../entry/EntryList';
+import { useIsOwner } from '../hooks/userHooks';
 import { GuideLinkUsers } from './GuideLinkUsers';
 
 type Props = {
@@ -27,7 +25,14 @@ export function Guide({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
 
-    const userId = useAppSelector(selectAuthUserId);
+    const {
+        isOwner,
+        isLoading: ownerIsLoading,
+        isFetching: ownerIsFetching,
+        isError: ownerIsError,
+        error: ownerError,
+        refetch: ownerRefetch
+    } = useIsOwner(guideId);
 
     const {
         data,
@@ -37,16 +42,6 @@ export function Guide({ guideId }: Readonly<Props>) {
         error,
         refetch
     } = useFindGuideQuery({ guideId });
-
-    const {
-        data: ownerData,
-        isLoading: ownerIsLoading,
-        isFetching: ownerIsFetching,
-        isError: ownerIsError,
-        error: ownerError,
-        refetch: ownerRefetch
-    } = useFindGuideOwnersQuery({ guideId });
-    const isOwner = ownerData?.map(owner => owner.userId).includes(userId ?? -1) ?? false;
 
     const [
         doUpdate, {
@@ -68,14 +63,6 @@ export function Guide({ guideId }: Readonly<Props>) {
         }
     ] = useDeleteGuideStarMutation();
 
-    const {
-        data: projectData,
-        isLoading: projectIsLoading
-    } = useProjectFindQuery({ id: Number(data?.inaturalistCriteria ?? '0') }, {
-        skip: !data?.inaturalistCriteria
-    });
-    const project = projectData?.total_results === 1 ? projectData.results[0] : undefined;
-
     const handleEdit = useCallback(() => navigate({ to: '/guides/$guideId/edit' }), [navigate]);
 
     const [entriesRefresh, setEntriesRefresh] = useState(false);
@@ -86,13 +73,16 @@ export function Guide({ guideId }: Readonly<Props>) {
         ownerRefetch();
     }, [ownerRefetch, refetch]);
 
-    const handleInatLink = useCallback((item: InatResultCard | null) => {
+    const handleInatLink = useCallback((type: InatSelectorTypes, inatId: number | null) => {
         if (data) {
+            const newLink: Partial<GuideBase> = type === 'PROJECT'
+                ? { inaturalistProject: inatId ?? undefined }
+                : { inaturalistTaxon: inatId ?? undefined };
             doUpdate({
                 guideId,
                 guideBase: {
                     ...data,
-                    inaturalistCriteria: item?.id.toString() ?? undefined
+                    ...newLink
                 }
             });
         }
@@ -145,12 +135,13 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         {isOwner &&
                                             <>
                                                 <InatSelector type='PROJECT' select={handleInatLink} />
+                                                <InatSelector type='TAXON' select={handleInatLink} />
                                                 <GuideLinkUsers guideId={guideId} />
                                                 <EditButton titleKey='editGuide' handleEdit={handleEdit} />
                                             </>
                                         }
                                         <OptionsMenu
-                                            type='guide'
+                                            type='GUIDE'
                                             guideId={guideId}
                                             handleRefresh={handleRefresh}
                                             isFetching={isFetching || ownerIsFetching || entriesRefresh}
@@ -214,51 +205,14 @@ export function Guide({ guideId }: Readonly<Props>) {
                                                 </Text>
                                             </Box>
                                         }
-                                        {data.inaturalistCriteria &&
-                                            <Show when={!projectIsLoading} fallback={<Spinner size='sm' margin={2} />}>
-                                                {project &&
-                                                    <Box
-                                                        padding={2}
-                                                        borderWidth={1}
-                                                        borderRadius='sm'
-                                                        boxShadow='sm'
-                                                        borderColor='border'
-                                                    >
-                                                        <HStack>
-                                                            <a
-                                                                aria-label='iNaturalist'
-                                                                href={`https://www.inaturalist.org/projects/${project.id}`}
-                                                                target='_blank'
-                                                                rel='noopener'
-                                                            >
-                                                                <IconButton aria-label='iNaturalist' variant='ghost'>
-                                                                    <Image
-                                                                        src={inatLogo}
-                                                                        alt='iNaturalist'
-                                                                        objectFit='contain'
-                                                                        borderRadius='md'
-                                                                        width='40px'
-                                                                        height='40px'
-                                                                        loading='lazy'
-                                                                    />
-                                                                </IconButton>
-                                                            </a>
-                                                            <Image
-                                                                src={project.icon ?? inatLogo}
-                                                                alt={project.title}
-                                                                objectFit='cover'
-                                                                borderRadius='md'
-                                                                width='60px'
-                                                                height='60px'
-                                                            />
-                                                            <Heading size='md'>
-                                                                {project.title}
-                                                            </Heading>
-                                                        </HStack>
-                                                    </Box>
-                                                }
-                                            </Show>
-                                        }
+                                        <Stack>
+                                            {data.inaturalistProject &&
+                                                <InatLinkCard type='PROJECT' inatId={data.inaturalistProject} />
+                                            }
+                                            {data.inaturalistTaxon &&
+                                                <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
+                                            }
+                                        </Stack>
                                         {data.description &&
                                             <ExtendedMarkdown content={data.description} />
                                         }
@@ -278,6 +232,8 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     guideId={guideId}
                                     triggerRefresh={entriesRefresh}
                                     handleRefreshComplete={handleEntriesRefreshComplete}
+                                    guideInatProject={data.inaturalistProject}
+                                    guideInatTaxon={data.inaturalistTaxon}
                                 />
                             </TabsContent>
                         </TabsRoot>

@@ -1,5 +1,5 @@
 import { authLogin } from '@/auth/authSlice';
-import { useLoginMutation, useRegisterMutation, UserLogin } from '@/redux/api/wildguideApi';
+import { useLoginMutation, User, useRegisterMutation } from '@/redux/api/wildguideApi';
 import { useAppDispatch } from '@/redux/hooks';
 import { Box, Container, Fieldset, Heading, Image, Input, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -41,10 +41,11 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
     }
     ] = useRegisterMutation();
 
-    const { register, handleSubmit, formState: { errors }, trigger } = useForm<UserLogin>({
+    const { register, handleSubmit, formState: { errors }, trigger } = useForm<User>({
         defaultValues: {
             username: '',
-            password: ''
+            password: '',
+            email: ''
         }
     });
 
@@ -55,26 +56,15 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
     }, [confirmPassword, registerMode, trigger]);
 
     const onSubmit = handleSubmit(async (data) => {
-        // TODO: Decide on hashing on client side or not...
-        const hashedPassword = data.password;
-        // or
-        // const hashedPassword = CryptoJS.SHA256(data.password).toString(CryptoJS.enc.Base64);
-        // or
-        // const encoder = new TextEncoder();
-        // const dataBuffer = encoder.encode(data.password);
-        // const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-        // const hashArray = Array.from(new Uint8Array(hashBuffer));
-        // const hashedPassword = btoa(String.fromCharCode(...hashArray));
-        const user = { ...data, password: hashedPassword };
         if (registerMode) {
-            doUserRegister({ user })
+            doUserRegister({ user: data })
                 .unwrap().then(response => {
                     dispatch(authLogin(response));
                     navigate({ to: '/' });
                 });
         }
         else {
-            doUserLogin({ userLogin: user })
+            doUserLogin({ userLogin: data })
                 .unwrap().then(response => {
                     dispatch(authLogin(response));
                     navigate({ to: '/' });
@@ -128,6 +118,29 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                             />
                                         </InputGroup>
                                     </Field>
+                                    {registerMode &&
+                                        <Field
+                                            label={<Text fontSize='md'>{t('loginFormEmail')}</Text>}
+                                            invalid={!!errors.email || loginIsError || registerIsError}
+                                            errorText={errors.email?.message}
+                                        >
+                                            <InputGroup flex='1' width='full' startElement={<LuUser />}>
+                                                <Input
+                                                    {...register('email', {
+                                                        required: t('loginFormEmailRequired'),
+                                                        minLength: { value: 6, message: t('loginFormEmailInvalid') },
+                                                        maxLength: { value: 256, message: t('loginFormEmailInvalid') },
+                                                        pattern: {
+                                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                            message: t('loginFormEmailInvalid')
+                                                        }
+                                                    })}
+                                                    placeholder={t('loginFormEmailPlaceholder')}
+                                                    type='email'
+                                                />
+                                            </InputGroup>
+                                        </Field>
+                                    }
                                     <Field
                                         label={<Text fontSize='md'>{t('loginFormPassword')}</Text>}
                                         invalid={!!errors.password || loginIsError || registerIsError}

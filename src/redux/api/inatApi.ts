@@ -115,7 +115,7 @@ export type TaxaAutocompleteArgs = {
     is_active?: boolean;
     /** NOTE: iNat returns all taxa with these ids as ancestor, unfortunately there doesn't seem to be a way to only return the requested ids... */
     taxon_id?: number[]; // string[] on the API docs
-    rank?: string[];
+    rank?: ('kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form')[]; // TODO: Confirm these???
     rank_level?: number;
     locale?: string;
     preferred_place_id?: number;
@@ -158,7 +158,9 @@ export type Taxon = {
     }[];
 };
 
-export type TaxaFindArgs = Partial<TaxaAutocompleteArgs>;
+export type TaxaFindArgs = Partial<TaxaAutocompleteArgs> & {
+    parent_id?: number;
+};
 
 export type TaxaFind = TaxaAutocomplete;
 

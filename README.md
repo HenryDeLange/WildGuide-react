@@ -24,10 +24,6 @@ This project is written in `Typescript` using React and Vite to build.
 
 `npm run build`
 
-### PWA
-- https://www.pwabuilder.com/
-- https://vite-pwa-org.netlify.app/
-
 ## Production
 
 ### Setup

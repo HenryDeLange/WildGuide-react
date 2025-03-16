@@ -2,6 +2,7 @@ import { Entry } from '@/redux/api/wildguideApi';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AttributionControl, LayersControl, MapContainer, TileLayer, useMapEvents, ZoomControl } from 'react-leaflet';
+import { useHeights } from '../wildguide/hooks/uiHooks';
 import { LocateControl } from './LocateControl';
 import './rangeMap.css';
 
@@ -13,6 +14,8 @@ type Props = {
 
 export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     const { t } = useTranslation();
+
+    const { grid } = useHeights();
 
     const useParentId = rank === 'SUBSPECIES' && parentId;
     const geoModelLayer = `${t('mapOverlayGeoModel')}${useParentId ? ` - ${t('mapOverlayParent')}` : ''}`;
@@ -65,7 +68,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             scrollWheelZoom
             attributionControl={false}
             zoomControl={false}
-        // style={{ height: mapHeight }}
+            style={{ height: grid - 24 }}
         >
             {/* Controls */}
             <AttributionControl

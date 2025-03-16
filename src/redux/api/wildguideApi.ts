@@ -318,7 +318,8 @@ export type Guide = {
   summary?: string;
   description?: string;
   visibility: "PUBLIC" | "PRIVATE";
-  inaturalistCriteria?: string;
+  inaturalistProject?: number;
+  inaturalistTaxon?: number;
   id: number;
   starredByUser: boolean;
 };
@@ -327,7 +328,8 @@ export type GuideBase = {
   summary?: string;
   description?: string;
   visibility: "PUBLIC" | "PRIVATE";
-  inaturalistCriteria?: string;
+  inaturalistProject?: number;
+  inaturalistTaxon?: number;
 };
 export type Entry = {
   name: string;
@@ -374,6 +376,7 @@ export type Tokens = {
 export type User = {
   username: string;
   password: string;
+  email: string;
 };
 export type UserLogin = {
   username: string;

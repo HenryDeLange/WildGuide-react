@@ -5,7 +5,7 @@
 
 .leaflet-container {
     height: 50vh;
-    width: 80vw;
+    width: 100%;
 }
 
 .leaflet-div-icon {

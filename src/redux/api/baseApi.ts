@@ -58,7 +58,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
     async (args, api, extraOptions) => {
         // Wait until the mutex is available without locking it
         await mutex.waitForUnlock();
-        const isRefresh = (args as FetchArgs).url === '/users/refresh';
+        const isRefresh = (args as FetchArgs).url === '/api/v1/users/refresh';
         let result: QueryReturnValue<unknown, FetchBaseQueryError, unknown> | undefined;
         if (!isRefresh) {
             result = await baseQueryWithRetry(args, api, extraOptions);
@@ -70,7 +70,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                 // Try to get a new token
                 try {
                     api.dispatch(authReplaceAccessToken((api.getState() as AppRootState).auth.refreshToken));
-                    const refreshResult = await baseQueryWithRetry({ url: '/users/refresh', method: 'post' }, api, extraOptions);
+                    const refreshResult = await baseQueryWithRetry({ url: '/api/v1/users/refresh', method: 'post' }, api, extraOptions);
                     const tokens = refreshResult.data as Tokens;
                     if (tokens) {
                         // Store the new token

@@ -10,17 +10,18 @@ type Props = {
     handleRefresh: () => void;
     isFetching: boolean;
 } & ({
-    type: 'guide';
+    type: 'GUIDE';
     guideId: number;
 } | {
-    type: 'entry';
+    type: 'ENTRY';
     guideId: number;
     entryId: number;
-});
+})
 
-export function OptionsMenu({ type, guideId, handleRefresh, isFetching, ...props }: Readonly<Props>) {
+export function OptionsMenu({ type, guideId, handleRefresh, isFetching, ...conditionalProps }: Readonly<Props>) {
     const { t } = useTranslation();
-    const url = `${window.location.origin}/guides/${guideId}${(type === 'entry' && 'entryId' in props) ? `/entries/${props.entryId}` : ''}`;
+    const entryPath = (type === 'ENTRY' && 'entryId' in conditionalProps) ? `/entries/${conditionalProps.entryId}` : '';
+    const url = `${window.location.origin}/guides/${guideId}${entryPath}`;
     return (
         <MenuRoot>
             <MenuTrigger asChild>
@@ -38,7 +39,7 @@ export function OptionsMenu({ type, guideId, handleRefresh, isFetching, ...props
                     </MenuItem>
                 </MenuItemGroup>
                 <MenuSeparator />
-                <MenuItemGroup title={t(type)}>
+                <MenuItemGroup title={t(type.toLowerCase())}>
                     <MenuItem value='refresh' closeOnSelect={false} asChild>
                         <RefreshButton
                             handleRefresh={handleRefresh}

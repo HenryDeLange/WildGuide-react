@@ -1,9 +1,8 @@
-import { selectAuthUserId } from '@/auth/authSlice';
+import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { InputGroup } from '@/components/ui/input-group';
 import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
-import { useAppSelector } from '@/redux/hooks';
-import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Image, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,21 +13,26 @@ import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
 import { Button } from '../../ui/button';
 import { useHeights } from '../hooks/uiHooks';
+import { useIsOwner } from '../hooks/userHooks';
 import { ENTRY_LIST_ITEM_HEIGHT, EntryListItem } from './EntryListItem';
 
 type Props = {
     guideId: number;
     triggerRefresh: boolean;
     handleRefreshComplete: () => void;
+    guideInatProject?: number;
+    guideInatTaxon?: number;
 }
 
-export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Readonly<Props>) {
+export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guideInatProject, guideInatTaxon }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
 
     const { window, appHeader, pageHeader } = useHeights();
 
-    const userId = useAppSelector(selectAuthUserId);
+    const {
+        isOwner
+    } = useIsOwner(guideId);
 
     const [page, setPage] = useState<number>(0);
     const [pageQueue, setPageQueue] = useState<number[]>([]);
@@ -52,6 +56,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
         name: debouncedFilter ?? undefined
     });
 
+    // TODO: Find a way to get back only the specified taxa (the iNat API will return all taxa and their children specified in taxon_id)
     const {
         data: taxaData,
         isFetching: taxaIsFetching
@@ -158,19 +163,37 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                         <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                     </InputGroup>
                     <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
-                        {userId !== null &&
-                            <Button
-                                size='lg'
-                                variant='ghost'
-                                color='fg.info'
-                                onClick={handleCreate}
-                                whiteSpace='nowrap'
-                            >
-                                <MdAddCircleOutline />
-                                <Text>
-                                    {t('newEntry')}
-                                </Text>
-                            </Button>
+                        {isOwner &&
+                            <>
+                                {(guideInatProject || guideInatTaxon) &&
+                                    // TODO: Show popup with easy to add entires based on the guide's linked project
+                                    <Button size='lg' variant='ghost' whiteSpace='nowrap'>
+                                        <Image
+                                            src={inatLogo}
+                                            alt='iNaturalist'
+                                            boxSize={6}
+                                            borderRadius='full'
+                                            fit='cover'
+                                            loading='lazy'
+                                        />
+                                        <Text>
+                                            {t('newEntry')}
+                                        </Text>
+                                    </Button>
+                                }
+                                <Button
+                                    size='lg'
+                                    variant='ghost'
+                                    color='fg.info'
+                                    onClick={handleCreate}
+                                    whiteSpace='nowrap'
+                                >
+                                    <MdAddCircleOutline />
+                                    <Text>
+                                        {t('newEntry')}
+                                    </Text>
+                                </Button>
+                            </>
                         }
                     </Stack>
                 </Stack>
@@ -197,7 +220,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete }: Re
                     heightDelta={(window < 700 ? (-1 * (appHeader + pageHeader) + 16) : 9) + 8}
                 />
             </Show>
-        </Box>
+        </Box >
     );
 }
 

@@ -1,12 +1,13 @@
 import { PwaContext } from '@/pwa/PwaProvider';
 import { useFindStarredGuidesQuery } from '@/redux/api/wildguideApi';
-import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text } from '@chakra-ui/react';
+import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LuFileWarning } from 'react-icons/lu';
 import { MdInstallDesktop } from 'react-icons/md';
 import homeImage from '../../assets/images/wildguide/home.jpg';
+import installImage from '../../assets/images/wildguide/install.jpg';
 import { NavLink } from '../custom/NavLink';
 import { Tag } from '../ui/tag';
 import { useHeights } from './hooks/uiHooks';
@@ -70,10 +71,22 @@ export function AppHome() {
             </Box>
             {showPwaInstallButton &&
                 <>
-                    <Button variant='outline' onClick={handleInstallClick}>
-                        <MdInstallDesktop />
-                        {t('pwaInstall')}
-                    </Button>
+                    <HStack gap={4}>
+                        <Image
+                            src={installImage}
+                            width={70}
+                            borderRadius='full'
+                        />
+                        <VStack>
+                            <Text fontSize='xs' color='fg.muted'>
+                                {t('pwaInstallDetails')}
+                            </Text>
+                            <Button variant='surface' onClick={handleInstallClick}>
+                                <MdInstallDesktop />
+                                {t('pwaInstall')}
+                            </Button>
+                        </VStack>
+                    </HStack>
                     <Separator marginY={4} />
                 </>
             }
