@@ -1,7 +1,7 @@
 import { Taxon } from "./inatApi";
-import { Entry } from "./wildguideApi";
+import { Entry, EntryBase } from "./wildguideApi";
 
-export function convertInatRanks(inatRank: Taxon['rank']): Entry['scientificRank'] | undefined {
+export function convertInatToEntryRank(inatRank: Taxon['rank']): EntryBase['scientificRank'] | undefined {
     switch (inatRank) {
         case 'family':
         case 'subfamily':

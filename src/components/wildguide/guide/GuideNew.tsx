@@ -14,7 +14,12 @@ export function GuideNew() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/create' });
 
-    const [doCreate, { isLoading, isError }] = useCreateGuideMutation();
+    const [
+        doCreate, {
+            isLoading,
+            isError
+        }
+    ] = useCreateGuideMutation();
 
     const { register, handleSubmit, formState: { errors }, control, watch } = useForm<GuideBase>({
         defaultValues: {

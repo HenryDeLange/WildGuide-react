@@ -18,7 +18,12 @@ export function EntryNew({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId/entries/create' });
 
-    const [doCreate, { isLoading, isError }] = useCreateEntryMutation();
+    const [
+        doCreate, {
+            isLoading,
+            isError
+        }
+    ] = useCreateEntryMutation();
 
     const { register, handleSubmit, formState: { errors }, control, watch } = useForm<EntryBase>({
         defaultValues: {

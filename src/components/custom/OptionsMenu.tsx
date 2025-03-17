@@ -16,7 +16,7 @@ type Props = {
     type: 'ENTRY';
     guideId: number;
     entryId: number;
-})
+});
 
 export function OptionsMenu({ type, guideId, handleRefresh, isFetching, ...conditionalProps }: Readonly<Props>) {
     const { t } = useTranslation();

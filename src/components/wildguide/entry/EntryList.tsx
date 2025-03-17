@@ -1,8 +1,9 @@
-import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
+import { InatLinkDialog, InatLinkItem } from '@/components/custom/InatLinkDialog';
 import { InputGroup } from '@/components/ui/input-group';
+import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
-import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
-import { Box, Image, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Entry, useCreateEntryMutation, useFindEntriesQuery } from '@/redux/api/wildguideApi';
+import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -66,6 +67,14 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
     }, {
         skip: taxaToLoad.length === 0
     });
+
+    const [
+        doCreate, {
+            // TODO: Handle these
+            // isLoading,
+            // isError
+        }
+    ] = useCreateEntryMutation();
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
@@ -166,20 +175,21 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
                         {isOwner &&
                             <>
                                 {(guideInatProject || guideInatTaxon) &&
-                                    // TODO: Show popup with easy to add entires based on the guide's linked project
-                                    <Button size='lg' variant='ghost' whiteSpace='nowrap'>
-                                        <Image
-                                            src={inatLogo}
-                                            alt='iNaturalist'
-                                            boxSize={6}
-                                            borderRadius='full'
-                                            fit='cover'
-                                            loading='lazy'
-                                        />
-                                        <Text>
-                                            {t('newEntry')}
-                                        </Text>
-                                    </Button>
+                                    <InatLinkDialog
+                                        inaturalistProject={guideInatProject}
+                                        inaturalistTaxon={guideInatTaxon}
+                                        select={(item: InatLinkItem) => {
+                                            doCreate({
+                                                guideId,
+                                                entryBase: {
+                                                    name: item.name,
+                                                    scientificName: item.scientificName,
+                                                    scientificRank: convertInatToEntryRank(item.rank) ?? 'SPECIES',
+                                                    inaturalistTaxon: item.id
+                                                }
+                                            });
+                                        }}
+                                    />
                                 }
                                 <Button
                                     size='lg'

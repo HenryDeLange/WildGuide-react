@@ -6,7 +6,7 @@ import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { RangeMap } from '@/components/map/RangeMap';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { ToggleTip } from '@/components/ui/toggle-tip';
-import { convertInatRanks } from '@/redux/api/apiMapper';
+import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
 import { Box, Heading, HStack, IconButton, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
@@ -242,7 +242,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     <Box padding={1}>
                                         <RangeMap
                                             taxonId={data.inaturalistTaxon}
-                                            rank={convertInatRanks(taxon.rank) ?? data.scientificRank}
+                                            rank={convertInatToEntryRank(taxon.rank) ?? data.scientificRank}
                                             parentId={taxon.parent_id}
                                         />
                                     </Box>

@@ -22,7 +22,7 @@ type Props = {
     type: 'TAXON';
     restrictRank?: boolean;
     ancestor?: number;
-})
+});
 
 export function InatSelector({ type, select, ...conditionalProps }: Readonly<Props>) {
     const { t } = useTranslation();
@@ -104,7 +104,6 @@ function InaturalistSearch({ type, select, closeDialog, ...conditionalProps }: R
     }, {
         skip: skipNoText || type !== 'TAXON' || !!ancestor
     });
-
 
     const {
         data: taxaData2,

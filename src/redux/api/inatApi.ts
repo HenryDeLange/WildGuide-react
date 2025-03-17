@@ -45,7 +45,7 @@ export const inatApi = createApi({
             }),
             providesTags: ['Taxa']
         }),
-        taxaFind:  builder.query<TaxaFind, TaxaFindArgs>({
+        taxaFind: builder.query<TaxaFind, TaxaFindArgs>({
             query: (queryArg) => ({
                 url: 'taxa',
                 params: { ...queryArg }
@@ -64,9 +64,16 @@ export const inatApi = createApi({
             }),
             providesTags: ['Observations']
         }),
-        observationsFind:  builder.query<ObservationsFind, ObservationsFindArgs>({
+        observationsFind: builder.query<ObservationsFind, ObservationsFindArgs>({
             query: (queryArg) => ({
                 url: 'observations',
+                params: { ...queryArg }
+            }),
+            providesTags: ['Observations']
+        }),
+        speciesCountsFind: builder.query<SpeciesCountFind, SpeciesCountFindArgs>({
+            query: (queryArg) => ({
+                url: 'observations/species_counts',
                 params: { ...queryArg }
             }),
             providesTags: ['Observations']
@@ -83,7 +90,8 @@ export const {
     useTaxaFindQuery,
     useTaxonFindQuery,
     useObservationFindQuery,
-    useObservationsFindQuery
+    useObservationsFindQuery,
+    useSpeciesCountsFindQuery
 } = inatApi;
 
 type ResponseBase = {
@@ -274,7 +282,7 @@ export type ObservationsFindArgs = {
     endemic?: boolean;
     native?: boolean;
     out_of_range?: boolean;
-    rank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
+    rank?: ('kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form')[]; // TODO: Confirm these???
     hrank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
     lrank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
     term_id?: number[];
@@ -297,6 +305,19 @@ export type ObservationsFindArgs = {
 };
 
 export type ObservationsFind = ObservationFind;
+
+export type SpeciesCountFind = ResponseBase & {
+    results: SpeciesCount[];
+};
+
+export type SpeciesCountFindArgs = ObservationsFindArgs;
+
+export type SpeciesCount = {
+    count: number;
+    observations_count: number;
+    taxon: Taxon;
+    preferred_establishment_means: string;
+}
 
 export type Photo = {
     id: number;
