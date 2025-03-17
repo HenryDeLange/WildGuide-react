@@ -2,10 +2,9 @@ import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 
 export const tagTypes = [
     'Users',
-    'Taxa',
     'Projects',
-    'Observation',
-    'Taxon'
+    'Taxa',
+    'Observations',
 ] as const;
 
 export const inatApi = createApi({
@@ -57,13 +56,20 @@ export const inatApi = createApi({
             query: (queryArg) => ({
                 url: `taxa/${queryArg.id}`,
             }),
-            providesTags: ['Taxon']
+            providesTags: ['Taxa']
         }),
         observationFind: builder.query<ObservationFind, ObservationFindArgs>({
             query: (queryArg) => ({
                 url: `observations/${queryArg.id}`,
             }),
-            providesTags: ['Observation']
+            providesTags: ['Observations']
+        }),
+        observationsFind:  builder.query<ObservationsFind, ObservationsFindArgs>({
+            query: (queryArg) => ({
+                url: 'observations',
+                params: { ...queryArg }
+            }),
+            providesTags: ['Observations']
         })
     }),
     keepUnusedDataFor: 300 // 5 minutes
@@ -76,7 +82,8 @@ export const {
     useTaxaAutocompleteQuery,
     useTaxaFindQuery,
     useTaxonFindQuery,
-    useObservationFindQuery
+    useObservationFindQuery,
+    useObservationsFindQuery
 } = inatApi;
 
 type ResponseBase = {
@@ -247,6 +254,49 @@ export type Observation = {
     // annotations: Annotation[];
     faves_count: number;
 };
+
+export type ObservationsFindArgs = {
+    id?: number[];
+    not_id?: number[];
+    taxon_id?: number[]; // Also includes children of the specified taxa
+    without_taxon_id?: number[]; // Also excludes children of the specified taxa
+    taxon_name?: string[];
+    place_id?: number[];
+    project_id?: number[];
+    quality_grade?: 'casual' | 'needs_id' | 'research';
+    d1?: Date;
+    d2?: Date;
+    updated_since?: Date;
+    photos?: boolean;
+    threatened?: boolean;
+    introduced?: boolean;
+    captive?: boolean;
+    endemic?: boolean;
+    native?: boolean;
+    out_of_range?: boolean;
+    rank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
+    hrank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
+    lrank?: 'kingdom' | 'phylum' | 'class' | 'order' | 'family' | 'subfamily' | 'tribe' | 'subtribe' | 'genus' | 'subgenus' | 'species' | 'subspecies' | 'variety' | 'form'; // TODO: Confirm these???
+    term_id?: number[];
+    term_value_id?: number[];
+    acc_below?: number; // meters
+    obscuration?: 'obscured' | 'private' | 'none';
+    lat?: number;
+    lng?: number;
+    radius?: number; // kilometer
+    nelat?: number;
+    nelng?: number;
+    swlat?: number;
+    swlng?: number;
+    locale?: string;
+    preferred_place_id?: number;
+    page?: number;
+    per_page?: number;
+    order?: 'desc' | 'asc';
+    order_by?: 'created_at' | 'observed_on' | 'updated_at' | 'geo_score' | 'id' | 'random' | 'species_guess' | 'votes';
+};
+
+export type ObservationsFind = ObservationFind;
 
 export type Photo = {
     id: number;

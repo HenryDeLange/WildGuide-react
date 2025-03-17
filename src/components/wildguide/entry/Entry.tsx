@@ -258,6 +258,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 padding={0}
                             >
                                 <EntryPhotos
+                                    scientificName={data.scientificName}
                                     inaturalistTaxon={data.inaturalistTaxon}
                                     inaturalistProject={guideData?.inaturalistProject}
                                 />

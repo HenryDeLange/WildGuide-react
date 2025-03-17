@@ -24,7 +24,7 @@ export function GuideList() {
     const userId = useAppSelector(selectAuthUserId);
 
     const [page, setPage] = useState<number>(0);
-    const [pageQueue, setPageQueue] = useState<number[]>([]);
+    const [pageQueue, setPageQueue] = useState<number[]>([0]);
     const [items, setItems] = useState<Guide[]>([]);
 
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
