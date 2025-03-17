@@ -1,7 +1,10 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useProjectFindQuery, useTaxonFindQuery } from '@/redux/api/inatApi';
-import { Box, Heading, HStack, IconButton, Image, Show, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, IconButton, Image, Show, Skeleton, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
+import { LuCopyright } from 'react-icons/lu';
+import { ToggleTip } from '../ui/toggle-tip';
+import { uppercaseFirst } from '../utils';
 
 export type InatLinkCardTypes = 'PROJECT' | 'TAXON';
 
@@ -35,14 +38,16 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
             title: project.title,
             subTitle: project.description,
             icon: project.icon ?? inatLogo,
-            category: project.project_type
+            category: uppercaseFirst(project.project_type),
+            attribution: project.terms
         }
             : (type === 'TAXON' && taxon) ? {
                 id: taxon.id,
                 title: taxon.preferred_common_name ?? taxon.name,
                 subTitle: taxon.name,
                 icon: taxon.default_photo?.square_url ?? inatLogo,
-                category: t(`entryScientificRank${taxon.rank.toUpperCase()}`)
+                category: t(`entryScientificRank${taxon.rank.toUpperCase()}`),
+                attribution: taxon.default_photo?.attribution
             }
                 : undefined;
 
@@ -87,15 +92,31 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                             height='60px'
                         />
                         <Box width='100%' overflow='hidden'>
-                            <Heading size='sm' truncate>
+                            <Heading size='md' truncate>
                                 {data.title}
                             </Heading>
                             <Text fontStyle='italic' fontSize='xs' truncate>
                                 {data.subTitle}
                             </Text>
-                            <Text fontSize='xs' color='fg.subtle' truncate>
-                                {data.category}
-                            </Text>
+                            <Flex>
+                                <Text fontSize='xs' color='fg.subtle' truncate marginEnd='auto'>
+                                    {data.category}
+                                </Text>
+                                {data.attribution &&
+                                    <ToggleTip content={data.attribution}>
+                                        <IconButton
+                                            size='2xs'
+                                            variant='ghost'
+                                            color='fg.subtle'
+                                            padding={0}
+                                            marginTop={-1}
+                                            focusVisibleRing='none'
+                                        >
+                                            <LuCopyright />
+                                        </IconButton>
+                                    </ToggleTip>
+                                }
+                            </Flex>
                         </Box>
                     </HStack>
                 </Box>
@@ -110,4 +131,5 @@ type InatResult = {
     subTitle?: string;
     icon?: string;
     category: string;
+    attribution?: string;
 }

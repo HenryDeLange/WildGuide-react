@@ -9,23 +9,31 @@ type Props = {
     loading: boolean;
     buttonText: string;
     popupText: string;
+    compact?: boolean;
 }
 
-export function DeleteButton({ handleDelete, loading, buttonText, popupText }: Readonly<Props>) {
+export function DeleteButton({ handleDelete, loading, buttonText, popupText, compact }: Readonly<Props>) {
     const { t } = useTranslation();
     return (
         <DialogRoot role='alertdialog' lazyMount>
             <DialogTrigger asChild>
                 <Button
                     _hover={{ color: 'fg.error' }}
-                    size='lg'
+                    size={compact ? 'xs' : 'lg'}
                     variant='ghost'
-                    // color='fg.muted'
                     whiteSpace='nowrap'
                     loading={loading}
+                    padding={compact ? 0 : undefined}
+                    margin={compact ? 0 : undefined}
+                    marginTop={compact ? -1 : undefined}
+                    marginRight={compact ? -2 : undefined}
+                    focusRing={compact ? 'none' : undefined}
+                    boxSize={compact ? 4: undefined}
                 >
                     <FiTrash />
-                    <Text>{t(buttonText)}</Text>
+                    {!compact &&
+                        <Text>{t(buttonText)}</Text>
+                    }
                 </Button>
             </DialogTrigger>
             <DialogContent>

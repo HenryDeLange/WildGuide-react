@@ -79,13 +79,13 @@ export function AppHeader() {
 
 function InaturalistLink() {
     return (
-        <a
-            aria-label='iNaturalist'
-            href='https://www.inaturalist.org'
-            target='_blank'
-            rel='noopener'
-        >
-            <IconButton aria-label='iNaturalist' variant='ghost'>
+        <IconButton asChild aria-label='iNaturalist' variant='ghost' size='sm'>
+            <a
+                aria-label='iNaturalist'
+                href='https://www.inaturalist.org'
+                target='_blank'
+                rel='noopener'
+            >
                 <Image
                     src={inatLogo}
                     alt='iNaturalist'
@@ -94,22 +94,22 @@ function InaturalistLink() {
                     fit='contain'
                     loading='lazy'
                 />
-            </IconButton>
-        </a>
+            </a>
+        </IconButton>
     );
 }
 
 function GitHubLink() {
     return (
-        <a
-            aria-label='GitHub'
-            href='https://github.com/HenryDeLange/WildGuide-react'
-            target='_blank'
-            rel='noopener'
-        >
-            <IconButton variant='ghost'>
+        <IconButton asChild variant='ghost' size='sm'>
+            <a
+                aria-label='GitHub'
+                href='https://github.com/HenryDeLange/WildGuide-react'
+                target='_blank'
+                rel='noopener'
+            >
                 <FaGithub />
-            </IconButton>
-        </a>
+            </a>
+        </IconButton>
     );
 }

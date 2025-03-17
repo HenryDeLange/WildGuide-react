@@ -10,10 +10,10 @@ export function PwaReloadPrompt() {
         updateServiceWorker,
     } = useRegisterSW({
         onRegisteredSW(swScriptUrl, registration) {
-            console.log('SW Registered', { swScriptUrl, registration })
+            console.debug('SW Registered', { swScriptUrl, registration })
         },
         onRegisterError(error) {
-            console.log('SW registration error', error)
+            console.debug('SW registration error', error)
         }
     })
 

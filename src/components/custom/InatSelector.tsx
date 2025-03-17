@@ -8,6 +8,7 @@ import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Field } from '../ui/field';
+import { uppercaseFirst } from '../utils';
 import { InfiniteVirtualList } from './InfiniteVirtualList';
 
 export type InatSelectorTypes = 'PROJECT' | 'TAXON';
@@ -104,7 +105,7 @@ function InaturalistSearch({ type, select, closeDialog, ...conditionalProps }: R
         skip: skipNoText || type !== 'TAXON' || !!ancestor
     });
 
-    
+
     const {
         data: taxaData2,
         isFetching: taxaIsFetching2
@@ -176,7 +177,7 @@ function InaturalistSearch({ type, select, closeDialog, ...conditionalProps }: R
                     title: result.preferred_common_name ?? result.name,
                     subTitle: result.name,
                     icon: result.default_photo?.square_url,
-                    category: t(`entryScientificRank${result.rank.toUpperCase()}`, {defaultValue: result.rank.charAt(0).toUpperCase() + result.rank.slice(1)})
+                    category: t(`entryScientificRank${result.rank.toUpperCase()}`, { defaultValue: uppercaseFirst(result.rank) })
                 })) ?? []))
         , [debouncedInatText, loading, projectData?.results, t, taxaData?.results, type]);
 

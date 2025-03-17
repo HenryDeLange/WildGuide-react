@@ -94,15 +94,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                         </HStack>
                     </HStack>
                     <Separator />
-                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
-                        <Fieldset.Legend width='100%'>
-                            <HStack justifyContent='space-between'>
-                                <Heading>
-                                    {t('editGuideTitle')}
-                                </Heading>
-
-                            </HStack>
-                        </Fieldset.Legend>
+                    <Fieldset.Root invalid={updateIsError} disabled={isLoading} paddingTop={4}>
                         <Fieldset.Content gap={6}>
                             <Fieldset.ErrorText>
                                 <Text marginTop={6}>

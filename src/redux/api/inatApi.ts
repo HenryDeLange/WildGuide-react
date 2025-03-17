@@ -198,6 +198,7 @@ export type Project = {
     banner_color: string;
     icon: string;
     header_image_url: string;
+    terms?: string;
 };
 
 export type ProjectFindArgs = {

@@ -51,7 +51,7 @@ export function GuideNew() {
                     </Box>
                 </HStack>
                 <Separator />
-                <Fieldset.Root invalid={isError} disabled={isLoading}>
+                <Fieldset.Root invalid={isError} disabled={isLoading} paddingTop={4}>
                     <Fieldset.Content gap={6}>
                         <Fieldset.ErrorText>
                             <Text marginTop={6}>

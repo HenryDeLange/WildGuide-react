@@ -27,14 +27,14 @@ export function PwaProvider({ children }: Readonly<Props>) {
 
     useEffect(() => {
         const handleBeforeInstallPrompt = (event: Event) => {
-            console.log('PWA: Event received');
+            console.debug('PWA: Event received');
             // event.preventDefault(); // Show the browser default install UI as well
             setInstallPrompt(event as BeforeInstallPromptEvent);
             setShowPwaInstallButton(true);
         };
 
         const handleAppInstalled = () => {
-            console.log('PWA: Installed');
+            console.debug('PWA: Installed');
             setInstallPrompt(null);
             setShowPwaInstallButton(false);
         };
@@ -52,7 +52,7 @@ export function PwaProvider({ children }: Readonly<Props>) {
         if (!installPrompt) return;
         const promptEvent = installPrompt;
         const result = await promptEvent.prompt();
-        console.log(`PWA: The install prompt outcome is ${result.outcome}`);
+        console.debug(`PWA: The install prompt outcome is ${result.outcome}`);
         setInstallPrompt(null);
         setShowPwaInstallButton(false);
         window.location.reload();

@@ -1,11 +1,12 @@
 import { BackButton } from '@/components/custom/BackButton';
 import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { EntryBase, useDeleteEntryMutation, useFindEntryQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Stack, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
@@ -44,7 +45,7 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         }
     ] = useDeleteEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<EntryBase>();
+    const { register, handleSubmit, formState: { errors }, reset, watch, control } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
@@ -95,7 +96,7 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                         </HStack>
                     </HStack>
                     <Separator />
-                    <Fieldset.Root invalid={updateIsError} disabled={isLoading}>
+                    <Fieldset.Root invalid={updateIsError} disabled={isLoading} paddingTop={4}>
                         <Fieldset.Content gap={6}>
                             <Fieldset.ErrorText>
                                 <Text marginTop={6}>
@@ -117,6 +118,50 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                     variant='outline'
                                 />
                             </Field>
+                            <Stack direction={{ base: 'column', sm: 'row' }}>
+                                <Field
+                                    label={<Text fontSize='md'>{t('newEntryScientificName')}</Text>}
+                                    invalid={!!errors.name || isError}
+                                    errorText={errors.name?.message}
+                                >
+                                    <Input
+                                        {...register('scientificName', {
+                                            required: t('newEntryScientificNameRequired'),
+                                            minLength: { value: 3, message: t('newEntryScientificInvalid') },
+                                            maxLength: { value: 256, message: t('newEntryScientificInvalid') }
+                                        })}
+                                        placeholder={t('newEntryScientificNamePlaceholder')}
+                                        variant='outline'
+                                    />
+                                </Field>
+                                <Controller
+                                    control={control}
+                                    name='scientificRank'
+                                    rules={{
+                                        required: t('newEntryScientificRankRequired')
+                                    }}
+                                    render={({ field }) => (
+                                        <Field
+                                            label={<Text fontSize='md'>{t('newEntryScientificRank')}</Text>}
+                                            invalid={!!errors.scientificRank || isError}
+                                            errorText={errors.scientificRank?.message}
+                                        >
+                                            <SegmentedControl
+                                                onBlur={field.onBlur}
+                                                name={field.name}
+                                                value={field.value}
+                                                items={[
+                                                    { label: t('entryScientificRankFAMILY'), value: 'FAMILY' },
+                                                    { label: t('entryScientificRankGENUS'), value: 'GENUS' },
+                                                    { label: t('entryScientificRankSPECIES'), value: 'SPECIES' },
+                                                    { label: t('entryScientificRankSUBSPECIES'), value: 'SUBSPECIES' }
+                                                ]}
+                                                onValueChange={({ value }) => field.onChange(value)}
+                                            />
+                                        </Field>
+                                    )}
+                                />
+                            </Stack>
                             <Field
                                 label={<Text fontSize='md'>{t('newEntrySummary')}</Text>}
                                 invalid={!!errors.summary || isError}

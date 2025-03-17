@@ -6,7 +6,14 @@ type Props = ChakraLinkProps & RouterLinkProps;
 
 export const NavLink: FC<Props> = ({ children, ...props }) => {
     return (
-        <ChakraLink as={RouterLink} {...props}>
+        <ChakraLink
+            as={RouterLink}
+            {...props}
+            focusRing='none'
+            _focus={{
+                textDecoration: 'underline'
+            }}
+        >
             {children}
         </ChakraLink>
     );

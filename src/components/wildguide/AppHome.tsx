@@ -90,13 +90,15 @@ export function AppHome() {
                     <Separator marginY={4} />
                 </>
             }
-            <Image
-                src={homeImage}
-                width={{ base: '90%', sm: '70%', md: '55%', lg: '50%', xl: '40%' }}
-                fit='cover'
-                marginX='auto'
-                paddingBottom={12}
-            />
+            <Box paddingBottom={8}>
+                <Image
+                    src={homeImage}
+                    width={{ base: '90%', sm: '70%', md: '55%', lg: '50%', xl: '40%' }}
+                    fit='cover'
+                    marginX='auto'
+                    borderRadius='md'
+                />
+            </Box>
         </Container>
     );
 }

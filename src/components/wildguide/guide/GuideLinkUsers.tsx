@@ -1,3 +1,4 @@
+import { DeleteButton } from '@/components/custom/DeleteButton';
 import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
 import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useFindGuideQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, useUpdateGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
 import { DialogRootProvider, Fieldset, HStack, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
@@ -22,6 +23,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
 
     const [accessType, setAccessType] = useState<AccessTypes>('OWNER');
     const [username, setUsername] = useState('');
+    const [userNotfound, setUserNotFound] = useState(false);
 
     const [
         doFindUserInfo, {
@@ -98,17 +100,21 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     const handleJoin = useCallback(() => {
         doFindUserInfo({ username }).unwrap()
             .then(userInfo => {
+                setUserNotFound(false);
                 if (accessType === 'OWNER') {
                     doOwnerJoin({ guideId, ownerId: userInfo.id });
                 }
                 else {
                     doMemberJoin({ guideId, memberId: userInfo.id });
                 }
+            })
+            .catch(e => {
+                console.warn(e);
+                setUserNotFound(true);
             });
     }, [accessType, doFindUserInfo, doMemberJoin, doOwnerJoin, guideId, username]);
 
     const handleLeave = useCallback((userId: number) => () => {
-        // TODO: Confirm dialog
         if (accessType === 'OWNER') {
             doOwnerLeave({ guideId, ownerId: userId });
         }
@@ -135,7 +141,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
 
     return (
         <Show when={!guideIsLoading && !ownerIsLoading && !memberIsLoading} fallback={<Spinner size='lg' margin={8} />}>
-            <DialogRootProvider value={dialog} placement='center' lazyMount={true}>
+            <DialogRootProvider value={dialog} placement='center' lazyMount={true} size='lg'>
                 <DialogTrigger asChild>
                     <Button
                         size='lg'
@@ -159,17 +165,19 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                     <DialogBody>
                         <ErrorDisplay error={ownerIsError ? ownerError : memberIsError ? memberError : guideIsError ? guideError : undefined} />
                         <Fieldset.Root disabled={isLoading}>
-                            <Fieldset.Content gap={8}>
+                            <Fieldset.Content gap={6}>
                                 <Field label={<Text fontSize='md'>{t('newGuideVisibility')}</Text>}>
                                     <RadioCardRoot
                                         defaultValue={guideData?.visibility ?? 'PUBLIC'}
                                         onValueChange={handleVisibilityChange}
+                                        width='full'
+                                        colorPalette='orange'
                                     >
                                         <HStack align='stretch'>
                                             <RadioCardItem
                                                 label={t('newGuideVisibilityPUBLIC')}
                                                 description={t('newGuideVisibilityHelpPUBLIC')}
-                                                value='PUBLIC'
+                                                value='PUBLIC' width='100%'
                                             />
                                             <RadioCardItem
                                                 label={t('newGuideVisibilityPRIVATE')}
@@ -179,11 +187,12 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                         </HStack>
                                     </RadioCardRoot>
                                 </Field>
-                                <Separator variant='dashed' />
+                                <Separator variant='dashed' marginBottom={-2} size='lg' />
                                 <Field label={<Text fontSize='md'>{t('editGuideAccessMembershipType')}</Text>}>
                                     <RadioCardRoot
                                         defaultValue='OWNER'
                                         onValueChange={({ value }: { value: AccessTypes }) => setAccessType(value)}
+                                        width='full'
                                     >
                                         <HStack align='stretch'>
                                             <RadioCardItem
@@ -201,7 +210,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                 </Field>
                                 <Field
                                     label={<Text fontSize='md' marginBottom={2}>{t('editGuideAccessUsernameHelp')}</Text>}
-                                    invalid={ownerJoinIsError || memberJoinIsError || userInfoIsError}
+                                    invalid={ownerJoinIsError || memberJoinIsError || userInfoIsError || userNotfound}
                                     errorText={t('editGuideAccessError')}
                                 >
                                     <HStack flex={1} width='100%'>
@@ -214,6 +223,8 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                         <Button
                                             onClick={handleJoin}
                                             loading={ownerJoinIsLoading || memberJoinIsLoading || userInfoIsLoading}
+                                            color='fg.success'
+                                            variant='outline'
                                         >
                                             <LuUsersRound />
                                             {t('editGuideAccessConfirm')}
@@ -232,11 +243,18 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                         {users.map(user =>
                                             <Tag
                                                 key={user.userId}
-                                                onClose={handleLeave(user.userId)}
                                                 size='lg'
-                                                closable={!isLoading && (accessType === 'MEMBER' || (accessType === 'OWNER' && users.length > 1))}
                                             >
                                                 {user.username}
+                                                {(accessType === 'MEMBER' || (accessType === 'OWNER' && users.length > 1)) &&
+                                                    <DeleteButton
+                                                        buttonText={t('editGuideAccessDeleteTitle')}
+                                                        popupText={t('editGuideAccessDeleteDetails', { user: user.username })}
+                                                        handleDelete={handleLeave(user.userId)}
+                                                        loading={isLoading}
+                                                        compact
+                                                    />
+                                                }
                                             </Tag>
                                         )}
                                     </HStack>

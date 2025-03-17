@@ -5,16 +5,17 @@ import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelecto
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { RangeMap } from '@/components/map/RangeMap';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
+import { ToggleTip } from '@/components/ui/toggle-tip';
 import { convertInatRanks } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, IconButton, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BsGlobeEuropeAfrica } from 'react-icons/bs';
 import { LuBookText } from 'react-icons/lu';
-import { MdOutlinePhoto } from 'react-icons/md';
+import { MdOutlineErrorOutline, MdOutlinePhoto } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { useIsOwner } from '../hooks/userHooks';
 import { EntryPhotos } from './EntryPhotos';
@@ -86,6 +87,9 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
         }
     }, [data, doUpdate, entryId, guideId]);
 
+    const inatTaxonMismatch = taxon?.name.toLowerCase() !== data?.scientificName.toLowerCase()
+        || taxon?.rank.toLowerCase() !== data?.scientificRank.toLowerCase();
+
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
@@ -130,6 +134,25 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 <Text color='fg.muted' fontStyle='italic' fontWeight='semibold' fontSize='lg'>
                                     {data.scientificName}
                                 </Text>
+                                {inatTaxonMismatch &&
+                                    <ToggleTip
+                                        content={
+                                            <Text fontSize='md' color='fg.warning'>
+                                                {t('entryInatMismatch')}
+                                            </Text>
+                                        }
+                                    >
+                                        <IconButton
+                                            variant='ghost'
+                                            color='fg.warning'
+                                            padding={0}
+                                            marginTop={0}
+                                            focusVisibleRing='none'
+                                        >
+                                            <MdOutlineErrorOutline />
+                                        </IconButton>
+                                    </ToggleTip>
+                                }
                             </HStack>
                         </Box>
                         <TabsRoot
