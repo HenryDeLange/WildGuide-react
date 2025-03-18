@@ -1,10 +1,10 @@
-import { IconButton } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
-import { LuEllipsisVertical } from "react-icons/lu";
-import { MenuContent, MenuItem, MenuItemGroup, MenuRoot, MenuSeparator, MenuTrigger } from "../ui/menu";
-import { QrCodePopup } from "./QrCodePopup";
-import { RefreshButton } from "./RefreshButton";
-import { ShareButton } from "./ShareButton";
+import { IconButton } from '@chakra-ui/react';
+import { useTranslation } from 'react-i18next';
+import { LuEllipsisVertical } from 'react-icons/lu';
+import { MenuContent, MenuItem, MenuItemGroup, MenuRoot, MenuSeparator, MenuTrigger } from '../ui/menu';
+import { QrCodePopup } from './QrCodePopup';
+import { RefreshButton } from './RefreshButton';
+import { ShareButton } from './ShareButton';
 
 type Props = {
     handleRefresh: () => void;

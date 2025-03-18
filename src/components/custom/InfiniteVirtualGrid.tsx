@@ -10,9 +10,10 @@ type Props<T> = {
     renderItem: (item: T) => ReactNode;
     loadMoreItems: () => void;
     loading: boolean;
+    gridSize?: number;
 };
 
-export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loading }: Readonly<Props<T>>) {
+export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loading, gridSize = 200 }: Readonly<Props<T>>) {
     const { t } = useTranslation();
     const { grid } = useHeights();
 
@@ -21,7 +22,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
     // const rowVirtualizer = useVirtualizer({
     //     count: data.length,
     //     getScrollElement: () => parentRef.current,
-    //     estimateSize: () => 200,
+    //     estimateSize: () => gridSize,
     //     overscan: 5
     // });
 
@@ -55,7 +56,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 {/* {rowVirtualizer.getVirtualItems().map(virtualRow => {
                     console.log('render Item:, ', virtualRow.index);
                     return (
-                        <Box key={virtualRow.index} height={200}>
+                        <Box key={virtualRow.index} height={gridSize}>
                             {renderItem(data[virtualRow.index])}
                         </Box>
                     );
@@ -63,7 +64,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
                 {data.map((item, index) => {
                     return (
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        <Box key={(item as any).id ?? index} height={200}>
+                        <Box key={(item as any).id ?? index} height={gridSize}>
                             {renderItem(item)}
                         </Box>
                     );

@@ -1,10 +1,13 @@
+import { selectAuthUserId } from '@/auth/authSlice';
 import { EditButton } from '@/components/custom/EditButton';
 import { InatLinkCard } from '@/components/custom/InatLinkCard';
 import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
+import { SummaryBox } from '@/components/custom/SummaryBox';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { useAppSelector } from '@/redux/hooks';
+import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +27,8 @@ type Props = {
 export function Guide({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId' });
+
+    const userId = useAppSelector(selectAuthUserId);
 
     const {
         isOwner,
@@ -117,14 +122,16 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     <Heading size='3xl' alignSelf='flex-start'>
                                         {data.name}
                                     </Heading>
-                                    <IconButton
-                                        variant='plain'
-                                        onClick={handleStar}
-                                        loading={createStarIsLoading || deleteStarIsLoading}
-                                        color={data.starredByUser ? 'fg.info' : undefined}
-                                    >
-                                        {data.starredByUser ? <FaStar /> : <FaRegStar />}
-                                    </IconButton>
+                                    {userId &&
+                                        <IconButton
+                                            variant='plain'
+                                            onClick={handleStar}
+                                            loading={createStarIsLoading || deleteStarIsLoading}
+                                            color={data.starredByUser ? 'fg.info' : undefined}
+                                        >
+                                            {data.starredByUser ? <FaStar /> : <FaRegStar />}
+                                        </IconButton>
+                                    }
                                 </HStack>
                                 <Box flex='1' display='flex' justifyContent='flex-end'>
                                     <HStack
@@ -188,36 +195,14 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 borderRadius='sm'
                                 padding={0}
                             >
-                                <VStack width='100%'>
-                                    <Box width='100%' paddingTop={4} paddingX={4}>
-                                        {data.summary &&
-                                            <Box
-                                                marginBottom={4}
-                                                paddingX={4}
-                                                paddingY={2}
-                                                borderWidth={1}
-                                                borderRadius='sm'
-                                                boxShadow='sm'
-                                                borderColor='border'
-                                            >
-                                                <Text fontSize='lg'>
-                                                    {data.summary}
-                                                </Text>
-                                            </Box>
-                                        }
-                                        <Stack>
-                                            {data.inaturalistProject &&
-                                                <InatLinkCard type='PROJECT' inatId={data.inaturalistProject} />
-                                            }
-                                            {data.inaturalistTaxon &&
-                                                <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
-                                            }
-                                        </Stack>
-                                        {data.description &&
-                                            <ExtendedMarkdown content={data.description} />
-                                        }
-                                    </Box>
-                                </VStack>
+                                <Stack width='100%' gap={2} padding={2}>
+                                    <SummaryBox summary={data.summary} />
+                                    <Stack>
+                                        <InatLinkCard type='PROJECT' inatId={data.inaturalistProject} />
+                                        <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
+                                    </Stack>
+                                    <ExtendedMarkdown content={data.description} />
+                                </Stack>
                             </TabsContent>
                             <TabsContent
                                 value='entries'

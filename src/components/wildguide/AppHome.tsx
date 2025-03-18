@@ -1,5 +1,7 @@
+import { selectAuthUserId } from '@/auth/authSlice';
 import { PwaContext } from '@/pwa/PwaProvider';
 import { useFindStarredGuidesQuery } from '@/redux/api/wildguideApi';
+import { useAppSelector } from '@/redux/hooks';
 import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useContext } from 'react';
@@ -18,12 +20,14 @@ export function AppHome() {
 
     const { content } = useHeights();
 
-    const { showPwaInstallButton, handleInstallClick } = useContext(PwaContext);
+    const { isPwa, showPwaInstallButton, handleInstallClick } = useContext(PwaContext);
+
+    const userId = useAppSelector(selectAuthUserId);
 
     const {
         data,
         isFetching
-    } = useFindStarredGuidesQuery();
+    } = useFindStarredGuidesQuery(undefined, { skip: !userId });
 
     return (
         <Container height={content} marginTop={2}>
@@ -69,7 +73,7 @@ export function AppHome() {
                 </NavLink>
                 <Separator marginY={4} />
             </Box>
-            {showPwaInstallButton &&
+            {!isPwa && showPwaInstallButton &&
                 <>
                     <HStack gap={4}>
                         <Image

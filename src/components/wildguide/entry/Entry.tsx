@@ -3,13 +3,14 @@ import { EditButton } from '@/components/custom/EditButton';
 import { InatLinkCard } from '@/components/custom/InatLinkCard';
 import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
+import { SummaryBox } from '@/components/custom/SummaryBox';
 import { RangeMap } from '@/components/map/RangeMap';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { ToggleTip } from '@/components/ui/toggle-tip';
 import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, IconButton, Show, Spinner, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, VStack } from '@chakra-ui/react';
+import { Box, Heading, HStack, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -203,31 +204,11 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 borderRadius='sm'
                                 padding={0}
                             >
-                                <VStack width='100%'>
-                                    <Box width='100%' paddingTop={4} paddingX={4}>
-                                        {data.summary &&
-                                            <Box
-                                                marginBottom={4}
-                                                paddingX={4}
-                                                paddingY={2}
-                                                borderWidth={1}
-                                                borderRadius='sm'
-                                                boxShadow='sm'
-                                                borderColor='border'
-                                            >
-                                                <Text fontSize='lg'>
-                                                    {data.summary}
-                                                </Text>
-                                            </Box>
-                                        }
-                                        {data.inaturalistTaxon &&
-                                            <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
-                                        }
-                                        {data.description &&
-                                            <ExtendedMarkdown content={data.description} />
-                                        }
-                                    </Box>
-                                </VStack>
+                                <Stack width='100%' gap={2} padding={2}>
+                                    <SummaryBox summary={data.summary} />
+                                    <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
+                                    <ExtendedMarkdown content={data.description} />
+                                </Stack>
                             </TabsContent>
                             <TabsContent
                                 value='map'
@@ -239,7 +220,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 padding={0}
                             >
                                 {data.inaturalistTaxon && taxon &&
-                                    <Box padding={1}>
+                                    <Box padding={2}>
                                         <RangeMap
                                             taxonId={data.inaturalistTaxon}
                                             rank={convertInatToEntryRank(taxon.rank) ?? data.scientificRank}

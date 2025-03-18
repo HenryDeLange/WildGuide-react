@@ -3,6 +3,8 @@
         "source.addMissingImports",
         "source.organizeImports"
     ],
+    "typescript.preferences.quoteStyle": "single",
+    "javascript.preferences.quoteStyle": "single",
     "files.exclude": {
         "**/node_modules": true
     },
@@ -10,7 +12,9 @@
         "**/dist": true
     },
     "cSpell.words": [
+        "appinstalled",
         "autoresize",
+        "beforeinstallprompt",
         "Chakra",
         "codegen",
         "geoprivacy",

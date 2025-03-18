@@ -8,14 +8,15 @@ import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 import { Popup } from './Popup';
 
 type Props = {
-    content: string;
+    content?: string;
 }
 
 export function ExtendedMarkdown({ content }: Readonly<Props>) {
+    if (!content)
+        return null;
     return (
         <MarkdownErrorBoundary>
             <Box
-                marginY={4}
                 paddingY={1}
                 paddingX={3}
                 borderWidth={1}

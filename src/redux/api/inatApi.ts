@@ -265,6 +265,7 @@ export type Observation = {
 
 export type ObservationsFindArgs = {
     id?: number[];
+    q?: string;
     not_id?: number[];
     taxon_id?: number[]; // Also includes children of the specified taxa
     without_taxon_id?: number[]; // Also excludes children of the specified taxa

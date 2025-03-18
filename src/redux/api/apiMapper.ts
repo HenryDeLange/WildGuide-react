@@ -1,5 +1,5 @@
-import { Taxon } from "./inatApi";
-import { Entry, EntryBase } from "./wildguideApi";
+import { Taxon } from './inatApi';
+import { Entry, EntryBase } from './wildguideApi';
 
 export function convertInatToEntryRank(inatRank: Taxon['rank']): EntryBase['scientificRank'] | undefined {
     switch (inatRank) {

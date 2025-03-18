@@ -1,6 +1,6 @@
-import { selectAuthUserId } from "@/auth/authSlice";
-import { useFindGuideOwnersQuery } from "@/redux/api/wildguideApi";
-import { useAppSelector } from "@/redux/hooks";
+import { selectAuthUserId } from '@/auth/authSlice';
+import { useFindGuideOwnersQuery } from '@/redux/api/wildguideApi';
+import { useAppSelector } from '@/redux/hooks';
 
 export function useIsOwner(guideId: number) {
     const userId = useAppSelector(selectAuthUserId);

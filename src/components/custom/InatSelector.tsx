@@ -46,13 +46,13 @@ export function InatSelector({ type, select, ...conditionalProps }: Readonly<Pro
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogHeader>
+                <DialogHeader marginTop={-4} marginLeft={-4}>
                     <DialogTitle>
                         {t('inaturalistLinkTitle')}
                     </DialogTitle>
                 </DialogHeader>
                 <DialogCloseTrigger />
-                <DialogBody paddingBottom={2}>
+                <DialogBody padding={2} marginTop={-2}>
                     <InaturalistSearch type={type} select={select} closeDialog={handleCloseDialog} {...conditionalProps} />
                 </DialogBody>
                 <DialogFooter>
@@ -168,14 +168,14 @@ function InaturalistSearch({ type, select, closeDialog, ...conditionalProps }: R
                     id: result.id,
                     title: result.title,
                     subTitle: result.description,
-                    icon: result.icon,
+                    icon: result.icon ?? inatLogo,
                     category: result.project_type
                 })) ?? []
                 : taxaData?.results.map(result => ({
                     id: result.id,
                     title: result.preferred_common_name ?? result.name,
                     subTitle: result.name,
-                    icon: result.default_photo?.square_url,
+                    icon: result.default_photo?.square_url ?? inatLogo,
                     category: t(`entryScientificRank${result.rank.toUpperCase()}`, { defaultValue: uppercaseFirst(result.rank) })
                 })) ?? []))
         , [debouncedInatText, loading, projectData?.results, t, taxaData?.results, type]);

@@ -1,8 +1,7 @@
-import { InatLinkDialog, InatLinkItem } from '@/components/custom/InatLinkDialog';
+import { InatLinkDialog } from '@/components/custom/InatLinkDialog';
 import { InputGroup } from '@/components/ui/input-group';
-import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
-import { Entry, useCreateEntryMutation, useFindEntriesQuery } from '@/redux/api/wildguideApi';
+import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
 import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -67,14 +66,6 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
     }, {
         skip: taxaToLoad.length === 0
     });
-
-    const [
-        doCreate, {
-            // TODO: Handle these
-            // isLoading,
-            // isError
-        }
-    ] = useCreateEntryMutation();
 
     useEffect(() => {
         if (!isFetching && pageQueue.length > 0) {
@@ -174,23 +165,11 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
                     <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
                         {isOwner &&
                             <>
-                                {(guideInatProject || guideInatTaxon) &&
-                                    <InatLinkDialog
-                                        inaturalistProject={guideInatProject}
-                                        inaturalistTaxon={guideInatTaxon}
-                                        select={(item: InatLinkItem) => {
-                                            doCreate({
-                                                guideId,
-                                                entryBase: {
-                                                    name: item.name,
-                                                    scientificName: item.scientificName,
-                                                    scientificRank: convertInatToEntryRank(item.rank) ?? 'SPECIES',
-                                                    inaturalistTaxon: item.id
-                                                }
-                                            });
-                                        }}
-                                    />
-                                }
+                                <InatLinkDialog
+                                    guideId={guideId}
+                                    inaturalistProject={guideInatProject}
+                                    inaturalistTaxon={guideInatTaxon}
+                                />
                                 <Button
                                     size='lg'
                                     variant='ghost'

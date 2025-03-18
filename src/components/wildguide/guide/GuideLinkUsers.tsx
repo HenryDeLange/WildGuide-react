@@ -156,13 +156,13 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
-                    <DialogHeader>
+                    <DialogHeader marginTop={-4} marginLeft={-2}>
                         <DialogTitle>
                             {t('editGuideAccessTitle')}
                         </DialogTitle>
                     </DialogHeader>
                     <DialogCloseTrigger />
-                    <DialogBody>
+                    <DialogBody padding={4} marginTop={-4}>
                         <ErrorDisplay error={ownerIsError ? ownerError : memberIsError ? memberError : guideIsError ? guideError : undefined} />
                         <Fieldset.Root disabled={isLoading}>
                             <Fieldset.Content gap={6}>

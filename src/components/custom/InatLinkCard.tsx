@@ -10,7 +10,7 @@ export type InatLinkCardTypes = 'PROJECT' | 'TAXON';
 
 type Props = {
     type: InatLinkCardTypes;
-    inatId: number;
+    inatId?: number;
 }
 
 export function InatLinkCard({ type, inatId }: Readonly<Props>) {
@@ -19,19 +19,23 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
     const {
         data: projectData,
         isLoading: projectIsLoading
-    } = useProjectFindQuery({ id: inatId }, {
-        skip: type !== 'PROJECT'
+    } = useProjectFindQuery({ id: inatId! }, {
+        skip: !inatId || type !== 'PROJECT'
     });
-    const project = projectData?.total_results === 1 ? projectData.results[0] : undefined;
 
     const {
         data: taxonData,
         isLoading: taxonIsLoading
-    } = useTaxonFindQuery({ id: inatId }, {
-        skip: type !== 'TAXON'
+    } = useTaxonFindQuery({ id: inatId! }, {
+        skip: !inatId || type !== 'TAXON'
     });
-    const taxon = taxonData?.total_results === 1 ? taxonData.results[0] : undefined;
 
+    if (!inatId)
+        return null;
+
+    // RENDER
+    const project = projectData?.total_results === 1 ? projectData.results[0] : undefined;
+    const taxon = taxonData?.total_results === 1 ? taxonData.results[0] : undefined;
     const data: InatResult | undefined =
         (type === 'PROJECT' && project) ? {
             id: project.id,
@@ -65,13 +69,13 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                     borderColor='border'
                 >
                     <HStack>
-                        <a
-                            aria-label='iNaturalist'
-                            href={`https://www.inaturalist.org/${type === 'PROJECT' ? 'projects' : 'taxa'}/${data.id}`}
-                            target='_blank'
-                            rel='noopener'
-                        >
-                            <IconButton aria-label='iNaturalist' variant='ghost'>
+                        <IconButton aria-label='iNaturalist' variant='ghost' asChild>
+                            <a
+                                aria-label='iNaturalist'
+                                href={`https://www.inaturalist.org/${type === 'PROJECT' ? 'projects' : 'taxa'}/${data.id}`}
+                                target='_blank'
+                                rel='noopener'
+                            >
                                 <Image
                                     src={inatLogo}
                                     alt='iNaturalist'
@@ -81,8 +85,8 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                                     height='40px'
                                     loading='lazy'
                                 />
-                            </IconButton>
-                        </a>
+                            </a>
+                        </IconButton>
                         <Image
                             src={data.icon ?? inatLogo}
                             alt={data.title}

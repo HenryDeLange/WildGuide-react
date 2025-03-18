@@ -69,6 +69,8 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
             attributionControl={false}
             zoomControl={false}
             style={{ height: grid - 24 }}
+            maxZoom={maxZoom}
+            minZoom={minZoom}
         >
             {/* Controls */}
             <AttributionControl
@@ -85,25 +87,29 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                 <LayersControl.BaseLayer name={t('mapBaseStreet')} checked>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}'
-                        maxZoom={maxZoom}
                         subdomains={subdomains}
+                        maxZoom={maxZoom}
+                        minZoom={minZoom}
                     />
                 </LayersControl.BaseLayer>
                 <LayersControl.BaseLayer name={t('mapBaseHybrid')}>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}'
-                        maxZoom={maxZoom}
                         subdomains={subdomains}
+                        maxZoom={maxZoom}
+                        minZoom={minZoom}
                     />
                 </LayersControl.BaseLayer>
                 <LayersControl.BaseLayer name={t('mapBaseSatellite')}>
                     <TileLayer
                         url='https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}'
-                        maxZoom={maxZoom}
                         subdomains={subdomains}
+                        maxZoom={maxZoom}
+                        minZoom={minZoom}
                     />
                 </LayersControl.BaseLayer>
                 {/* Overlays */}
+                {/* TODO: Is there a way to reduce the number of calls to iNat when panning/zooming the map? */}
                 {(rank === 'SPECIES' || useParentId) &&
                     <>
                         <LayersControl.Overlay name={geoModelLayer} checked={selectedLayers.indexOf(geoModelLayer) >= 0}>
@@ -111,6 +117,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                                 url={`https://api.inaturalist.org/v1/geomodel/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?thresholded=true`}
                                 attribution={`<a href='https://www.inaturalist.org/geo_model/${useParentId ? parentId : taxonId}/explain'>GeoModel</a>`}
                                 maxZoom={maxZoom}
+                                minZoom={minZoom}
                             />
                         </LayersControl.Overlay>
                         <LayersControl.Overlay name={rangeLayer} checked={selectedLayers.indexOf(rangeLayer) >= 0}>
@@ -118,6 +125,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                                 url={`https://api.inaturalist.org/v1/taxon_ranges/${useParentId ? parentId : taxonId}/{z}/{x}/{y}.png?color=${useParentId ? 'orange' : 'red'}`}
                                 attribution={`<a href='https://www.inaturalist.org/taxa/${useParentId ? parentId : taxonId}/range.html'>Range</a>`}
                                 maxZoom={maxZoom}
+                                minZoom={minZoom}
                             />
                         </LayersControl.Overlay>
                     </>
@@ -127,6 +135,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                         url={`https://api.inaturalist.org/v1/heatmap/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}
                         maxZoom={maxZoom}
+                        minZoom={minZoom}
                     />
                 </LayersControl.Overlay>
                 <LayersControl.Overlay name={observationsLayer} checked={selectedLayers.indexOf(observationsLayer) >= 0}>
@@ -134,6 +143,7 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
                         url={`https://api.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
                         attribution={`<a href='https://www.inaturalist.org/taxa/${taxonId}'>Taxon</a>`}
                         maxZoom={maxZoom}
+                        minZoom={minZoom}
                     />
                 </LayersControl.Overlay>
             </LayersControl>
@@ -150,3 +160,4 @@ const startPosition = {
 const subdomains = ['mt0', 'mt1', 'mt2', 'mt3'];
 
 const maxZoom = 20;
+const minZoom = 3;

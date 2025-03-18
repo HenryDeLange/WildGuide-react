@@ -1,10 +1,9 @@
 - TODO: Add "compare" feature, to compare two (or more?) entries
 - TODO: PWA mobile app builder: https://www.pwabuilder.com
-- TODO: Make the guide grid virtualized for performance concerns
+- TODO: Make the guide grid virtualized for performance concerns. Also make List and Grid use child render components, if possible instead of render function?
 - TODO: Try to add an iNat rate limiter that works on client side (75 requests per minute)
 - TODO: Improve mobile/responsive layout. also make app header go to drawer on smaller screens. especially fix scrolling consistency issues (entry list).
 - TODO: Maybe move the token persistence to cookies instead of localStorage?
-- TODO: I don't think I'm using the functionality provided by PwaReloadPrompt?
 - TODO: When offline, don't allow doing API calls other than GET (don't allow creating/updating data). Ideally hide the buttons on the UI.
 - TODO: Make more use fo Skeleton than Spinner in most cases
 - TODO: Setup custom theme
