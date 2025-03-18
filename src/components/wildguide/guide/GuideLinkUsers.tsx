@@ -144,7 +144,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
             <DialogRootProvider value={dialog} placement='center' lazyMount={true} size='lg'>
                 <DialogTrigger asChild>
                     <Button
-                        size='lg'
+                        size='md'
                         variant='ghost'
                         color='fg.info'
                         whiteSpace='nowrap'

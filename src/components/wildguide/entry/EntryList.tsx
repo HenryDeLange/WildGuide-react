@@ -171,7 +171,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
                                     inaturalistTaxon={guideInatTaxon}
                                 />
                                 <Button
-                                    size='lg'
+                                    size='md'
                                     variant='ghost'
                                     color='fg.info'
                                     onClick={handleCreate}

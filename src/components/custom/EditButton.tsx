@@ -12,7 +12,7 @@ export function EditButton({ titleKey, handleEdit }: Readonly<Props>) {
     const { t } = useTranslation();
     return (
         <Button
-            size='lg'
+            size='md'
             variant='ghost'
             whiteSpace='nowrap'
             color='fg.info'

@@ -31,7 +31,7 @@ export function InatSelector({ type, select, ...conditionalProps }: Readonly<Pro
     return (
         <DialogRootProvider value={dialog} placement='center' lazyMount={true}>
             <DialogTrigger asChild>
-                <Button size='lg' variant='ghost' whiteSpace='nowrap'>
+                <Button size='md' variant='ghost' whiteSpace='nowrap'>
                     <Image
                         src={inatLogo}
                         alt='iNaturalist'

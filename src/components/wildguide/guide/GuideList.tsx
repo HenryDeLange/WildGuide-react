@@ -113,7 +113,7 @@ export function GuideList() {
                         >
                             {userId !== null &&
                                 <Button
-                                    size='lg'
+                                    size='md'
                                     variant='ghost'
                                     color='fg.info'
                                     onClick={handleCreate}
