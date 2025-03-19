@@ -2,9 +2,8 @@ import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useProjectFindQuery, useTaxonFindQuery } from '@/redux/api/inatApi';
 import { Box, Flex, Heading, HStack, IconButton, Image, Show, Skeleton, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { LuCopyright } from 'react-icons/lu';
-import { ToggleTip } from '../ui/toggle-tip';
 import { uppercaseFirst } from '../utils';
+import { Attribution } from './Attribution';
 
 export type InatLinkCardTypes = 'PROJECT' | 'TAXON';
 
@@ -106,20 +105,7 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                                 <Text fontSize='xs' color='fg.subtle' truncate marginEnd='auto'>
                                     {data.category}
                                 </Text>
-                                {data.attribution &&
-                                    <ToggleTip content={data.attribution}>
-                                        <IconButton
-                                            size='2xs'
-                                            variant='ghost'
-                                            color='fg.subtle'
-                                            padding={0}
-                                            marginTop={-1}
-                                            focusVisibleRing='none'
-                                        >
-                                            <LuCopyright />
-                                        </IconButton>
-                                    </ToggleTip>
-                                }
+                                <Attribution attribution={data.attribution} />
                             </Flex>
                         </Box>
                     </HStack>

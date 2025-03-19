@@ -1,10 +1,10 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
+import { Attribution } from '@/components/custom/Attribution';
+import { ImageZoomPopup } from '@/components/custom/ImageZoomPopup';
 import { InfiniteVirtualGrid } from '@/components/custom/InfiniteVirtualGrid';
-import { ToggleTip } from '@/components/ui/toggle-tip';
 import { Photo, useObservationsFindQuery } from '@/redux/api/inatApi';
-import { Box, IconButton, Image } from '@chakra-ui/react';
+import { Box, IconButton, Image, Text } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
-import { LuCopyright } from 'react-icons/lu';
 
 type Props = {
     scientificName: string;
@@ -44,7 +44,8 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                 const existingIds = new Set(prev.map(item => item.id));
                 const newItems = (data?.results
                     .flatMap(obs => obs.photos.map(photo => ({
-                        observation_id: obs.id,
+                        observationId: obs.id,
+                        taxonName: obs.taxon.preferred_common_name ?? obs.taxon.name,
                         ...photo
                     }))) ?? [])
                     .filter(item => !existingIds.has(item.id));
@@ -59,13 +60,6 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
             setPageQueue(prev => [...prev, nextPage]);
         }
     }, [data?.total_results, page, pageQueue]);
-
-    // TODO: Handle refresh
-    // const handleRefresh = useCallback(() => {
-    //     setItems([]);
-    //     setPage(0);
-    //     refetch();
-    // }, [refetch]);
 
     return (
         <Box>
@@ -83,20 +77,7 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                             width={GRID_SIZE}
                             height={GRID_SIZE}
                         />
-                        {item.attribution &&
-                            <Box position='absolute' bottom={1} right={1}>
-                                <ToggleTip content={item.attribution}>
-                                    <IconButton
-                                        size='2xs'
-                                        variant='ghost'
-                                        color='fg.subtle'
-                                        focusVisibleRing='none'
-                                    >
-                                        <LuCopyright />
-                                    </IconButton>
-                                </ToggleTip>
-                            </Box>
-                        }
+                        <Attribution attribution={item.attribution} />
                         <Box position='absolute' bottom={1} left={1}>
                             <IconButton
                                 size='2xs'
@@ -107,7 +88,7 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                             >
                                 <a
                                     aria-label='iNaturalist'
-                                    href={`https://www.inaturalist.org/observations/${item.observation_id}`}
+                                    href={`https://www.inaturalist.org/observations/${item.observationId}`}
                                     target='_blank'
                                     rel='noopener'
                                 >
@@ -123,6 +104,15 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                                 </a>
                             </IconButton>
                         </Box>
+                        <ImageZoomPopup
+                            url={(item.original_url ?? item.url?.replace('/square.', '/original.'))!}
+                            attribution={item.attribution}
+                        />
+                        <Box position='absolute' top={1} left={1}>
+                            <Text truncate color='#DEF' textShadow="1px 1px 2px rgba(0, 0, 0, 0.75)">
+                                {item.taxonName}
+                            </Text>
+                        </Box>
                     </Box>
                 )}
             />
@@ -134,5 +124,6 @@ const PAGE_SIZE = 50;
 const GRID_SIZE = 200;
 
 type ObsPhoto = Photo & {
-    observation_id: number;
+    observationId: number;
+    taxonName: string;
 }

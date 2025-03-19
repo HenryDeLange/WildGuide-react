@@ -1,9 +1,8 @@
-import { Box, DialogRoot, HStack, IconButton, Image, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 import NamedColors from 'color-name';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
-import { DialogBody, DialogCloseTrigger, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { ImageZoomPopup } from '../custom/ImageZoomPopup';
 import { Tooltip } from '../ui/tooltip';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 
@@ -34,7 +33,6 @@ type AnnotationParams = {
 
 export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
     const scale = useBreakpointValue({ base: 1, sm: 1.2, md: 1.5, lg: 1.85 }) ?? 1;
-    const [zoom, setZoom] = useState(1);
     return (
         <MarkdownErrorBoundary>
             <Box position='relative' display='inline-block' border='1px solid' borderRadius={3} bgColor='gray.muted'>
@@ -45,39 +43,7 @@ export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
                     width={IMAGE_SIZE * scale}
                     height={IMAGE_SIZE * scale}
                 />
-                <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size='cover'>
-                    <DialogTrigger asChild>
-                        <Box position='absolute' top={1} right={1}>
-                            <IconButton variant='ghost'>
-                                <LuZoomIn />
-                            </IconButton>
-                        </Box>
-                    </DialogTrigger>
-                    <DialogContent width='100%' height='100%'>
-                        <DialogTitle>
-                            <HStack margin={2}>
-                                <IconButton variant='ghost' onClick={() => setZoom(zoom * 1.5)}>
-                                    <LuZoomIn />
-                                </IconButton>
-                                <IconButton variant='ghost' onClick={() => setZoom(zoom / 1.5)}>
-                                    <LuZoomOut />
-                                </IconButton>
-                            </HStack>
-                        </DialogTitle>
-                        <DialogBody display='flex' justifyContent='center' alignItems='center' overflow='auto' margin={2} marginTop={0}>
-                            <Image
-                                src={url}
-                                objectFit='contain'
-                                width='auto'
-                                height='auto'
-                                maxWidth='100%'
-                                maxHeight='80vh'
-                                transform={`scale(${zoom})`}
-                            />
-                        </DialogBody>
-                        <DialogCloseTrigger />
-                    </DialogContent>
-                </DialogRoot>
+                <ImageZoomPopup url={url} />
                 <AnnotationsLayer annotations={annotations} scale={scale} />
             </Box>
         </MarkdownErrorBoundary>
