@@ -100,7 +100,7 @@
     "editGuideAccessUsers": "Already linked {{type}}:",
     "editGuideAccessDeleteTitle": "Unlink User",
     "editGuideAccessDeleteDetails": "Unlink the user '{{user}}' from this guide?",
-    "entry" : "Entry",
+    "entry": "Entry",
     "entryTab": "Overview",
     "entryMapTab": "Map",
     "entryPhotoTab": "Photos",
@@ -127,6 +127,7 @@
     "newEntryConfirm": "Create Entry",
     "newEntryError": "Failed to create the new Entry!",
     "newEntryBack": "Back to the Guide",
+    "newEntryInatImport": "Import Entry",
     "entryScientificRankFAMILY": "Family",
     "entryScientificRankSUBFAMILY": "Subfamily",
     "entryScientificRankTRIBE": "Tribe",
@@ -194,6 +195,8 @@
     "mapOverlayGeoModel": "Potential Range",
     "mapOverlayRange": "Taxon Range",
     "mapOverlayHeat": "Heatmap",
-    "mapOverlayObservations": "Observations"
-
+    "mapOverlayObservations": "Observations",
+    "inaturalistLinkOnlyShowNew": "Only New",
+    "photosToggleResearchGrade": "Research Grade",
+    "photosToggleProject": "Project"
 }

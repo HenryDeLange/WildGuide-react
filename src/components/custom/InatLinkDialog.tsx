@@ -1,8 +1,8 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { Taxon, useSpeciesCountsFindQuery } from '@/redux/api/inatApi';
-import { useCreateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, DialogRootProvider, Fieldset, Heading, Image, Input, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
+import { useCreateEntryMutation, useFindEntriesScientificNamesQuery } from '@/redux/api/wildguideApi';
+import { Box, DialogRootProvider, Fieldset, Heading, Image, Input, Show, Spinner, Stack, Switch, Text, useDialog } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
@@ -40,14 +40,14 @@ export function InatLinkDialog({ guideId, inaturalistProject, inaturalistTaxon }
                         loading='lazy'
                     />
                     <Text>
-                        {t('newEntry')}
+                        {t('newEntryInatImport')}
                     </Text>
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader marginTop={-4} marginLeft={-4}>
                     <DialogTitle>
-                        {t('newEntry')}
+                        {t('newEntryInatImport')}
                     </DialogTitle>
                 </DialogHeader>
                 <DialogCloseTrigger />
@@ -73,11 +73,17 @@ function InaturalistList({ guideId, closeDialog, inaturalistProject, inaturalist
 
     const [inatText, setInatText] = useState('');
     const [debouncedInatText] = useDebounce(inatText, 500);
+    const [showOnlyNewInatTaxa, setShowOnlyNewInatTaxa] = useState(true);
+
     const [page, setPage] = useState<number>(1);
     const [pageQueue, setPageQueue] = useState<number[]>([1]);
     const [items, setItems] = useState<InatLinkItem[]>([]);
-    // TODO: Create an endpoint to fetch all linked iNat Taxon IDs from the Guide
-    // const [excludeTaxa, setExcludeTaxa] = useState<number[] | undefined>(undefined);
+
+    const {
+        data: excludeTaxaData,
+        isSuccess: excludeTaxaIsSuccess,
+        isFetching: excludeTaxaIsFetching
+    } = useFindEntriesScientificNamesQuery({ guideId });
 
     const {
         data,
@@ -85,14 +91,16 @@ function InaturalistList({ guideId, closeDialog, inaturalistProject, inaturalist
         refetch
     } = useSpeciesCountsFindQuery({
         q: debouncedInatText,
-        quality_grade: 'research',
-        // hrank: 'genus',
+        // quality_grade: 'research',
+        hrank: showOnlyNewInatTaxa ? 'species' : undefined,
         // rank: ['family', 'subfamily', 'tribe', 'subtribe', 'genus', 'subgenus', 'species', 'subspecies'],
         project_id: inaturalistProject ? [inaturalistProject] : undefined,
         taxon_id: inaturalistTaxon ? [inaturalistTaxon] : undefined,
-        // without_taxon_id: excludeTaxa,
+        without_taxon_id: excludeTaxaData ? excludeTaxaData.map(exclude => exclude.inaturalistTaxon) : undefined,
         page: page,
         per_page: PAGE_SIZE
+    }, {
+        skip: !excludeTaxaIsSuccess || excludeTaxaIsFetching
     });
 
     const [
@@ -203,14 +211,32 @@ function InaturalistList({ guideId, closeDialog, inaturalistProject, inaturalist
                         </Box>
                     }
                 >
-                    <Field label={<Text fontSize='md'>{t('newEntryInaturalistTaxon')}</Text>}>
-                        <Input
-                            value={inatText}
-                            onChange={event => setInatText(event.target.value)}
-                            placeholder={t('newEntryInaturalistTaxonPlaceholder')}
-                            autoFocus
-                        />
-                    </Field>
+                    <Stack direction='row' gap={4}>
+                        <Field label={<Text fontSize='md'>{t('newEntryInaturalistTaxon')}</Text>}>
+                            <Input
+                                value={inatText}
+                                onChange={event => setInatText(event.target.value)}
+                                placeholder={t('newEntryInaturalistTaxonPlaceholder')}
+                            />
+                        </Field>
+                        <Field label={<Text fontSize='md'>{t('inaturalistLinkOnlyShowNew')}</Text>} flex={0} textWrap='nowrap' alignItems='center'>
+                            <Switch.Root
+                                size='md'
+                                checked={showOnlyNewInatTaxa}
+                                onCheckedChange={(e) => {
+                                    setItems([]);
+                                    setPage(1);
+                                    setPageQueue([1]);
+                                    setShowOnlyNewInatTaxa(e.checked);
+                                }}
+                                paddingTop={2}
+                            >
+                                <Switch.HiddenInput />
+                                <Switch.Control />
+                                <Switch.Label />
+                            </Switch.Root>
+                        </Field>
+                    </Stack>
                     {(items.length === 0 && !isFetching) &&
                         <Box display='flex' justifyContent='center' alignItems='center' height={LIST_HEIGHT}>
                             <Text fontSize='sm' color='fg.subtle' marginTop={LIST_HEIGHT * -0.5}>

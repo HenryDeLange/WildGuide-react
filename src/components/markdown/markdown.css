@@ -107,28 +107,3 @@
 .markdown th {
     font-weight: bold;
 }
-
-
-/* ************************************************** */
-/* Make custom components not use the markdown styles */
-
-.markdown .no-inherit,
-.markdown .no-inherit h1,
-.markdown .no-inherit h2,
-.markdown .no-inherit h3,
-.markdown .no-inherit h4,
-.markdown .no-inherit h5,
-.markdown .no-inherit h6,
-.markdown .no-inherit p,
-.markdown .no-inherit ul,
-.markdown .no-inherit ol,
-.markdown .no-inherit li,
-.markdown .no-inherit a,
-.markdown .no-inherit a:hover,
-.markdown .no-inherit code,
-.markdown .no-inherit blockquote,
-.markdown .no-inherit table,
-.markdown .no-inherit th,
-.markdown .no-inherit td {
-    all: revert-layer;
-}

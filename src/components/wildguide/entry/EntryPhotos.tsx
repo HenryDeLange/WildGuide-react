@@ -3,8 +3,9 @@ import { Attribution } from '@/components/custom/Attribution';
 import { ImageZoomPopup } from '@/components/custom/ImageZoomPopup';
 import { InfiniteVirtualGrid } from '@/components/custom/InfiniteVirtualGrid';
 import { Photo, useObservationsFindQuery } from '@/redux/api/inatApi';
-import { Box, IconButton, Image, Text } from '@chakra-ui/react';
+import { Box, HStack, IconButton, Image, Switch, Text } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
     scientificName: string;
@@ -13,22 +14,26 @@ type Props = {
 }
 
 export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProject }: Readonly<Props>) {
+    const { t } = useTranslation();
+
     const [page, setPage] = useState<number>(1);
     const [pageQueue, setPageQueue] = useState<number[]>([1]);
     const [items, setItems] = useState<ObsPhoto[]>([]);
+    const [researchGradePhotosOnly, setResearchGradePhotosOnly] = useState(true);
+    const [projectPhotosOnly, setProjectPhotosOnly] = useState(true);
 
     const {
         data,
         isFetching
     } = useObservationsFindQuery({
-        page: page,
-        per_page: PAGE_SIZE,
         photos: true,
         order_by: 'votes',
-        quality_grade: 'research',
+        quality_grade: researchGradePhotosOnly ? 'research' : undefined,
         taxon_id: inaturalistTaxon ? [inaturalistTaxon] : undefined,
-        project_id: inaturalistProject ? [inaturalistProject] : undefined,
-        taxon_name: !inaturalistTaxon ? [scientificName] : undefined
+        taxon_name: !inaturalistTaxon ? [scientificName] : undefined,
+        project_id: projectPhotosOnly && inaturalistProject ? [inaturalistProject] : undefined,
+        page: page,
+        per_page: PAGE_SIZE
     });
 
     useEffect(() => {
@@ -46,6 +51,7 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                     .flatMap(obs => obs.photos.map(photo => ({
                         observationId: obs.id,
                         taxonName: obs.taxon.preferred_common_name ?? obs.taxon.name,
+                        researchGrade: obs.quality_grade === 'research',
                         ...photo
                     }))) ?? [])
                     .filter(item => !existingIds.has(item.id));
@@ -63,11 +69,45 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
 
     return (
         <Box>
+            <HStack id='grid-header' paddingX={2} paddingY={1} gap={8}>
+                <Switch.Root
+                    size='md'
+                    checked={researchGradePhotosOnly}
+                    onCheckedChange={(e) => {
+                        setItems([]);
+                        setPage(1);
+                        setPageQueue([1]);
+                        setResearchGradePhotosOnly(e.checked);
+                    }}
+                >
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                    <Switch.Label>{t('photosToggleResearchGrade')}</Switch.Label>
+                </Switch.Root>
+                {inaturalistProject &&
+                    <Switch.Root
+                        size='md'
+                        checked={projectPhotosOnly}
+                        onCheckedChange={(e) => {
+                            setItems([]);
+                            setPage(1);
+                            setPageQueue([1]);
+                            setProjectPhotosOnly(e.checked);
+
+                        }}
+                    >
+                        <Switch.HiddenInput />
+                        <Switch.Control />
+                        <Switch.Label>{t('photosToggleProject')}</Switch.Label>
+                    </Switch.Root>
+                }
+            </HStack>
             <InfiniteVirtualGrid
                 data={items}
                 loading={isFetching}
                 loadMoreItems={handleLoadMoreItems}
                 gridSize={GRID_SIZE}
+                heightDelta={4}
                 renderItem={(item) => (
                     <Box boxSize={GRID_SIZE} position='relative'>
                         <Image
@@ -109,7 +149,11 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                             attribution={item.attribution}
                         />
                         <Box position='absolute' top={1} left={1}>
-                            <Text truncate color='#DEF' textShadow="1px 1px 2px rgba(0, 0, 0, 0.75)">
+                            <Text
+                                truncate
+                                color={item.researchGrade ? '#CFA' : '#FCA'}
+                                textShadow='1px 1px 2px rgba(0, 0, 0, 0.85)'
+                            >
                                 {item.taxonName}
                             </Text>
                         </Box>
@@ -126,4 +170,5 @@ const GRID_SIZE = 200;
 type ObsPhoto = Photo & {
     observationId: number;
     taxonName: string;
+    researchGrade: boolean;
 }

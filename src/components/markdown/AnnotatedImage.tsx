@@ -2,6 +2,7 @@ import { Box, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 import NamedColors from 'color-name';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Attribution } from '../custom/Attribution';
 import { ImageZoomPopup } from '../custom/ImageZoomPopup';
 import { Tooltip } from '../ui/tooltip';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
@@ -13,6 +14,7 @@ type Props = {
     /** URL of the image */
     url: string;
     annotations: AnnotationParams[] | string; // When coming from the Markdown it will be a string
+    attribution?: string;
 }
 
 type AnnotationParams = {
@@ -31,7 +33,7 @@ type AnnotationParams = {
     text?: string;
 }
 
-export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
+export function AnnotatedImage({ url, annotations, attribution }: Readonly<Props>) {
     const scale = useBreakpointValue({ base: 1, sm: 1.2, md: 1.5, lg: 1.85 }) ?? 1;
     return (
         <MarkdownErrorBoundary>
@@ -45,6 +47,7 @@ export function AnnotatedImage({ url, annotations }: Readonly<Props>) {
                 />
                 <ImageZoomPopup url={url} />
                 <AnnotationsLayer annotations={annotations} scale={scale} />
+                <Attribution attribution={attribution} />
             </Box>
         </MarkdownErrorBoundary>
     );
@@ -92,9 +95,11 @@ type AnnotationProps = {
 function Annotation({ annotation, scale }: Readonly<AnnotationProps>) {
     const [showTooltip, setShowTooltip] = useState(false);
     const [forceShowTooltip, setForceShowTooltip] = useState(false);
+    
     const handleToggleForceShowTooltip = useCallback(() => setForceShowTooltip(!forceShowTooltip), [forceShowTooltip]);
     const handleOpenTooltip = useCallback(() => setShowTooltip(true), []);
     const handleCloseTooltip = useCallback(() => setShowTooltip(false), []);
+    
     return (
         <Tooltip
             content={annotation.text}

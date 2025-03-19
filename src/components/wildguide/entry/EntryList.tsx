@@ -39,7 +39,6 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
     const [items, setItems] = useState<ListEntry[]>([]);
     const [taxaToLoad, setTaxaToLoad] = useState<number[]>([]);
 
-    // TODO: In the future add a toggle to define at what taxon rank the data should be shown (fetched from iNat - species vs subspecies)
     const [filter, setFilter] = useState<string | undefined | null>(undefined);
     const [debouncedFilter] = useDebounce(filter, 500);
 

@@ -198,6 +198,15 @@ const injectedRtkApi = api
         }),
         providesTags: ["Guides"],
       }),
+      findEntriesScientificNames: build.query<
+        FindEntriesScientificNamesApiResponse,
+        FindEntriesScientificNamesApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/guides/${queryArg.guideId}/entries/scientificNames`,
+        }),
+        providesTags: ["Entries"],
+      }),
       findStarredGuides: build.query<
         FindStarredGuidesApiResponse,
         FindStarredGuidesApiArg
@@ -311,6 +320,11 @@ export type FindGuideMembersApiResponse =
 export type FindGuideMembersApiArg = {
   guideId: number;
 };
+export type FindEntriesScientificNamesApiResponse =
+  /** status 200 OK */ EntryScientificName[];
+export type FindEntriesScientificNamesApiArg = {
+  guideId: number;
+};
 export type FindStarredGuidesApiResponse = /** status 200 OK */ Guide[];
 export type FindStarredGuidesApiArg = void;
 export type Guide = {
@@ -409,6 +423,10 @@ export type GuideLinkedUser = {
   userId: number;
   username: string;
 };
+export type EntryScientificName = {
+  entryId: number;
+  inaturalistTaxon: number;
+};
 export const {
   useFindGuideQuery,
   useUpdateGuideMutation,
@@ -433,5 +451,6 @@ export const {
   useFindUserInfoQuery,
   useFindGuideOwnersQuery,
   useFindGuideMembersQuery,
+  useFindEntriesScientificNamesQuery,
   useFindStarredGuidesQuery,
 } = injectedRtkApi;
