@@ -1,4 +1,4 @@
-import { Box, IconButton } from '@chakra-ui/react';
+import { Box, DialogRootProps, IconButton, useBreakpointValue } from '@chakra-ui/react';
 import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
 import { TbZoomReset } from 'react-icons/tb';
 import { TransformComponent, TransformWrapper, useControls } from 'react-zoom-pan-pinch';
@@ -11,10 +11,13 @@ type Props = {
 }
 
 export function ImageZoomPopup({ url, attribution }: Readonly<Props>) {
+    const wrapperWidth = useBreakpointValue({ base: '100vw', md: '100%' });
+    const wrapperHeight = useBreakpointValue({ base: '100vh', md: '100%' });
+    const sizeWorkAround: DialogRootProps['size'] = useBreakpointValue({ base: 'full', md: 'cover' }); // Setting the size like this seems to work better, for some reason
     return (
         <DialogRoot
             placement='center'
-            size='cover'
+            size={sizeWorkAround}
             lazyMount
         >
             <DialogTrigger asChild>
@@ -25,27 +28,24 @@ export function ImageZoomPopup({ url, attribution }: Readonly<Props>) {
                 </Box>
             </DialogTrigger>
             <DialogContent overflow='auto'>
-                <DialogBody padding={0} position='relative' maxHeight='full'>
+                <DialogBody padding={0} position='relative' maxHeight='full' maxWidth='full'>
                     <TransformWrapper
-                        wheel={{ smoothStep: 0.004 }}
                         centerOnInit
+                        wheel={{ smoothStep: 0.004 }}
                         minScale={0.5}
                     >
                         <TransformComponent
                             wrapperStyle={{
-                                width: '100%',
-                                height: '100%',
+                                width: wrapperWidth,
+                                height: wrapperHeight,
                                 borderRadius: 4
                             }}
-
                         >
                             <img src={url} />
                         </TransformComponent>
                         <Controls />
                     </TransformWrapper>
-                    <Box bgColor='blue'>
-                        <Attribution attribution={attribution} />
-                    </Box>
+                    <Attribution attribution={attribution} />
                 </DialogBody>
                 <DialogCloseTrigger />
             </DialogContent>

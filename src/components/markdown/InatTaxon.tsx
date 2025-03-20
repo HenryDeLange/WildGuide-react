@@ -1,70 +1,134 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
-import { Box, Card, IconButton, Image, Show, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, IconButton, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import { Attribution } from '../custom/Attribution';
+import { ImageZoomPopup } from '../custom/ImageZoomPopup';
+import { uppercaseFirst } from '../utils';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 
 type Props = {
     id: number;
+    summary?: string;
 }
 
-export function InatTaxon({ id }: Readonly<Props>) {
+export function InatTaxon({ id, summary }: Readonly<Props>) {
     const { t } = useTranslation();
-    const { data, isFetching, isSuccess, isError } = useTaxonFindQuery({ id });
+
+    const [photoNumber, setPhotoNumber] = useState(0);
+
+    const {
+        data,
+        isFetching,
+        isSuccess,
+        isError
+    } = useTaxonFindQuery({ id });
+
     const taxon = (!isFetching && isSuccess) ? data?.results[0] : undefined;
     const total = data?.total_results ?? 0;
+    const totalPhotos = (taxon?.taxon_photos?.length ?? 0);
+
     return (
         <MarkdownErrorBoundary>
-            <Show
-                when={!isError && (isFetching || (isSuccess && total === 1))}
-                fallback={<Text color='fg.error'>{t('markdownSnippetsInatTaxonError')}</Text>}
-            >
-                <div className='no-inherit'>
-                    <Card.Root flexDirection='row' overflow='hidden'>
-                        <Image
-                            objectFit='cover'
-                            width={{ base: 100, sm: 150, md: 200, lg: 250 }}
-                            height={{ base: 100, sm: 150, md: 200, lg: 250 }}
-                            src={taxon?.default_photo?.medium_url ?? inatLogo}
-                            alt={taxon?.name ?? 'iNaturalist'}
-                        />
-                        <Box overflow='auto' width='100%' height={{ base: 100, sm: 150, md: 200, lg: 250 }}>
-                            <Card.Body height='100%'>
-                                <Card.Title>
-                                    {!taxon ? t('loading') : taxon.preferred_common_name ?? taxon.name}
-                                </Card.Title>
-                                <Card.Description>
-                                    <Text>
-                                        {taxon?.name ?? '...'}
-                                    </Text>
-                                    <Text>
-                                        {taxon?.rank ?? '...'}
-                                    </Text>
-                                </Card.Description>
-                                <Card.Footer flex={1} justifyContent='flex-end' alignItems='flex-end' padding={1}>
-                                    <a
-                                        aria-label='iNaturalist'
-                                        href={`https://www.inaturalist.org/taxa/${id}`}
-                                        target='_blank'
-                                        rel='noopener'
-                                    >
-                                        <IconButton aria-label='iNaturalist' variant='ghost'>
-                                            <Image
-                                                src={inatLogo}
-                                                alt='iNaturalist'
-                                                boxSize={12}
-                                                borderRadius='full'
-                                                fit='cover'
-                                                loading='lazy'
-                                            />
-                                        </IconButton>
-                                    </a>
-                                </Card.Footer>
-                            </Card.Body>
+            <Show when={!isFetching} fallback={<Skeleton height='4em' />}>
+                {(isError || (isSuccess && total !== 1) || !taxon) &&
+                    <Text color='fg.error'>{t('markdownSnippetsInatTaxonError')}</Text>
+                }
+                {taxon &&
+                    <HStack
+                        borderWidth={1}
+                        borderRadius='sm'
+                        boxShadow='sm'
+                        borderColor='border'
+                        marginY={1}
+                        position='relative'
+                        alignItems='flex-start'
+                        gap={0}
+                    >
+                        <Box position='relative' minWidth={{ base: 90, sm: 130, md: 180, lg: 220 }}>
+                            <Image
+                                src={taxon.taxon_photos?.[photoNumber]?.photo?.url?.replace('/square.', '/medium.') ?? inatLogo}
+                                alt={taxon.name ?? 'iNaturalist'}
+                                objectFit='cover'
+                                borderLeftRadius='sm'
+                                boxSize={{ base: 90, sm: 130, md: 180, lg: 220 }}
+                            />
+                            <ImageZoomPopup
+                                url={taxon.taxon_photos?.[photoNumber]?.photo?.url?.replace('/square.', '/original.') ?? inatLogo}
+                                attribution={taxon.taxon_photos?.[photoNumber]?.photo?.attribution}
+                            />
                         </Box>
-                    </Card.Root>
-                </div>
+                        <Box width='100%' overflow='hidden' paddingLeft={2} paddingY={1}>
+                            <Heading size='md' truncate lineHeight='1em'>
+                                {taxon.preferred_common_name ?? taxon.name}
+                            </Heading>
+                            <HStack marginBottom={-3} marginTop={-1}>
+                                <Text fontSize='xs' color='fg.muted' truncate lineHeight='0.9em' display={{ base: 'none', sm: 'block' }}>
+                                    {uppercaseFirst(taxon.rank)}
+                                </Text>
+                                <Text fontStyle='italic' fontSize='sm' truncate lineHeight='0.9em'>
+                                    {taxon.name}
+                                </Text>
+                            </HStack>
+                            <Text fontSize='xs' color='fg.muted' truncate marginEnd='auto' lineHeight='0.9em'>
+                                {uppercaseFirst(taxon.rank)}
+                            </Text>
+                            {summary &&
+                                <>
+                                    <Separator variant='dotted' size='sm' />
+                                    <Text fontSize='sm' lineHeight='1.1em'>
+                                        {summary}
+                                    </Text>
+                                </>
+                            }
+                        </Box>
+                        <VStack justifyContent='flex-end' gap={{ base: 2, sm: 3, md: 4 }}>
+                            <IconButton aria-label='iNaturalist' variant='ghost' size='xs'>
+                                <a
+                                    aria-label='iNaturalist'
+                                    href={`https://www.inaturalist.org/taxa/${taxon.id}`}
+                                    target='_blank'
+                                    rel='noopener'
+                                >
+                                    <Image
+                                        src={inatLogo}
+                                        alt='iNaturalist'
+                                        objectFit='contain'
+                                        borderRadius='md'
+                                        boxSize='2.5em'
+                                        loading='lazy'
+                                    />
+                                </a>
+                            </IconButton>
+                            {totalPhotos > 1 &&
+                                <>
+                                    <IconButton
+                                        size='2xs'
+                                        variant='ghost'
+                                        focusVisibleRing='none'
+                                        onClick={() => setPhotoNumber(Math.max(0, photoNumber - 1))}
+                                        disabled={photoNumber <= 0}
+                                    >
+                                        <FaAngleLeft />
+                                    </IconButton>
+                                    <IconButton
+                                        size='2xs'
+                                        variant='ghost'
+                                        focusVisibleRing='none'
+                                        onClick={() => setPhotoNumber(Math.min(totalPhotos - 1, photoNumber + 1))}
+                                        disabled={photoNumber >= totalPhotos - 1}
+                                    >
+                                        <FaAngleRight />
+                                    </IconButton>
+                                </>
+                            }
+                            <Attribution attribution={taxon.taxon_photos?.[photoNumber]?.photo?.attribution} />
+                        </VStack>
+                    </HStack>
+                }
             </Show>
-        </MarkdownErrorBoundary>
+        </MarkdownErrorBoundary >
     );
 }

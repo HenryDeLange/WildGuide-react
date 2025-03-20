@@ -3,6 +3,7 @@ import Markdown from 'markdown-to-jsx';
 import { AnnotatedImage } from './AnnotatedImage';
 import { InatObservation } from './InatObservation';
 import { InatTaxon } from './InatTaxon';
+import { InatTaxonMap } from './InatTaxonMap';
 import './markdown.css';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 import { Popup } from './Popup';
@@ -33,7 +34,8 @@ export function ExtendedMarkdown({ content }: Readonly<Props>) {
                             InatObservation: { component: InatObservation },
                             InatTaxon: { component: InatTaxon },
                             Popup: { component: Popup },
-                            AnnotatedImage: { component: AnnotatedImage }
+                            AnnotatedImage: { component: AnnotatedImage },
+                            InatTaxonMap: { component: InatTaxonMap }
                         }
                     }}
                 >

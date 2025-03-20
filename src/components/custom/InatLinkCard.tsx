@@ -66,6 +66,7 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                     borderRadius='sm'
                     boxShadow='sm'
                     borderColor='border'
+                    position='relative'
                 >
                     <HStack>
                         <IconButton aria-label='iNaturalist' variant='ghost' asChild>

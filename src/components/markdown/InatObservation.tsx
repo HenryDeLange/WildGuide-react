@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Attribution } from '../custom/Attribution';
 import { ImageZoomPopup } from '../custom/ImageZoomPopup';
+import { uppercaseFirst } from '../utils';
 import { MarkdownErrorBoundary } from './MarkdownErrorBoundary';
 
 type Props = {
@@ -36,7 +37,6 @@ export function InatObservation({ id, summary }: Readonly<Props>) {
                 }
                 {obs &&
                     <HStack
-                        padding={2}
                         borderWidth={1}
                         borderRadius='sm'
                         boxShadow='sm'
@@ -46,45 +46,48 @@ export function InatObservation({ id, summary }: Readonly<Props>) {
                         alignItems='flex-start'
                         gap={0}
                     >
-                        <HStack width='full' alignItems='flex-start'>
-                            <Box position='relative' minWidth={{ base: 90, sm: 130, md: 180, lg: 220 }}>
-                                <Image
-                                    src={obs.photos[photoNumber]?.url?.replace('/square.', '/medium.') ?? inatLogo}
-                                    alt={obs.species_guess ?? 'iNaturalist'}
-                                    objectFit='cover'
-                                    borderRadius='sm'
-                                    boxSize={{ base: 90, sm: 130, md: 180, lg: 220 }}
-                                />
-                                <ImageZoomPopup
-                                    url={obs.photos[photoNumber]?.url?.replace('/square.', '/original.') ?? inatLogo}
-                                    attribution={obs.photos[photoNumber].attribution}
-                                />
-                            </Box>
-                            <Box width='100%' overflow='hidden'>
-                                <Heading size='md' truncate lineHeight='1em'>
-                                    {obs.taxon.preferred_common_name ?? obs.taxon.name}
-                                </Heading>
-                                <Text fontStyle='italic' fontSize='sm' truncate lineHeight='0.8em'>
+                        <Box position='relative' minWidth={{ base: 90, sm: 130, md: 180, lg: 220 }}>
+                            <Image
+                                src={obs.photos[photoNumber]?.url?.replace('/square.', '/medium.') ?? inatLogo}
+                                alt={obs.species_guess ?? 'iNaturalist'}
+                                objectFit='cover'
+                                borderLeftRadius='sm'
+                                boxSize={{ base: 90, sm: 130, md: 180, lg: 220 }}
+                            />
+                            <ImageZoomPopup
+                                url={obs.photos[photoNumber]?.url?.replace('/square.', '/original.') ?? inatLogo}
+                                attribution={obs.photos[photoNumber].attribution}
+                            />
+                        </Box>
+                        <Box width='100%' overflow='hidden' paddingLeft={2} paddingY={1}>
+                            <Heading size='md' truncate lineHeight='1em'>
+                                {obs.taxon.preferred_common_name ?? obs.taxon.name}
+                            </Heading>
+                            <HStack marginBottom={-3} marginTop={-1}>
+                                <Text fontSize='xs' color='fg.muted' truncate lineHeight='0.9em' display={{ base: 'none', sm: 'block' }}>
+                                    {uppercaseFirst(obs.taxon.rank)}
+                                </Text>
+                                <Text fontStyle='italic' fontSize='sm' truncate lineHeight='0.9em'>
                                     {obs.taxon.name}
                                 </Text>
-                                <Text fontSize='sm' color='fg.muted' truncate marginEnd='auto' lineHeight='0.8em'>
-                                    {obs.observed_on_string}
-                                </Text>
-                                <Text fontSize='xx-small' color='fg.muted' truncate marginEnd='auto' lineHeight='1.1em'>
-                                    {obs.place_guess}
-                                    <br />
-                                    {obs.location}
-                                </Text>
-                                {summary &&
-                                    <>
-                                        <Separator variant='dotted' size='sm' />
-                                        <Text lineHeight='1.1em'>
-                                            {summary}
-                                        </Text>
-                                    </>
-                                }
-                            </Box>
-                        </HStack>
+                            </HStack>
+                            <Text fontSize='xs' color='fg.muted' truncate marginEnd='auto' lineHeight='0.9em'>
+                                {obs.observed_on_string}
+                            </Text>
+                            <Text fontSize='xx-small' color='fg.muted' truncate marginEnd='auto' lineHeight='1.3em' display={{ base: 'none', sm: 'block' }}>
+                                {obs.place_guess}
+                                <br />
+                                {obs.location}
+                            </Text>
+                            {summary &&
+                                <>
+                                    <Separator variant='dotted' size='sm' />
+                                    <Text fontSize='sm' lineHeight='1.1em'>
+                                        {summary}
+                                    </Text>
+                                </>
+                            }
+                        </Box>
                         <VStack justifyContent='flex-end' gap={{ base: 2, sm: 3, md: 4 }}>
                             <IconButton aria-label='iNaturalist' variant='ghost' size='xs'>
                                 <a

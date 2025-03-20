@@ -8,11 +8,16 @@ import './rangeMap.css';
 
 type Props = {
     taxonId: number;
-    rank: Entry['scientificRank'];
+    rank?: Entry['scientificRank'];
     parentId?: number;
+    height?: number | string;
+    initLatitude?: number;
+    initLongitude?: number;
+    initZoom?: number;
+    scrollWheelZoom?: boolean;
 }
 
-export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
+export function RangeMap({ taxonId, rank, parentId, height, initLatitude, initLongitude, initZoom, scrollWheelZoom = true }: Readonly<Props>) {
     const { t } = useTranslation();
 
     const { grid } = useHeights();
@@ -24,8 +29,12 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     const observationsLayer = t('mapOverlayObservations');
 
     // Remember map position and selected layers
-    const center = JSON.parse(localStorage.getItem('mapCenter') ?? JSON.stringify(startPosition));
-    const zoom = Number(localStorage.getItem('mapZoom') ?? 11);
+    const center = (initLatitude && initLongitude)
+        ? [initLatitude, initLongitude]
+        : JSON.parse(localStorage.getItem('mapCenter') ?? JSON.stringify(startPosition));
+    const zoom = initZoom
+        ? initZoom
+        : Number(localStorage.getItem('mapZoom') ?? 11);
     const storedMapLayers = localStorage.getItem('mapLayers');
 
     const [selectedLayers, setSelectedLayers] = useState<string[]>(storedMapLayers ? JSON.parse(storedMapLayers) : [observationsLayer, rangeLayer]);
@@ -33,10 +42,14 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
     const MapEvents = () => {
         useMapEvents({
             moveend: (e) => {
-                localStorage.setItem('mapCenter', JSON.stringify(e.target.getCenter()));
+                if (!initLatitude && !initLongitude) {
+                    localStorage.setItem('mapCenter', JSON.stringify(e.target.getCenter()));
+                }
             },
             zoomend: (e) => {
-                localStorage.setItem('mapZoom', JSON.stringify(e.target.getZoom()));
+                if (!initZoom) {
+                    localStorage.setItem('mapZoom', JSON.stringify(e.target.getZoom()));
+                }
             },
             overlayadd: (e) => {
                 if (selectedLayers.indexOf(e.name) < 0) {
@@ -65,10 +78,10 @@ export function RangeMap({ taxonId, rank, parentId }: Readonly<Props>) {
         <MapContainer
             center={center}
             zoom={zoom}
-            scrollWheelZoom
+            scrollWheelZoom={scrollWheelZoom}
             attributionControl={false}
             zoomControl={false}
-            style={{ height: grid - 24 }}
+            style={{ height: height ?? (grid - 24) }}
             maxZoom={maxZoom}
             minZoom={minZoom}
         >
