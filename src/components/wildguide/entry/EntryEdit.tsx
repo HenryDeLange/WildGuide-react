@@ -45,7 +45,7 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         }
     ] = useDeleteEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, reset, watch, control } = useForm<EntryBase>();
+    const { register, handleSubmit, formState: { errors }, reset, control } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
@@ -179,10 +179,16 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                 invalid={!!errors.description || isError}
                                 errorText={errors.description?.message}
                             >
-                                <MarkdownInput
-                                    register={register('description')}
-                                    watch={watch}
-                                    placeholder='newEntryDescriptionPlaceholder'
+                                <Controller
+                                    control={control}
+                                    name='description'
+                                    render={({ field }) => (
+                                        <MarkdownInput
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder='newEntryDescriptionPlaceholder'
+                                        />
+                                    )}
                                 />
                             </Field>
                         </Fieldset.Content>

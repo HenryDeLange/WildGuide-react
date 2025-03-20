@@ -1,33 +1,34 @@
-import { EntryBase, GuideBase } from '@/redux/api/wildguideApi';
-import { HStack, Textarea, VStack } from '@chakra-ui/react';
-import { FieldValues, Path, UseFormRegisterReturn, UseFormWatch } from 'react-hook-form';
+import { Box, HStack, Stack, Textarea, VStack } from '@chakra-ui/react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MarkdownInputPreview } from './MarkdownInputPreview';
+import { ExtendedMarkdown } from './ExtendedMarkdown';
 import { MarkdownInputSnippets } from './MarkdownInputSnippets';
 
-type Props<T extends FieldValues> = {
-    register: UseFormRegisterReturn;
-    watch: UseFormWatch<T>;
+type Props = {
+    value?: string;
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
     placeholder: string;
 }
 
-export function MarkdownInput<T extends GuideBase | EntryBase>({ register, watch, placeholder }: Readonly<Props<T>>) {
+export function MarkdownInput({ value, onChange, placeholder }: Readonly<Props>) {
     const { t } = useTranslation();
-    const markdown = watch('description' as Path<T>) ?? '';
     return (
-        <HStack width='100%' alignItems='flex-start'>
-            <Textarea
-                {...register}
-                placeholder={t(placeholder)}
-                variant='outline'
-                minHeight={200}
-                // height={300}
-                maxHeight={400}
-            />
-            <VStack>
-                <MarkdownInputPreview markdown={markdown as string} />
-                <MarkdownInputSnippets />
-            </VStack>
-        </HStack>
+        <Stack width='full' direction={{ base: 'column', md: 'row' }}>
+            <HStack width='100%' alignItems='flex-start'>
+                <Textarea
+                    value={value}
+                    onChange={onChange}
+                    placeholder={t(placeholder)}
+                    variant='outline'
+                    minHeight={200}
+                />
+                <VStack>
+                    <MarkdownInputSnippets />
+                </VStack>
+            </HStack>
+            <Box width='full' height='fit' bgColor={{ _light: '#BBB9', _dark: '#2229' }}>
+                <ExtendedMarkdown content={value} />
+            </Box>
+        </Stack>
     );
 }

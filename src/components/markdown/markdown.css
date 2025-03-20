@@ -77,9 +77,11 @@
 
 /* Code blocks */
 .markdown code {
-    padding: 2px 4px;
-    border-radius: 4px;
     font-family: 'Courier New', Courier, monospace;
+    background-color: #9993;
+    border-radius: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
 /* Blockquotes */

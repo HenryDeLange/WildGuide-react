@@ -5,7 +5,7 @@ import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMut
 import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { DeleteButton } from '../../custom/DeleteButton';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
@@ -43,7 +43,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
         }
     ] = useDeleteGuideMutation();
 
-    const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<GuideBase>();
+    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<GuideBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
@@ -135,10 +135,16 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 invalid={!!errors.description || isError}
                                 errorText={errors.description?.message}
                             >
-                                <MarkdownInput
-                                    register={register('description')}
-                                    watch={watch}
-                                    placeholder='newGuideDescriptionPlaceholder'
+                                <Controller
+                                    control={control}
+                                    name='description'
+                                    render={({ field }) => (
+                                        <MarkdownInput
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder='newGuideDescriptionPlaceholder'
+                                        />
+                                    )}
                                 />
                             </Field>
                         </Fieldset.Content>

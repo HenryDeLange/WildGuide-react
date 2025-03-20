@@ -21,7 +21,7 @@ export function GuideNew() {
         }
     ] = useCreateGuideMutation();
 
-    const { register, handleSubmit, formState: { errors }, control, watch } = useForm<GuideBase>({
+    const { register, handleSubmit, formState: { errors }, control } = useForm<GuideBase>({
         defaultValues: {
             visibility: 'PUBLIC'
         }
@@ -127,10 +127,16 @@ export function GuideNew() {
                             invalid={!!errors.description || isError}
                             errorText={errors.description?.message}
                         >
-                            <MarkdownInput
-                                register={register('description')}
-                                watch={watch}
-                                placeholder='newGuideDescriptionPlaceholder'
+                            <Controller
+                                control={control}
+                                name='description'
+                                render={({ field }) => (
+                                    <MarkdownInput
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        placeholder='newGuideDescriptionPlaceholder'
+                                    />
+                                )}
                             />
                         </Field>
                     </Fieldset.Content>
