@@ -1,4 +1,4 @@
-import { Box, IconButton } from '@chakra-ui/react';
+import { Box, IconButton, Text } from '@chakra-ui/react';
 import { LuCopyright } from 'react-icons/lu';
 import { ToggleTip } from '../ui/toggle-tip';
 
@@ -11,7 +11,13 @@ export function Attribution({ attribution }: Readonly<Props>) {
         return null;
     return (
         <Box position='absolute' bottom={1} right={1}>
-            <ToggleTip content={attribution}>
+            <ToggleTip
+                content={
+                    <Text fontSize='md' maxWidth='90vw'>
+                        {attribution}
+                    </Text>
+                }
+            >
                 <IconButton
                     size='2xs'
                     variant='ghost'

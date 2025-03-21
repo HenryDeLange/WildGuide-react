@@ -7,7 +7,7 @@ import { SummaryBox } from '@/components/custom/SummaryBox';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -169,21 +169,25 @@ export function Guide({ guideId }: Readonly<Props>) {
                             <TabsList id='tab-header'>
                                 <TabsTrigger
                                     value='guide'
-                                    fontSize='1.3em'
-                                    lineHeight='1em'
+                                    fontSize={{ base: '1em', sm: '1.3em' }}
                                     _selected={{ bgColor: 'bg.subtle' }}
+                                    padding={1}
                                 >
                                     <LuBookText />
-                                    {t('guideTab')}
+                                    <Text truncate>
+                                        {t('guideTab')}
+                                    </Text>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value='entries'
-                                    fontSize='1.3em'
-                                    lineHeight='1em'
+                                    fontSize={{ base: '1em', sm: '1.3em' }}
                                     _selected={{ bgColor: 'bg.subtle' }}
+                                    padding={1}
                                 >
                                     <LuLayoutList />
-                                    {t('guideEntriesTab')}
+                                    <Text truncate>
+                                        {t('guideEntriesTab')}
+                                    </Text>
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent

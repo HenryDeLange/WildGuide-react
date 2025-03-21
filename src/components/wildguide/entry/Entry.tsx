@@ -138,7 +138,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                 {inatTaxonMismatch &&
                                     <ToggleTip
                                         content={
-                                            <Text fontSize='md' color='fg.warning'>
+                                            <Text fontSize='md' color='fg.warning' maxWidth='90vw'>
                                                 {t('entryInatMismatch')}
                                             </Text>
                                         }

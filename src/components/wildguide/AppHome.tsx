@@ -85,7 +85,7 @@ export function AppHome() {
                             <Text fontSize='xs' color='fg.muted'>
                                 {t('pwaInstallDetails')}
                             </Text>
-                            <Button variant='surface' onClick={handleInstallClick}>
+                            <Button variant='surface' onClick={handleInstallClick} size={{ base: 'xs', sm: 'sm', md: 'lg'}}>
                                 <MdInstallDesktop />
                                 {t('pwaInstall')}
                             </Button>

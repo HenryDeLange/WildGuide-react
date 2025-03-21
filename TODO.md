@@ -5,6 +5,6 @@
 - TODO: Make the guide grid virtualized for performance concerns. Also make List and Grid use child render components, if possible instead of render function?
 - TODO: Improve mobile responsive layout. Also make app header go to drawer on smaller screens. Fix scrolling inconsistency issues (list, grid, etc.).
 - TODO: Improve mobile navigation 
-- TODO: When offline hide the buttons on the UI that do POST/PUt/DELETE calls.
+- TODO: When offline hide the buttons on the UI that do POST/PUT/DELETE calls.
 - TODO: Make more use fo Skeleton than Spinner in most cases
 - TODO: Setup custom theme
