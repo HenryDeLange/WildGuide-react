@@ -1,4 +1,3 @@
-import { Box } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Button } from '../ui/button';
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTrigger } from '../ui/popover';
@@ -14,16 +13,14 @@ export function Popup({ text, content }: Readonly<Props>) {
         <MarkdownErrorBoundary>
             <PopoverRoot lazyMount>
                 <PopoverTrigger asChild>
-                    <Button variant='subtle'>
+                    <Button variant='subtle' padding={1} height='fit'>
                         {text}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent width='auto' height='auto'>
                     <PopoverArrow />
                     <PopoverBody>
-                        <Box className='no-inherit'>
-                            {content}
-                        </Box>
+                        {content}
                     </PopoverBody>
                 </PopoverContent>
             </PopoverRoot>

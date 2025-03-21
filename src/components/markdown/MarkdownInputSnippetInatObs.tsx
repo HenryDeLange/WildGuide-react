@@ -1,37 +1,55 @@
-import { Box, ClipboardRoot, Code, Heading, HStack, Input, Separator, VStack } from '@chakra-ui/react';
+import { Box, ClipboardRoot, Code, FieldsetRoot, Input, NumberInputControl, NumberInputInput, NumberInputRoot, NumberInputValueChangeDetails, Separator, Text, VStack } from '@chakra-ui/react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
 import { ClipboardButton } from '../ui/clipboard';
-import { InatObservation } from './InatObservation';
+import { Field } from '../ui/field';
+import { ExtendedMarkdown } from './ExtendedMarkdown';
 
 export function MarkdownInputSnippetInatObs() {
     const { t } = useTranslation();
-    const [input, setInput] = useState(0);
-    const [debouncedInput] = useDebounce(input, 750);
-    const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => setInput(Number(event.target.value)), []);
+    const [id, setId] = useState('');
+    const [debouncedId] = useDebounce(id, 750);
+    const handleId = useCallback((event: NumberInputValueChangeDetails) => setId(event.value), []);
+    const [summary, setSummary] = useState('');
+    const [debouncedSummary] = useDebounce(summary, 750);
+    const handleSummary = useCallback((event: ChangeEvent<HTMLInputElement>) => setSummary(event.target.value), []);
+    const componentString = `<InatObservation id="${debouncedId}" ${debouncedSummary ? `summary="${debouncedSummary}"` : ''} />`;
     return (
         <Box>
-            <Heading size='md'>{t('markdownSnippetsInatObservationId')}</Heading>
-            <Input
-                value={input}
-                onChange={handleInput}
-                placeholder={t('markdownSnippetsInatObservationId')}
-                type='number'
-            />
+            <FieldsetRoot>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsInatObservationId')}</Text>} required>
+                    <NumberInputRoot
+                        value={id}
+                        onValueChange={handleId}
+                    >
+                        <NumberInputControl />
+                        <NumberInputInput onFocus={(event) => event.target.select()} />
+                    </NumberInputRoot>
+                </Field>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsSummary')}</Text>}>
+                    <Input
+                        value={summary}
+                        onChange={handleSummary}
+                        placeholder={t('markdownSnippetsSummary')}
+                    />
+                </Field>
+            </FieldsetRoot>
             <Separator marginY={4} size='lg' variant='dashed' />
-            {debouncedInput > 0 &&
-                <HStack>
-                    <InatObservation id={debouncedInput} />
+            {debouncedId &&
+                <VStack>
+                    <Box width='full' bgColor={{ _light: '#BBB9', _dark: '#2229' }} marginTop={2}>
+                        <ExtendedMarkdown content={componentString} />
+                    </Box>
                     <VStack>
                         <Code>
-                            {`<InatObservation id="${debouncedInput}" />`}
+                            {componentString}
                         </Code>
-                        <ClipboardRoot value={`<InatObservation id="${debouncedInput}" />`}>
+                        <ClipboardRoot value={componentString}>
                             <ClipboardButton />
                         </ClipboardRoot>
                     </VStack>
-                </HStack>
+                </VStack>
             }
         </Box >
     );

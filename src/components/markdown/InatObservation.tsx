@@ -60,21 +60,21 @@ export function InatObservation({ id, summary }: Readonly<Props>) {
                             />
                         </Box>
                         <Box width='100%' overflow='hidden' paddingLeft={2} paddingY={1}>
-                            <Heading size='md' truncate lineHeight='1em'>
+                            <Heading size='md' truncate>
                                 {obs.taxon.preferred_common_name ?? obs.taxon.name}
                             </Heading>
-                            <HStack marginBottom={-3} marginTop={-1}>
-                                <Text fontSize='xs' color='fg.muted' truncate lineHeight='0.9em' display={{ base: 'none', sm: 'block' }}>
+                            <HStack>
+                                <Text fontSize='xs' color='fg.muted' truncate display={{ base: 'none', sm: 'block' }}>
                                     {uppercaseFirst(obs.taxon.rank)}
                                 </Text>
-                                <Text fontStyle='italic' fontSize='sm' truncate lineHeight='0.9em'>
+                                <Text fontStyle='italic' fontSize='sm' truncate>
                                     {obs.taxon.name}
                                 </Text>
                             </HStack>
-                            <Text fontSize='xs' color='fg.muted' truncate marginEnd='auto' lineHeight='0.9em'>
+                            <Text fontSize='xs' color='fg.muted' truncate marginEnd='auto'>
                                 {obs.observed_on_string}
                             </Text>
-                            <Text fontSize='xx-small' color='fg.muted' truncate marginEnd='auto' lineHeight='1.3em' display={{ base: 'none', sm: 'block' }}>
+                            <Text fontSize='xx-small' color='fg.muted' truncate marginEnd='auto' display={{ base: 'none', sm: 'block' }}>
                                 {obs.place_guess}
                                 <br />
                                 {obs.location}
@@ -82,7 +82,7 @@ export function InatObservation({ id, summary }: Readonly<Props>) {
                             {summary &&
                                 <>
                                     <Separator variant='dotted' size='sm' />
-                                    <Text fontSize='sm' lineHeight='1.1em'>
+                                    <Text fontSize='sm'>
                                         {summary}
                                     </Text>
                                 </>

@@ -1,7 +1,8 @@
-import { Box, Code, DataListItem, DataListItemLabel, DataListItemValue, DataListRoot, Heading, HStack, Input, Separator, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Box, Code, DataListItem, DataListItemLabel, DataListItemValue, DataListRoot, FieldHelperText, FieldsetRoot, HStack, Input, Separator, Text, Textarea, VStack } from '@chakra-ui/react';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClipboardButton, ClipboardRoot } from '../ui/clipboard';
+import { Field } from '../ui/field';
 import { InfoTip } from '../ui/toggle-tip';
 import { AnnotatedImage } from './AnnotatedImage';
 
@@ -55,46 +56,50 @@ export function MarkdownInputSnippetImage() {
     ], [t]);
     return (
         <Box>
-            <Heading size='md'>{t('markdownSnippetsAnnotatedImageUrl')}</Heading>
-            <Input
-                value={url}
-                onChange={handleInputUrl}
-                placeholder={t('markdownSnippetsAnnotatedImageUrl')}
-            />
-            <Box marginTop={2}>
-                <Heading size='md'>{t('markdownSnippetsAnnotatedImageAnnotations')}</Heading>
+            <FieldsetRoot>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsAnnotatedImageUrl')}</Text>} required>
+                    <Input
+                        value={url}
+                        onChange={handleInputUrl}
+                    />
+                </Field>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsAnnotatedImageAnnotations')}</Text>}>
+                <FieldHelperText>
                 <Text>{t('markdownSnippetsAnnotatedImageAnnotationsDetails')}</Text>
-            </Box>
-            <HStack>
-                <Textarea
-                    fontFamily='monospace'
-                    minWidth='40%'
-                    width='60%'
-                    height={250}
-                    value={annotations}
-                    onChange={handleInputAnnotations}
-                    placeholder={EXAMPLE_ANNOTATIONS}
-                />
-                <DataListRoot orientation='horizontal' gap={1}>
-                    {annotationDetails.map(item =>
-                        <DataListItem key={item.name}>
-                            <DataListItemLabel fontFamily='monospace'>
-                                {item.name}
-                                <InfoTip showArrow positioning={{ placement: 'right' }}>
-                                    {item.info}
-                                </InfoTip>
-                            </DataListItemLabel>
-                            <DataListItemValue>
-                                <Code>
-                                    {item.data}
-                                </Code>
-                            </DataListItemValue>
-                        </DataListItem>
-                    )}
-                </DataListRoot>
-            </HStack>
+                </FieldHelperText>
+                    <HStack>
+                        <Textarea
+                            fontFamily='monospace'
+                            minWidth='40%'
+                            width='60%'
+                            height={250}
+                            value={annotations}
+                            onChange={handleInputAnnotations}
+                            placeholder={EXAMPLE_ANNOTATIONS}
+                        />
+                        <DataListRoot orientation='horizontal' gap={1}>
+                            {annotationDetails.map(item =>
+                                <DataListItem key={item.name}>
+                                    <DataListItemLabel fontFamily='monospace'>
+                                        {item.name}
+                                        <InfoTip showArrow positioning={{ placement: 'right' }}>
+                                            {item.info}
+                                        </InfoTip>
+                                    </DataListItemLabel>
+                                    <DataListItemValue>
+                                        <Code>
+                                            {item.data}
+                                        </Code>
+                                    </DataListItemValue>
+                                </DataListItem>
+                            )}
+                        </DataListRoot>
+                    </HStack>
+                </Field >
+            </FieldsetRoot>
             <Separator marginY={4} size='lg' variant='dashed' />
-            {url && annotations &&
+            {
+                url && annotations &&
                 <HStack>
                     <AnnotatedImage url={url} annotations={annotations} />
                     <VStack>
@@ -107,7 +112,7 @@ export function MarkdownInputSnippetImage() {
                     </VStack>
                 </HStack>
             }
-        </Box>
+        </Box >
     );
 }
 

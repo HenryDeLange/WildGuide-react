@@ -1,12 +1,12 @@
 /* *************** */
 /* Markdown styles */
 
-/* Base styles */
+/* Base style */
 .markdown {
     font-family: Arial, sans-serif;
 }
 
-/* Headings */
+/* Heading */
 .markdown h1,
 .markdown h2,
 .markdown h3,
@@ -14,6 +14,11 @@
 .markdown h5,
 .markdown h6 {
     font-weight: bold;
+    margin-top: 1em;
+}
+
+.markdown :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0; /* Remove margin-top for the very first heading of any type */
 }
 
 .markdown h1 {
@@ -40,13 +45,13 @@
     font-size: 1em;
 }
 
-/* Paragraphs */
+/* Paragraph */
 .markdown p {
     margin-top: 1em;
     margin-bottom: 1em;
 }
 
-/* Lists */
+/* List */
 .markdown ul,
 .markdown ol {
     margin-top: 1em;
@@ -66,7 +71,7 @@
     list-style-type: decimal;
 }
 
-/* Links */
+/* Link */
 .markdown a {
     text-decoration: none;
 }
@@ -75,16 +80,26 @@
     text-decoration: underline;
 }
 
-/* Code blocks */
-.markdown code {
+/* Code block */
+.markdown pre {
     font-family: 'Courier New', Courier, monospace;
-    background-color: #9993;
-    border-radius: 0.2em;
+    background-color: #8883;
+    border-left: 2px solid #AAA3;
+    padding: 0.5em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    overflow-x: auto;
+}
+
+/* Inline code */
+.markdown code:not(pre code) {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #8883;
     padding-left: 0.2em;
     padding-right: 0.2em;
 }
 
-/* Blockquotes */
+/* Blockquote */
 .markdown blockquote {
     border-left: 4px solid #999;
     padding-left: 1em;
@@ -92,7 +107,7 @@
     margin-bottom: 1em;
 }
 
-/* Tables */
+/* Table */
 .markdown table {
     width: 100%;
     border-collapse: collapse;

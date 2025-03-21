@@ -1,21 +1,23 @@
-import { Heading, IconButton, Separator, TabsContent, TabsList, TabsRoot, TabsTrigger } from '@chakra-ui/react';
+import { DialogRootProps, Heading, IconButton, Separator, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
-import { BsChatSquareDots, BsMarkdown } from 'react-icons/bs';
-import { LuFileCode2, LuImage, LuScanEye, LuTag } from 'react-icons/lu';
+import { BsChatSquareDots, BsGlobeEuropeAfrica, BsMarkdown } from 'react-icons/bs';
+import { LuFileQuestion, LuImage, LuScanEye, LuTag } from 'react-icons/lu';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogRoot, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { MarkdownInputSnippetImage } from './MarkdownInputSnippetImage';
 import { MarkdownInputSnippetInatObs } from './MarkdownInputSnippetInatObs';
 import { MarkdownInputSnippetInatTax } from './MarkdownInputSnippetInatTax';
+import { MarkdownInputSnippetInatTaxMap } from './MarkdownInputSnippetInatTaxMap';
 import { MarkdownInputSnippetPopup } from './MarkdownInputSnippetPopup';
 import { MarkdownInputSnippetSyntax } from './MarkdownInputSnippetSyntax';
 
 export function MarkdownInputSnippets() {
     const { t } = useTranslation();
+    const sizeWorkAround: DialogRootProps['size'] = useBreakpointValue({ base: 'full', lg: 'cover' }); // Setting the size like this seems to work better, for some reason
     return (
-        <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size='cover'>
+        <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size={sizeWorkAround}>
             <DialogTrigger asChild>
                 <IconButton variant='outline'>
-                    <LuFileCode2 />
+                    <LuFileQuestion />
                 </IconButton>
             </DialogTrigger>
             <DialogContent width='100%' height='100%' overflow='auto'>
@@ -29,24 +31,40 @@ export function MarkdownInputSnippets() {
                     <TabsRoot lazyMount defaultValue='syntax'>
                         <TabsList>
                             <TabsTrigger value='syntax'>
-                                <BsMarkdown />
-                                {t('markdownSnippetsSyntax')}
+                                <BsMarkdown size={20} />
+                                <Text display={{ base: 'none', lg: 'block' }}>
+                                    {t('markdownSnippetsSyntax')}
+                                </Text>
                             </TabsTrigger>
                             <TabsTrigger value='observation'>
-                                <LuScanEye />
-                                {t('markdownSnippetsInatObservation')}
+                                <LuScanEye size={20} />
+                                <Text display={{ base: 'none', md: 'block' }} truncate>
+                                    {t('markdownSnippetsInatObservation')}
+                                </Text>
                             </TabsTrigger>
                             <TabsTrigger value='taxon'>
-                                <LuTag />
-                                {t('markdownSnippetsInatTaxon')}
+                                <LuTag size={20} />
+                                <Text display={{ base: 'none', md: 'block' }} truncate>
+                                    {t('markdownSnippetsInatTaxon')}
+                                </Text>
+                            </TabsTrigger>
+                            <TabsTrigger value='map'>
+                                <BsGlobeEuropeAfrica size={20} />
+                                <Text display={{ base: 'none', md: 'block' }} truncate>
+                                    {t('markdownSnippetsInatTaxonMap')}
+                                </Text>
                             </TabsTrigger>
                             <TabsTrigger value='image'>
-                                <LuImage />
-                                {t('markdownSnippetsAnnotatedImage')}
+                                <LuImage size={20} />
+                                <Text display={{ base: 'none', md: 'block' }} truncate>
+                                    {t('markdownSnippetsAnnotatedImage')}
+                                </Text>
                             </TabsTrigger>
                             <TabsTrigger value='popup'>
-                                <BsChatSquareDots />
-                                {t('markdownSnippetsPopup')}
+                                <BsChatSquareDots size={20} />
+                                <Text display={{ base: 'none', md: 'block' }} truncate>
+                                    {t('markdownSnippetsPopup')}
+                                </Text>
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value='syntax'>
@@ -57,6 +75,9 @@ export function MarkdownInputSnippets() {
                         </TabsContent>
                         <TabsContent value='taxon'>
                             <MarkdownInputSnippetInatTax />
+                        </TabsContent>
+                        <TabsContent value='map'>
+                            <MarkdownInputSnippetInatTaxMap />
                         </TabsContent>
                         <TabsContent value='image'>
                             <MarkdownInputSnippetImage />

@@ -61,24 +61,21 @@ export function InatTaxon({ id, summary }: Readonly<Props>) {
                             />
                         </Box>
                         <Box width='100%' overflow='hidden' paddingLeft={2} paddingY={1}>
-                            <Heading size='md' truncate lineHeight='1em'>
+                            <Heading size='md' truncate>
                                 {taxon.preferred_common_name ?? taxon.name}
                             </Heading>
-                            <HStack marginBottom={-3} marginTop={-1}>
-                                <Text fontSize='xs' color='fg.muted' truncate lineHeight='0.9em' display={{ base: 'none', sm: 'block' }}>
+                            <HStack>
+                                <Text fontSize='xs' color='fg.muted' truncate display={{ base: 'none', sm: 'block' }}>
                                     {uppercaseFirst(taxon.rank)}
                                 </Text>
-                                <Text fontStyle='italic' fontSize='sm' truncate lineHeight='0.9em'>
+                                <Text fontStyle='italic' fontSize='sm' truncate>
                                     {taxon.name}
                                 </Text>
                             </HStack>
-                            <Text fontSize='xs' color='fg.muted' truncate marginEnd='auto' lineHeight='0.9em'>
-                                {uppercaseFirst(taxon.rank)}
-                            </Text>
                             {summary &&
                                 <>
-                                    <Separator variant='dotted' size='sm' />
-                                    <Text fontSize='sm' lineHeight='1.1em'>
+                                    <Separator variant='dotted' size='sm' marginTop={2} marginBottom={-1}/>
+                                    <Text fontSize='sm'>
                                         {summary}
                                     </Text>
                                 </>

@@ -1,8 +1,9 @@
-import { Box, ClipboardRoot, Code, Heading, HStack, Input, Separator, VStack } from '@chakra-ui/react';
+import { Box, ClipboardRoot, Code, FieldsetRoot, Input, Separator, Text, VStack } from '@chakra-ui/react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
 import { ClipboardButton } from '../ui/clipboard';
+import { Field } from '../ui/field';
 import { ExtendedMarkdown } from './ExtendedMarkdown';
 
 export function MarkdownInputSnippetPopup() {
@@ -13,34 +14,39 @@ export function MarkdownInputSnippetPopup() {
     const [debouncedInputContent] = useDebounce(inputContent, 150);
     const handleInputText = useCallback((event: ChangeEvent<HTMLInputElement>) => setInputText(event.target.value), []);
     const handleInputContent = useCallback((event: ChangeEvent<HTMLInputElement>) => setInputContent(event.target.value), []);
+    const componentString = `<Popup text="${debouncedInputText}" content={${debouncedInputContent}} />`;
     return (
         <Box>
-            <Heading size='md'>{t('markdownSnippetsPopupText')}</Heading>
-            <Input
-                value={inputText}
-                onChange={handleInputText}
-                placeholder={t('markdownSnippetsPopupText')}
-            />
-            <Heading size='md'>{t('markdownSnippetsPopupContent')}</Heading>
-            <Input
-                value={inputContent}
-                onChange={handleInputContent}
-                placeholder={t('markdownSnippetsPopupContent')}
-            />
+            <FieldsetRoot>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsPopupText')}</Text>} required>
+                    <Input
+                        value={inputText}
+                        onChange={handleInputText}
+                    />
+                </Field>
+                <Field label={<Text fontSize='md'>{t('markdownSnippetsPopupContent')}</Text>} required>
+                    <Input
+                        value={inputContent}
+                        onChange={handleInputContent}
+                    />
+                </Field>
+            </FieldsetRoot>
+            <Separator marginY={4} size='lg' variant='dashed' />
             <Separator marginY={4} size='lg' variant='dashed' />
             {debouncedInputText && debouncedInputContent &&
-                <HStack>
-                    <ExtendedMarkdown content={`<Popup text="${debouncedInputText}" content={${debouncedInputContent}} />`} />
-
+                <VStack>
+                    <Box width='full' bgColor={{ _light: '#BBB9', _dark: '#2229' }} marginTop={2}>
+                        <ExtendedMarkdown content={componentString} />
+                    </Box>
                     <VStack>
                         <Code>
-                            {`<Popup text="${debouncedInputText}" content={${debouncedInputContent}} />`}
+                            {componentString}
                         </Code>
-                        <ClipboardRoot value={`<Popup text="${debouncedInputText}" content={${debouncedInputContent}} />`}>
+                        <ClipboardRoot value={componentString}>
                             <ClipboardButton />
                         </ClipboardRoot>
                     </VStack>
-                </HStack>
+                </VStack>
             }
         </Box >
     );
