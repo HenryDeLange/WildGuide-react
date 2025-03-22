@@ -1,7 +1,8 @@
-import { Box, ClipboardRoot, Code, FieldsetRoot, Input, NumberInputControl, NumberInputInput, NumberInputRoot, NumberInputValueChangeDetails, Separator, Text, VStack } from '@chakra-ui/react';
+import { Box, ClipboardRoot, Code, FieldsetRoot, HStack, Input, NumberInputControl, NumberInputInput, NumberInputRoot, NumberInputValueChangeDetails, Separator, Text, VStack } from '@chakra-ui/react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from 'use-debounce';
+import { InatSelector, InatSelectorTypes } from '../custom/InatSelector';
 import { ClipboardButton } from '../ui/clipboard';
 import { Field } from '../ui/field';
 import { ExtendedMarkdown } from './ExtendedMarkdown';
@@ -14,18 +15,21 @@ export function MarkdownInputSnippetInatTax() {
     const [summary, setSummary] = useState('');
     const [debouncedSummary] = useDebounce(summary, 750);
     const handleSummary = useCallback((event: ChangeEvent<HTMLInputElement>) => setSummary(event.target.value), []);
-    const componentString = `<InatTaxon id="${debouncedId}" ${debouncedSummary ? `summary="${debouncedSummary}"` : ''} />`;
+    const componentString = `<InatTaxon id="${debouncedId}"${debouncedSummary ? ` summary="${debouncedSummary}"` : ''} />`;
     return (
         <Box>
             <FieldsetRoot>
                 <Field label={<Text fontSize='md'>{t('markdownSnippetsInatTaxonId')}</Text>} required>
-                    <NumberInputRoot
-                        value={id}
-                        onValueChange={handleId}
-                    >
-                        <NumberInputControl />
-                        <NumberInputInput onFocus={(event) => event.target.select()} />
-                    </NumberInputRoot>
+                    <HStack>
+                        <NumberInputRoot
+                            value={id}
+                            onValueChange={handleId}
+                        >
+                            <NumberInputControl />
+                            <NumberInputInput onFocus={(event) => event.target.select()} />
+                        </NumberInputRoot>
+                        <InatSelector type='TAXON' select={(_type: InatSelectorTypes, inatId: number | null) => setId(inatId?.toString() ?? '')} />
+                    </HStack>
                 </Field>
                 <Field label={<Text fontSize='md'>{t('markdownSnippetsSummary')}</Text>}>
                     <Input

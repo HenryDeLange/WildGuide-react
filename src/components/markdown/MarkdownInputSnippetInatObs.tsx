@@ -14,7 +14,7 @@ export function MarkdownInputSnippetInatObs() {
     const [summary, setSummary] = useState('');
     const [debouncedSummary] = useDebounce(summary, 750);
     const handleSummary = useCallback((event: ChangeEvent<HTMLInputElement>) => setSummary(event.target.value), []);
-    const componentString = `<InatObservation id="${debouncedId}" ${debouncedSummary ? `summary="${debouncedSummary}"` : ''} />`;
+    const componentString = `<InatObservation id="${debouncedId}"${debouncedSummary ? ` summary="${debouncedSummary}"` : ''} />`;
     return (
         <Box>
             <FieldsetRoot>
