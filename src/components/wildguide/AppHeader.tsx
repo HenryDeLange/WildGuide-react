@@ -3,9 +3,10 @@ import logo from '@/assets/images/wildguide/logo.png';
 import { authLogout, selectAuthUserId } from '@/auth/authSlice';
 import { ChangeLanguage } from '@/i18n/ChangeLanguage';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, CloseButton, DrawerPositioner, Flex, Heading, HStack, IconButton, Image, Separator, Show, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
+import { Box, CloseButton, DrawerContext, DrawerPositioner, Flex, Heading, HStack, IconButton, Image, Separator, Show, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { t } from 'i18next';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaGithub } from 'react-icons/fa';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
@@ -52,10 +53,6 @@ function DesktopMenu() {
     const { t } = useTranslation();
     return (
         <>
-            <HStack flex={1} gap={{ base: 1, sm: 2, md: 4 }} alignItems='center' justifyContent='center'>
-                <InaturalistLink />
-                <GitHubLink />
-            </HStack>
             <Stack direction='row' gap={{ base: 2, sm: 6, md: 12 }} flex={3} alignItems='center' justifyContent='center'>
                 <NavLink to='/guides'>
                     {t('guides')}
@@ -64,6 +61,10 @@ function DesktopMenu() {
                     {t('about')}
                 </NavLink>
             </Stack>
+            <HStack flex={1} gap={{ base: 1, sm: 2, md: 4 }} alignItems='center' justifyContent='center'>
+                <InaturalistLink />
+                <GitHubLink />
+            </HStack>
             <HStack flex={1} gap={{ base: 1, sm: 2, md: 4 }} alignItems='center' justifyContent='center'>
                 <ChangeLanguage />
                 <ColorModeButton />
@@ -92,18 +93,35 @@ function MobileMenu() {
                         </DrawerTitle>
                     </DrawerHeader>
                     <DrawerBody>
-                        <LoginLogoutControl />
-                        <Separator marginY={4} />
-                        <VStack gap={6} alignItems='flex-start'>
-                            <NavLink to='/guides'>
-                                {t('guides')}
-                            </NavLink>
-                            <NavLink to='/about'>
-                                {t('about')}
-                            </NavLink>
-                        </VStack>
+                        <DrawerContext>
+                            {(store) => (
+                                <>
+                                    <LoginLogoutControl action={() => store.setOpen(false)} />
+                                    <Separator marginY={4} />
+                                    <VStack gap={6} alignItems='flex-start' width='full'>
+                                        <NavLink
+                                            to='/guides'
+                                            fontSize='md'
+                                            width='full'
+                                            onClick={() => store.setOpen(false)}
+                                        >
+                                            {t('guides')}
+                                        </NavLink>
+                                        <NavLink
+                                            to='/about' fontSize='md'
+                                            width='full'
+                                            onClick={() => store.setOpen(false)}
+                                        >
+                                            {t('about')}
+                                        </NavLink>
+                                    </VStack>
+                                </>
+                            )}
+                        </DrawerContext>
                     </DrawerBody>
                     <DrawerFooter>
+                        <ChangeLanguage />
+                        <ColorModeButton />
                         <InaturalistLink />
                         <GitHubLink />
                     </DrawerFooter>
@@ -116,22 +134,23 @@ function MobileMenu() {
     );
 }
 
-function LoginLogoutControl() {
+function LoginLogoutControl({ action }: { action?: () => void }) {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const userId = useAppSelector(selectAuthUserId);
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         dispatch(authLogout());
         navigate({ to: '/' });
-    };
+        action?.();
+    }, [action, dispatch, navigate]);
     return (
         <Box justifyContent='flex-end'>
             <Show when={userId === null}>
                 <HStack gap={4}>
-                    <NavLink to='/register' whiteSpace='nowrap'>
+                    <NavLink to='/register' whiteSpace='nowrap' onClick={action}>
                         <Text color='fg.muted'>{t('register')}</Text>
                     </NavLink>
-                    <NavLink to='/login' whiteSpace='nowrap'>
+                    <NavLink to='/login' whiteSpace='nowrap' onClick={action}>
                         <FiLogIn />
                         <Text fontWeight='semibold'>{t('login')}</Text>
                     </NavLink>

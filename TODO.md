@@ -8,3 +8,4 @@
 - TODO: When offline hide the buttons on the UI that do POST/PUT/DELETE calls.
 - TODO: Make more use fo Skeleton than Spinner in most cases
 - TODO: Setup custom theme
+- TODO: Major refactor to disentangle chakra-ui from the app layout/logic, into reusable/replaceable components

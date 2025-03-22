@@ -1,4 +1,4 @@
-import { createListCollection, SelectContent, SelectItem, SelectRoot, SelectTrigger, Text } from '@chakra-ui/react';
+import { Button, createListCollection, SelectContent, SelectControl, SelectHiddenSelect, SelectItem, SelectItemIndicator, SelectPositioner, SelectRoot, SelectTrigger } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 
 const languages = createListCollection({
@@ -18,21 +18,27 @@ export function ChangeLanguage() {
             variant='subtle'
             size='xs'
             width='auto'
+            padding={0}
+            margin={0}
         >
-            <SelectTrigger>
-                <Text cursor='pointer' fontWeight='semibold'>
-                    {i18n.language.toUpperCase()}
-                </Text>
-            </SelectTrigger>
-            <SelectContent position='absolute'>
-                {languages.items.map((language) => (
-                    <SelectItem key={language.value} item={language}>
-                        <Text fontSize='sm'>
+            <SelectHiddenSelect />
+            <SelectControl>
+                <SelectTrigger cursor='pointer' asChild>
+                    <Button variant='ghost' bgColor='transparent' _hover={{ bgColor: 'bg.muted' }}>
+                        {i18n.language.toUpperCase()}
+                    </Button>
+                </SelectTrigger>
+            </SelectControl>
+            <SelectPositioner minWidth={24}>
+                <SelectContent>
+                    {languages.items.map((language) => (
+                        <SelectItem key={language.value} item={language}>
                             {t(language.label)}
-                        </Text>
-                    </SelectItem>
-                ))}
-            </SelectContent>
+                            <SelectItemIndicator />
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </SelectPositioner>
         </SelectRoot>
     );
 }
