@@ -2,7 +2,7 @@ import { selectAuthUserId } from '@/auth/authSlice';
 import { InputGroup } from '@/components/ui/input-group';
 import { Guide, useFindGuidesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Input, Separator, Show, Spinner, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, Input, Separator, Show, Spinner, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualGrid } from '../../custom/InfiniteVirtualGrid';
 import { Button } from '../../ui/button';
-import { useHeights } from '../hooks/uiHooks';
+import { useHeights, useShowButtonLabels } from '../hooks/uiHooks';
 import { GuideListItem } from './GuideListItem';
 
 export function GuideList() {
@@ -20,6 +20,7 @@ export function GuideList() {
     const navigate = useNavigate({ from: '/' });
 
     const { content } = useHeights();
+    const showLabels = useShowButtonLabels();
 
     const userId = useAppSelector(selectAuthUserId);
 
@@ -90,18 +91,22 @@ export function GuideList() {
         setFilter(event.target.value.length > 0 ? event.target.value : null);
     }, []);
 
+    const gridHeight = useBreakpointValue({ base: content, md: undefined });
+
     // RENDER
     return (
-        <Box height={content}>
+        <Box>
             <Box id='grid-header'>
                 <HStack wrap={{ base: 'wrap', lg: 'nowrap' }}>
                     <Box marginX={4} marginY={2}>
                         <Heading>
                             {t('guideGridTitle')}
                         </Heading>
-                        <Text fontSize='sm'>
-                            {t('guideGridSubTitle')}
-                        </Text>
+                        {!userId &&
+                            <Text fontSize='sm'>
+                                {t('guideGridSubTitle')}
+                            </Text>
+                        }
                     </Box>
                     <Box flex='1' display='flex' justifyContent='flex-end'>
                         <HStack
@@ -109,7 +114,6 @@ export function GuideList() {
                             alignItems='flex-end'
                             justifyContent='flex-end'
                             margin={1}
-                            marginRight={4}
                         >
                             {userId !== null &&
                                 <Button
@@ -120,9 +124,11 @@ export function GuideList() {
                                     whiteSpace='nowrap'
                                 >
                                     <MdAddCircleOutline />
-                                    <Text>
-                                        {t('newGuide')}
-                                    </Text>
+                                    {showLabels &&
+                                        <Text>
+                                            {t('newGuide')}
+                                        </Text>
+                                    }
                                 </Button>
                             }
                             <Button
@@ -134,7 +140,7 @@ export function GuideList() {
                             >
                                 <LuRefreshCcw />
                             </Button>
-                            <InputGroup startElement={<LuSearch />} minWidth={150}>
+                            <InputGroup startElement={<LuSearch />} minWidth={120}>
                                 <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                             </InputGroup>
                         </HStack>
@@ -156,6 +162,7 @@ export function GuideList() {
                         renderItem={handleRenderItem}
                         loadMoreItems={handleLoadMoreItems}
                         loading={isFetching}
+                        height={gridHeight}
                     />
                 }
             </Show>

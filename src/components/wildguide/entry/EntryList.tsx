@@ -2,7 +2,7 @@ import { InatLinkDialog } from '@/components/custom/InatLinkDialog';
 import { InputGroup } from '@/components/ui/input-group';
 import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
-import { Box, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, HStack, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
 import { Button } from '../../ui/button';
-import { useHeights } from '../hooks/uiHooks';
+import { useHeights, useShowButtonLabels } from '../hooks/uiHooks';
 import { useIsOwner } from '../hooks/userHooks';
 import { ENTRY_LIST_ITEM_HEIGHT, EntryListItem } from './EntryListItem';
 
@@ -29,6 +29,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
     const navigate = useNavigate({ from: '/guides/$guideId' });
 
     const { window, appHeader, pageHeader } = useHeights();
+    const showLabels = useShowButtonLabels();
 
     const {
         isOwner
@@ -157,11 +158,11 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
     return (
         <Box>
             <Box id='grid-header'>
-                <Stack direction='row' justifyContent='space-between' gap={8} padding={2}>
+                <Stack direction='row' justifyContent='space-between' gap={2} padding={2}>
                     <InputGroup startElement={<LuSearch />}>
                         <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                     </InputGroup>
-                    <Stack direction={{ base: 'column', md: 'row' }} alignItems='flex-end' justifyContent='flex-end'>
+                    <HStack alignItems='flex-end' justifyContent='flex-end'>
                         {isOwner &&
                             <>
                                 <InatLinkDialog
@@ -175,15 +176,18 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
                                     color='fg.info'
                                     onClick={handleCreate}
                                     whiteSpace='nowrap'
+                                    padding={showLabels ? undefined : 0}
                                 >
                                     <MdAddCircleOutline />
-                                    <Text>
-                                        {t('newEntry')}
-                                    </Text>
+                                    {showLabels &&
+                                        <Text>
+                                            {t('newEntry')}
+                                        </Text>
+                                    }
                                 </Button>
                             </>
                         }
-                    </Stack>
+                    </HStack>
                 </Stack>
                 <Separator />
             </Box>

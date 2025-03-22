@@ -10,6 +10,7 @@ import { Button } from '../ui/button';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Field } from '../ui/field';
 import { uppercaseFirst } from '../utils';
+import { useShowButtonLabels } from '../wildguide/hooks/uiHooks';
 import { InfiniteVirtualList } from './InfiniteVirtualList';
 
 type Props = {
@@ -21,6 +22,8 @@ type Props = {
 export function InatLinkDialog({ guideId, inaturalistProject, inaturalistTaxon }: Readonly<Props>) {
     const { t } = useTranslation();
 
+    const showLabels = useShowButtonLabels();
+
     const dialog = useDialog();
 
     const handleCloseDialog = useCallback(() => dialog.setOpen(false), [dialog]);
@@ -30,7 +33,7 @@ export function InatLinkDialog({ guideId, inaturalistProject, inaturalistTaxon }
     return (
         <DialogRootProvider value={dialog} placement='center' lazyMount={true}>
             <DialogTrigger asChild>
-                <Button size='md' variant='ghost' whiteSpace='nowrap'>
+                <Button size='md' variant='ghost' whiteSpace='nowrap' padding={showLabels ? undefined : 0}>
                     <Image
                         src={inatLogo}
                         alt='iNaturalist'
@@ -39,9 +42,11 @@ export function InatLinkDialog({ guideId, inaturalistProject, inaturalistTaxon }
                         fit='cover'
                         loading='lazy'
                     />
-                    <Text>
-                        {t('newEntryInatImport')}
-                    </Text>
+                    {showLabels &&
+                        <Text>
+                            {t('newEntryInatImport')}
+                        </Text>
+                    }
                 </Button>
             </DialogTrigger>
             <DialogContent>

@@ -10,7 +10,7 @@ import { ToggleTip } from '@/components/ui/toggle-tip';
 import { convertInatToEntryRank } from '@/redux/api/apiMapper';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
-import { Box, Heading, HStack, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import { BsGlobeEuropeAfrica } from 'react-icons/bs';
 import { LuBookText } from 'react-icons/lu';
 import { MdOutlineErrorOutline, MdOutlinePhoto } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
+import { useHeights } from '../hooks/uiHooks';
 import { useIsOwner } from '../hooks/userHooks';
 import { EntryPhotos } from './EntryPhotos';
 
@@ -29,6 +30,8 @@ type Props = {
 export function Entry({ guideId, entryId }: Readonly<Props>) {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/guides/$guideId/entries/$entryId' });
+
+    const { content, tabHeader } = useHeights();
 
     const {
         isOwner,
@@ -91,6 +94,8 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
     const inatTaxonMismatch = taxon?.name.toLowerCase() !== data?.scientificName.toLowerCase()
         || taxon?.rank.toLowerCase() !== data?.scientificRank.toLowerCase();
 
+    const tabContentHeight = useBreakpointValue({ base: content - tabHeader, md: undefined });
+
     // RENDER
     return (
         <Box display='flex' flexDirection='column' alignItems='center'>
@@ -102,7 +107,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                             <HStack width='100%' flexWrap='wrap' paddingX={4} paddingTop={2}>
                                 <HStack>
                                     <BackButton titleKey='entryBack' handleBack={handleBack} />
-                                    <Heading size='3xl' alignSelf='flex-start'>
+                                    <Heading size={{base: 'lg', sm: '2xl', md: '3xl'}} alignSelf='flex-start'>
                                         {data.name}
                                     </Heading>
                                 </HStack>
@@ -169,30 +174,36 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                             <TabsList id='tab-header'>
                                 <TabsTrigger
                                     value='entry'
-                                    fontSize='1.3em'
-                                    lineHeight='1em'
+                                    fontSize={{ base: '1em', sm: '1.3em' }}
                                     _selected={{ bgColor: 'bg.subtle' }}
+                                    padding={1}
                                 >
                                     <LuBookText />
-                                    {t('entryTab')}
+                                    <Text truncate>
+                                        {t('entryTab')}
+                                    </Text>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value='map'
-                                    fontSize='1.3em'
-                                    lineHeight='1em'
+                                    fontSize={{ base: '1em', sm: '1.3em' }}
                                     _selected={{ bgColor: 'bg.subtle' }}
+                                    padding={1}
                                 >
                                     <BsGlobeEuropeAfrica />
-                                    {t('entryMapTab')}
+                                    <Text truncate>
+                                        {t('entryMapTab')}
+                                    </Text>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value='photos'
-                                    fontSize='1.3em'
-                                    lineHeight='1em'
+                                    fontSize={{ base: '1em', sm: '1.3em' }}
                                     _selected={{ bgColor: 'bg.subtle' }}
+                                    padding={1}
                                 >
                                     <MdOutlinePhoto />
-                                    {t('entryPhotoTab')}
+                                    <Text truncate>
+                                        {t('entryPhotoTab')}
+                                    </Text>
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent
@@ -225,6 +236,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                             taxonId={data.inaturalistTaxon}
                                             rank={convertInatToEntryRank(taxon.rank) ?? data.scientificRank}
                                             parentId={taxon.parent_id}
+                                            height={tabContentHeight}
                                         />
                                     </Box>
                                 }
@@ -242,6 +254,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     scientificName={data.scientificName}
                                     inaturalistTaxon={data.inaturalistTaxon}
                                     inaturalistProject={guideData?.inaturalistProject}
+                                    height={tabContentHeight ? (tabContentHeight - 24) : undefined}
                                 />
                             </TabsContent>
                         </TabsRoot>

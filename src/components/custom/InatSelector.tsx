@@ -9,6 +9,7 @@ import { Button } from '../ui/button';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Field } from '../ui/field';
 import { uppercaseFirst } from '../utils';
+import { useShowButtonLabels } from '../wildguide/hooks/uiHooks';
 import { InfiniteVirtualList } from './InfiniteVirtualList';
 
 export type InatSelectorTypes = 'PROJECT' | 'TAXON';
@@ -26,12 +27,13 @@ type Props = {
 
 export function InatSelector({ type, select, ...conditionalProps }: Readonly<Props>) {
     const { t } = useTranslation();
+    const showLabels = useShowButtonLabels();
     const dialog = useDialog();
     const handleCloseDialog = useCallback(() => dialog.setOpen(false), [dialog]);
     return (
         <DialogRootProvider value={dialog} placement='center' lazyMount={true}>
             <DialogTrigger asChild>
-                <Button size='md' variant='ghost' whiteSpace='nowrap'>
+                <Button size='md' variant='ghost' whiteSpace='nowrap' padding={showLabels ? undefined : 0}>
                     <Image
                         src={inatLogo}
                         alt='iNaturalist'
@@ -40,9 +42,11 @@ export function InatSelector({ type, select, ...conditionalProps }: Readonly<Pro
                         fit='cover'
                         loading='lazy'
                     />
-                    <Text>
-                        {t(type === 'PROJECT' ? 'inaturalistLinkProject' : 'inaturalistLinkTaxon')}
-                    </Text>
+                    {showLabels &&
+                        <Text>
+                            {t(type === 'PROJECT' ? 'inaturalistLinkProject' : 'inaturalistLinkTaxon')}
+                        </Text>
+                    }
                 </Button>
             </DialogTrigger>
             <DialogContent>

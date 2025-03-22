@@ -119,7 +119,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             </Icon>
                                         </Tooltip>
                                     </Show>
-                                    <Heading size='3xl' alignSelf='flex-start'>
+                                    <Heading size={{base: 'lg', sm: '2xl', md: '3xl'}} alignSelf='flex-start'>
                                         {data.name}
                                     </Heading>
                                     {userId &&

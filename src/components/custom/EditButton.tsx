@@ -2,6 +2,7 @@ import { Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { MdEdit } from 'react-icons/md';
 import { Button } from '../ui/button';
+import { useShowButtonLabels } from '../wildguide/hooks/uiHooks';
 
 type Props = {
     titleKey: string;
@@ -10,6 +11,7 @@ type Props = {
 
 export function EditButton({ titleKey, handleEdit }: Readonly<Props>) {
     const { t } = useTranslation();
+    const showLabels = useShowButtonLabels();
     return (
         <Button
             size='md'
@@ -17,11 +19,14 @@ export function EditButton({ titleKey, handleEdit }: Readonly<Props>) {
             whiteSpace='nowrap'
             color='fg.info'
             onClick={handleEdit}
+            padding={showLabels ? undefined : 0}
         >
             <MdEdit />
-            <Text>
-                {t(titleKey)}
-            </Text>
+            {showLabels &&
+                <Text>
+                    {t(titleKey)}
+                </Text>
+            }
         </Button>
     );
 }

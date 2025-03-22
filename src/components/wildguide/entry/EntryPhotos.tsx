@@ -11,9 +11,10 @@ type Props = {
     scientificName: string;
     inaturalistTaxon?: number;
     inaturalistProject?: number;
+    height?: number;
 }
 
-export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProject }: Readonly<Props>) {
+export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProject, height }: Readonly<Props>) {
     const { t } = useTranslation();
 
     const [page, setPage] = useState<number>(1);
@@ -107,7 +108,8 @@ export function EntryPhotos({ scientificName, inaturalistTaxon, inaturalistProje
                 loading={isFetching}
                 loadMoreItems={handleLoadMoreItems}
                 gridSize={GRID_SIZE}
-                heightDelta={4}
+                height={height}
+                heightDelta={24}
                 renderItem={(item) => (
                     <Box boxSize={GRID_SIZE} position='relative'>
                         <Image

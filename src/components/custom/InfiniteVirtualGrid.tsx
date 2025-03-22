@@ -11,10 +11,11 @@ type Props<T> = {
     loadMoreItems: () => void;
     loading: boolean;
     gridSize?: number;
+    height?: number;
     heightDelta?: number;
 };
 
-export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loading, gridSize = 200, heightDelta = 0 }: Readonly<Props<T>>) {
+export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loading, gridSize = 200, height, heightDelta = 0 }: Readonly<Props<T>>) {
     const { t } = useTranslation();
 
     const { grid } = useHeights();
@@ -53,7 +54,7 @@ export function InfiniteVirtualGrid<T>({ data, renderItem, loadMoreItems, loadin
 
     // RENDER
     return (
-        <Box ref={parentRef} height={grid - heightDelta} overflowY='auto' padding={4}>
+        <Box ref={parentRef} height={(height ?? grid) - heightDelta} overflowY='auto' padding={4}>
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }} gap={4}>
                 {/* {rowVirtualizer.getVirtualItems().map(virtualRow => {
                     console.log('render Item:, ', virtualRow.index);

@@ -11,6 +11,7 @@ import { Button } from '../../ui/button';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
 import { Field } from '../../ui/field';
 import { Tag } from '../../ui/tag';
+import { useShowButtonLabels } from '../hooks/uiHooks';
 
 type Props = {
     guideId: number;
@@ -18,6 +19,8 @@ type Props = {
 
 export function GuideLinkUsers({ guideId }: Readonly<Props>) {
     const { t } = useTranslation();
+
+    const showLabels = useShowButtonLabels();
 
     const dialog = useDialog();
 
@@ -148,11 +151,14 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                         variant='ghost'
                         color='fg.info'
                         whiteSpace='nowrap'
+                        padding={showLabels ? undefined : 0}
                     >
                         <LuUsersRound />
-                        <Text>
-                            {t('editGuideAccess')}
-                        </Text>
+                        {showLabels &&
+                            <Text>
+                                {t('editGuideAccess')}
+                            </Text>
+                        }
                     </Button>
                 </DialogTrigger>
                 <DialogContent>

@@ -1,4 +1,10 @@
+import { useBreakpointValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+
+export function useShowButtonLabels() {
+    const hide = useBreakpointValue({ base: false, sm: true });
+    return hide;
+}
 
 export function useHeights() {
     const [heights, setHeights] = useState(calcHeights());
@@ -23,7 +29,8 @@ function calcHeights() {
         content: calcContentHeight(),
         gridHeader: (document.getElementById('grid-header')?.offsetHeight ?? 0),
         grid: calcGridHeight(),
-        pageHeader: (document.getElementById('page-header')?.offsetHeight ?? 0)
+        pageHeader: (document.getElementById('page-header')?.offsetHeight ?? 0),
+        tabHeader: (document.getElementById('tab-header')?.offsetHeight ?? 0)
     };
 }
 
