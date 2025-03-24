@@ -16,7 +16,7 @@ export function MarkdownInputSnippets() {
     return (
         <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size={sizeWorkAround}>
             <DialogTrigger asChild>
-                <IconButton variant='outline'>
+                <IconButton variant='outline' color='fg.info'>
                     <LuFileQuestion />
                 </IconButton>
             </DialogTrigger>
