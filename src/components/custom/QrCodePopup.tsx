@@ -1,7 +1,7 @@
 import { PopoverArrow, PopoverBody, PopoverContent, PopoverRoot, PopoverTitle, PopoverTrigger } from '@/components/ui/popover';
 import { Box, Heading, QrCode, Separator, Text } from '@chakra-ui/react';
 import { t } from 'i18next';
-import { LuQrCode } from 'react-icons/lu';
+import { QrCodeIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 
 type Props = {
@@ -18,7 +18,7 @@ export function QrCodePopup({ value, hideLabel }: Readonly<Props>) {
                     variant='ghost'
                     whiteSpace='nowrap'
                 >
-                    <LuQrCode />
+                    <QrCodeIcon />
                     {!hideLabel &&
                         <Text>{t('qrButton')}</Text>
                     }

@@ -12,7 +12,7 @@ async function generateGitInfo() {
 
 VITE_BRANCH_NAME=${branch.trim()}
 VITE_COMMIT_HASH=${shortHash.trim()}
-VITE_COMMIT_DATE=${gitLog.latest.date}    
+VITE_COMMIT_DATE=${gitLog.latest.date}
 `;
     fs.writeFileSync('.env', envContent);
 }

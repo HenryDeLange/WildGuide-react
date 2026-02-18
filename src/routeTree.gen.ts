@@ -8,192 +8,90 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesIndexRouteImport } from './routes/guides/index'
+import { Route as UserProfileRouteImport } from './routes/user/profile'
+import { Route as GuidesCreateRouteImport } from './routes/guides/create'
+import { Route as GuidesGuideIdRouteImport } from './routes/guides/$guideId'
+import { Route as GuidesGuideIdEditRouteImport } from './routes/guides/$guideId_.edit'
+import { Route as GuidesGuideIdEntriesIndexRouteImport } from './routes/guides/$guideId_/entries/index'
+import { Route as GuidesGuideIdEntriesCreateRouteImport } from './routes/guides/$guideId_/entries/create'
+import { Route as GuidesGuideIdEntriesEntryIdRouteImport } from './routes/guides/$guideId_/entries/$entryId'
+import { Route as GuidesGuideIdEntriesEntryIdEditRouteImport } from './routes/guides/$guideId_/entries/$entryId_.edit'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as RegisterImport } from './routes/register'
-import { Route as LoginImport } from './routes/login'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as GuidesIndexImport } from './routes/guides/index'
-import { Route as GuidesCreateImport } from './routes/guides/create'
-import { Route as GuidesGuideIdImport } from './routes/guides/$guideId'
-import { Route as GuidesGuideIdEditImport } from './routes/guides/$guideId_.edit'
-import { Route as GuidesGuideIdEntriesIndexImport } from './routes/guides/$guideId_/entries/index'
-import { Route as GuidesGuideIdEntriesCreateImport } from './routes/guides/$guideId_/entries/create'
-import { Route as GuidesGuideIdEntriesEntryIdImport } from './routes/guides/$guideId_/entries/$entryId'
-import { Route as GuidesGuideIdEntriesEntryIdEditImport } from './routes/guides/$guideId_/entries/$entryId_.edit'
-
-// Create/Update Routes
-
-const RegisterRoute = RegisterImport.update({
+const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const LoginRoute = LoginImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GuidesIndexRoute = GuidesIndexImport.update({
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
   path: '/guides/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GuidesCreateRoute = GuidesCreateImport.update({
+const UserProfileRoute = UserProfileRouteImport.update({
+  id: '/user/profile',
+  path: '/user/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesCreateRoute = GuidesCreateRouteImport.update({
   id: '/guides/create',
   path: '/guides/create',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GuidesGuideIdRoute = GuidesGuideIdImport.update({
+const GuidesGuideIdRoute = GuidesGuideIdRouteImport.update({
   id: '/guides/$guideId',
   path: '/guides/$guideId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GuidesGuideIdEditRoute = GuidesGuideIdEditImport.update({
+const GuidesGuideIdEditRoute = GuidesGuideIdEditRouteImport.update({
   id: '/guides/$guideId_/edit',
   path: '/guides/$guideId/edit',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const GuidesGuideIdEntriesIndexRoute = GuidesGuideIdEntriesIndexImport.update({
-  id: '/guides/$guideId_/entries/',
-  path: '/guides/$guideId/entries/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const GuidesGuideIdEntriesCreateRoute = GuidesGuideIdEntriesCreateImport.update(
-  {
+const GuidesGuideIdEntriesIndexRoute =
+  GuidesGuideIdEntriesIndexRouteImport.update({
+    id: '/guides/$guideId_/entries/',
+    path: '/guides/$guideId/entries/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const GuidesGuideIdEntriesCreateRoute =
+  GuidesGuideIdEntriesCreateRouteImport.update({
     id: '/guides/$guideId_/entries/create',
     path: '/guides/$guideId/entries/create',
-    getParentRoute: () => rootRoute,
-  } as any,
-)
-
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const GuidesGuideIdEntriesEntryIdRoute =
-  GuidesGuideIdEntriesEntryIdImport.update({
+  GuidesGuideIdEntriesEntryIdRouteImport.update({
     id: '/guides/$guideId_/entries/$entryId',
     path: '/guides/$guideId/entries/$entryId',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
-
 const GuidesGuideIdEntriesEntryIdEditRoute =
-  GuidesGuideIdEntriesEntryIdEditImport.update({
+  GuidesGuideIdEntriesEntryIdEditRouteImport.update({
     id: '/guides/$guideId_/entries/$entryId_/edit',
     path: '/guides/$guideId/entries/$entryId/edit',
-    getParentRoute: () => rootRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId': {
-      id: '/guides/$guideId'
-      path: '/guides/$guideId'
-      fullPath: '/guides/$guideId'
-      preLoaderRoute: typeof GuidesGuideIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/create': {
-      id: '/guides/create'
-      path: '/guides/create'
-      fullPath: '/guides/create'
-      preLoaderRoute: typeof GuidesCreateImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/': {
-      id: '/guides/'
-      path: '/guides'
-      fullPath: '/guides'
-      preLoaderRoute: typeof GuidesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId_/edit': {
-      id: '/guides/$guideId_/edit'
-      path: '/guides/$guideId/edit'
-      fullPath: '/guides/$guideId/edit'
-      preLoaderRoute: typeof GuidesGuideIdEditImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId_/entries/$entryId': {
-      id: '/guides/$guideId_/entries/$entryId'
-      path: '/guides/$guideId/entries/$entryId'
-      fullPath: '/guides/$guideId/entries/$entryId'
-      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId_/entries/create': {
-      id: '/guides/$guideId_/entries/create'
-      path: '/guides/$guideId/entries/create'
-      fullPath: '/guides/$guideId/entries/create'
-      preLoaderRoute: typeof GuidesGuideIdEntriesCreateImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId_/entries/': {
-      id: '/guides/$guideId_/entries/'
-      path: '/guides/$guideId/entries'
-      fullPath: '/guides/$guideId/entries'
-      preLoaderRoute: typeof GuidesGuideIdEntriesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/guides/$guideId_/entries/$entryId_/edit': {
-      id: '/guides/$guideId_/entries/$entryId_/edit'
-      path: '/guides/$guideId/entries/$entryId/edit'
-      fullPath: '/guides/$guideId/entries/$entryId/edit'
-      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdEditImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -202,14 +100,14 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
-  '/guides': typeof GuidesIndexRoute
+  '/user/profile': typeof UserProfileRoute
+  '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
-  '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
+  '/guides/$guideId/entries/': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
@@ -217,6 +115,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
+  '/user/profile': typeof UserProfileRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
@@ -224,15 +123,15 @@ export interface FileRoutesByTo {
   '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
+  '/user/profile': typeof UserProfileRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId_/edit': typeof GuidesGuideIdEditRoute
   '/guides/$guideId_/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
@@ -240,7 +139,6 @@ export interface FileRoutesById {
   '/guides/$guideId_/entries/': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId_/entries/$entryId_/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -250,11 +148,12 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
-    | '/guides'
+    | '/user/profile'
+    | '/guides/'
     | '/guides/$guideId/edit'
     | '/guides/$guideId/entries/$entryId'
     | '/guides/$guideId/entries/create'
-    | '/guides/$guideId/entries'
+    | '/guides/$guideId/entries/'
     | '/guides/$guideId/entries/$entryId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -264,6 +163,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
+    | '/user/profile'
     | '/guides'
     | '/guides/$guideId/edit'
     | '/guides/$guideId/entries/$entryId'
@@ -278,6 +178,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
+    | '/user/profile'
     | '/guides/'
     | '/guides/$guideId_/edit'
     | '/guides/$guideId_/entries/$entryId'
@@ -286,7 +187,6 @@ export interface FileRouteTypes {
     | '/guides/$guideId_/entries/$entryId_/edit'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
@@ -294,12 +194,109 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   GuidesCreateRoute: typeof GuidesCreateRoute
+  UserProfileRoute: typeof UserProfileRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
   GuidesGuideIdEntriesEntryIdRoute: typeof GuidesGuideIdEntriesEntryIdRoute
   GuidesGuideIdEntriesCreateRoute: typeof GuidesGuideIdEntriesCreateRoute
   GuidesGuideIdEntriesIndexRoute: typeof GuidesGuideIdEntriesIndexRoute
   GuidesGuideIdEntriesEntryIdEditRoute: typeof GuidesGuideIdEntriesEntryIdEditRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/profile': {
+      id: '/user/profile'
+      path: '/user/profile'
+      fullPath: '/user/profile'
+      preLoaderRoute: typeof UserProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/create': {
+      id: '/guides/create'
+      path: '/guides/create'
+      fullPath: '/guides/create'
+      preLoaderRoute: typeof GuidesCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId': {
+      id: '/guides/$guideId'
+      path: '/guides/$guideId'
+      fullPath: '/guides/$guideId'
+      preLoaderRoute: typeof GuidesGuideIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId_/edit': {
+      id: '/guides/$guideId_/edit'
+      path: '/guides/$guideId/edit'
+      fullPath: '/guides/$guideId/edit'
+      preLoaderRoute: typeof GuidesGuideIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId_/entries/': {
+      id: '/guides/$guideId_/entries/'
+      path: '/guides/$guideId/entries'
+      fullPath: '/guides/$guideId/entries/'
+      preLoaderRoute: typeof GuidesGuideIdEntriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId_/entries/create': {
+      id: '/guides/$guideId_/entries/create'
+      path: '/guides/$guideId/entries/create'
+      fullPath: '/guides/$guideId/entries/create'
+      preLoaderRoute: typeof GuidesGuideIdEntriesCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId_/entries/$entryId': {
+      id: '/guides/$guideId_/entries/$entryId'
+      path: '/guides/$guideId/entries/$entryId'
+      fullPath: '/guides/$guideId/entries/$entryId'
+      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$guideId_/entries/$entryId_/edit': {
+      id: '/guides/$guideId_/entries/$entryId_/edit'
+      path: '/guides/$guideId/entries/$entryId/edit'
+      fullPath: '/guides/$guideId/entries/$entryId/edit'
+      preLoaderRoute: typeof GuidesGuideIdEntriesEntryIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -309,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   GuidesGuideIdRoute: GuidesGuideIdRoute,
   GuidesCreateRoute: GuidesCreateRoute,
+  UserProfileRoute: UserProfileRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
   GuidesGuideIdEntriesEntryIdRoute: GuidesGuideIdEntriesEntryIdRoute,
@@ -316,67 +314,6 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesGuideIdEntriesIndexRoute: GuidesGuideIdEntriesIndexRoute,
   GuidesGuideIdEntriesEntryIdEditRoute: GuidesGuideIdEntriesEntryIdEditRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/login",
-        "/register",
-        "/guides/$guideId",
-        "/guides/create",
-        "/guides/",
-        "/guides/$guideId_/edit",
-        "/guides/$guideId_/entries/$entryId",
-        "/guides/$guideId_/entries/create",
-        "/guides/$guideId_/entries/",
-        "/guides/$guideId_/entries/$entryId_/edit"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/register": {
-      "filePath": "register.tsx"
-    },
-    "/guides/$guideId": {
-      "filePath": "guides/$guideId.tsx"
-    },
-    "/guides/create": {
-      "filePath": "guides/create.tsx"
-    },
-    "/guides/": {
-      "filePath": "guides/index.tsx"
-    },
-    "/guides/$guideId_/edit": {
-      "filePath": "guides/$guideId_.edit.tsx"
-    },
-    "/guides/$guideId_/entries/$entryId": {
-      "filePath": "guides/$guideId_/entries/$entryId.tsx"
-    },
-    "/guides/$guideId_/entries/create": {
-      "filePath": "guides/$guideId_/entries/create.tsx"
-    },
-    "/guides/$guideId_/entries/": {
-      "filePath": "guides/$guideId_/entries/index.tsx"
-    },
-    "/guides/$guideId_/entries/$entryId_/edit": {
-      "filePath": "guides/$guideId_/entries/$entryId_.edit.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

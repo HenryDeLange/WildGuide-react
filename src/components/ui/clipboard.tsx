@@ -1,21 +1,21 @@
 import type { ButtonProps, InputProps } from "@chakra-ui/react"
 import {
-    Button,
-    Clipboard as ChakraClipboard,
-    IconButton,
-    Input,
+  Button,
+  Clipboard as ChakraClipboard,
+  IconButton,
+  Input,
 } from "@chakra-ui/react"
+import { Check, Clipboard as ClipboardIconLib, Link } from 'lucide-react'
 import * as React from "react"
 import { useTranslation } from 'react-i18next'
-import { LuCheck, LuClipboard, LuLink } from "react-icons/lu"
 
 const ClipboardIcon = React.forwardRef<
   HTMLDivElement,
   ChakraClipboard.IndicatorProps
 >(function ClipboardIcon(props, ref) {
   return (
-    <ChakraClipboard.Indicator copied={<LuCheck />} {...props} ref={ref}>
-      <LuClipboard />
+    <ChakraClipboard.Indicator copied={<Check />} {...props} ref={ref}>
+      <ClipboardIconLib />
     </ChakraClipboard.Indicator>
   )
 })
@@ -75,7 +75,7 @@ export const ClipboardLink = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ref={ref}
           {...props}
         >
-          <LuLink />
+          <Link />
           <ClipboardCopyText />
         </Button>
       </ChakraClipboard.Trigger>

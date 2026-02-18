@@ -25,7 +25,7 @@ export function EntryNew({ guideId }: Readonly<Props>) {
         }
     ] = useCreateEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, control } = useForm<EntryBase>({
+    const { register, handleSubmit, formState: { errors, isDirty }, control } = useForm<EntryBase>({
         defaultValues: {
             scientificRank: 'SPECIES'
         }
@@ -56,7 +56,11 @@ export function EntryNew({ guideId }: Readonly<Props>) {
                         </Box>
                     </HStack>
                     <Box flex='1' display='flex' justifyContent='flex-end' alignSelf='flex-end'>
-                        <SaveButton titleKey='newEntryConfirm' loading={isLoading} />
+                        <SaveButton
+                            titleKey='newEntryConfirm'
+                            loading={isLoading}
+                            disabled={!isDirty}
+                        />
                     </Box>
                 </HStack>
                 <Separator />

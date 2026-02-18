@@ -1,5 +1,5 @@
 import { Box, IconButton, Text } from '@chakra-ui/react';
-import { LuCopyright } from 'react-icons/lu';
+import { Copyright } from 'lucide-react';
 import { ToggleTip } from '../ui/toggle-tip';
 
 type Props = {
@@ -24,7 +24,7 @@ export function Attribution({ attribution }: Readonly<Props>) {
                     color='fg.subtle'
                     focusVisibleRing='none'
                 >
-                    <LuCopyright />
+                    <Copyright />
                 </IconButton>
             </ToggleTip>
         </Box>

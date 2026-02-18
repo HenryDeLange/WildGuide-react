@@ -1,7 +1,6 @@
 import { DialogRootProps, Heading, IconButton, Separator, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Earth, FileQuestionMark, ImageIcon, MessageSquareMore, ScanEye, SquareChartGantt, TagIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { BsChatSquareDots, BsGlobeEuropeAfrica, BsMarkdown } from 'react-icons/bs';
-import { LuFileQuestion, LuImage, LuScanEye, LuTag } from 'react-icons/lu';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogRoot, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { MarkdownInputSnippetImage } from './MarkdownInputSnippetImage';
 import { MarkdownInputSnippetInatObs } from './MarkdownInputSnippetInatObs';
@@ -17,7 +16,7 @@ export function MarkdownInputSnippets() {
         <DialogRoot lazyMount placement='center' motionPreset='slide-in-bottom' size={sizeWorkAround}>
             <DialogTrigger asChild>
                 <IconButton variant='outline' color='fg.info'>
-                    <LuFileQuestion />
+                    <FileQuestionMark />
                 </IconButton>
             </DialogTrigger>
             <DialogContent width='100%' height='100%' overflow='auto'>
@@ -31,37 +30,37 @@ export function MarkdownInputSnippets() {
                     <TabsRoot lazyMount defaultValue='syntax'>
                         <TabsList>
                             <TabsTrigger value='syntax'>
-                                <BsMarkdown size={20} />
+                                <SquareChartGantt size={20} />
                                 <Text display={{ base: 'none', lg: 'block' }}>
                                     {t('markdownSnippetsSyntax')}
                                 </Text>
                             </TabsTrigger>
                             <TabsTrigger value='observation'>
-                                <LuScanEye size={20} />
+                                <ScanEye size={20} />
                                 <Text display={{ base: 'none', md: 'block' }} truncate>
                                     {t('markdownSnippetsInatObservation')}
                                 </Text>
                             </TabsTrigger>
                             <TabsTrigger value='taxon'>
-                                <LuTag size={20} />
+                                <TagIcon size={20} />
                                 <Text display={{ base: 'none', md: 'block' }} truncate>
                                     {t('markdownSnippetsInatTaxon')}
                                 </Text>
                             </TabsTrigger>
                             <TabsTrigger value='map'>
-                                <BsGlobeEuropeAfrica size={20} />
+                                <Earth size={20} />
                                 <Text display={{ base: 'none', md: 'block' }} truncate>
                                     {t('markdownSnippetsInatTaxonMap')}
                                 </Text>
                             </TabsTrigger>
                             <TabsTrigger value='image'>
-                                <LuImage size={20} />
+                                <ImageIcon size={20} />
                                 <Text display={{ base: 'none', md: 'block' }} truncate>
                                     {t('markdownSnippetsAnnotatedImage')}
                                 </Text>
                             </TabsTrigger>
                             <TabsTrigger value='popup'>
-                                <BsChatSquareDots size={20} />
+                                <MessageSquareMore size={20} />
                                 <Text display={{ base: 'none', md: 'block' }} truncate>
                                     {t('markdownSnippetsPopup')}
                                 </Text>

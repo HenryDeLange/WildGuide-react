@@ -1,11 +1,9 @@
-"use client"
-
 import type { IconButtonProps } from "@chakra-ui/react"
 import { ClientOnly, IconButton, Skeleton } from "@chakra-ui/react"
-import { ThemeProvider, useTheme } from "next-themes"
+import { Moon, Sun } from 'lucide-react'
 import type { ThemeProviderProps } from "next-themes"
+import { ThemeProvider, useTheme } from "next-themes"
 import * as React from "react"
-import { LuMoon, LuSun } from "react-icons/lu"
 
 export interface ColorModeProviderProps extends ThemeProviderProps {}
 
@@ -34,7 +32,7 @@ export function useColorModeValue<T>(light: T, dark: T) {
 
 export function ColorModeIcon() {
   const { colorMode } = useColorMode()
-  return colorMode === "light" ? <LuSun /> : <LuMoon />
+  return colorMode === "light" ? <Sun /> : <Moon />
 }
 
 interface ColorModeButtonProps extends Omit<IconButtonProps, "aria-label"> {}

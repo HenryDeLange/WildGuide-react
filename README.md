@@ -1,4 +1,5 @@
 # WildGuide-react
+
 ![App Version](https://img.shields.io/github/package-json/v/HenryDeLange/WildGuide-react)
 ![GitHub License](https://img.shields.io/github/license/HenryDeLange/WildGuide-react)
 
@@ -12,7 +13,7 @@ This repository is for the WildGuide frontend (React, TypeScript). Also see the 
 ![Vite Build](https://img.shields.io/github/actions/workflow/status/HenryDeLange/WildGuide-react/react-source-build.yml?label=vite%20build)
 ![Web Deploy](https://img.shields.io/github/actions/workflow/status/HenryDeLange/WildGuide-react/azure-static-web-apps-jolly-beach-0d7ffc003.yml?label=static%20web%20deploy)
 
-### Setup
+### Development Setup
 
 #### Environment Variables
 
@@ -26,7 +27,7 @@ This project is written in `Typescript` using React and Vite to build.
 
 ## Production
 
-### Setup
+### Configuration
 
 See the [.env.production](./.env.production) file.
 

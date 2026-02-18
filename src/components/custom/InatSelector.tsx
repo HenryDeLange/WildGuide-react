@@ -1,9 +1,9 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { useProjectsAutocompleteQuery, useTaxaAutocompleteQuery, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Box, DialogRootProvider, Fieldset, Heading, IconButton, Image, Input, Text, useDialog } from '@chakra-ui/react';
+import { Trash } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiTrash } from 'react-icons/fi';
 import { useDebounce } from 'use-debounce';
 import { Button } from '../ui/button';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
@@ -69,7 +69,7 @@ export function InatSelector({ type, select, ...conditionalProps }: Readonly<Pro
                             handleCloseDialog();
                         }}
                     >
-                        <FiTrash />
+                        <Trash />
                         <Text>{t('inaturalistClearResult')}</Text>
                     </IconButton>
                 </DialogFooter>

@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react';
+import { Trash } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { FiTrash } from 'react-icons/fi';
 import { Button } from '../ui/button';
 import { DialogActionTrigger, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle, DialogTrigger } from '../ui/dialog';
 
@@ -30,7 +30,7 @@ export function DeleteButton({ handleDelete, loading, buttonText, popupText, com
                     focusRing={compact ? 'none' : undefined}
                     boxSize={compact ? 4: undefined}
                 >
-                    <FiTrash />
+                    <Trash />
                     {!compact &&
                         <Text>{t(buttonText)}</Text>
                     }

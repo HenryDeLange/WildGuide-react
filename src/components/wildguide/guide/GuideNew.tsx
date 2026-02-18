@@ -21,7 +21,7 @@ export function GuideNew() {
         }
     ] = useCreateGuideMutation();
 
-    const { register, handleSubmit, formState: { errors }, control } = useForm<GuideBase>({
+    const { register, handleSubmit, formState: { errors, isDirty }, control } = useForm<GuideBase>({
         defaultValues: {
             visibility: 'PUBLIC'
         }
@@ -52,7 +52,11 @@ export function GuideNew() {
                         </Box>
                     </HStack>
                     <Box flex='1' display='flex' justifyContent='flex-end' alignSelf='flex-end'>
-                        <SaveButton titleKey='newGuideConfirm' loading={isLoading} />
+                        <SaveButton
+                            titleKey='newGuideConfirm'
+                            loading={isLoading}
+                            disabled={!isDirty}
+                        />
                     </Box>
                 </HStack>
                 <Separator />

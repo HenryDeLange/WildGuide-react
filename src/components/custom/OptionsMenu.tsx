@@ -1,6 +1,6 @@
 import { IconButton } from '@chakra-ui/react';
+import { EllipsisVertical } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { LuEllipsisVertical } from 'react-icons/lu';
 import { MenuContent, MenuItem, MenuItemGroup, MenuRoot, MenuSeparator, MenuTrigger } from '../ui/menu';
 import { QrCodePopup } from './QrCodePopup';
 import { RefreshButton } from './RefreshButton';
@@ -26,7 +26,7 @@ export function OptionsMenu({ type, guideId, handleRefresh, isFetching, ...condi
         <MenuRoot>
             <MenuTrigger asChild>
                 <IconButton variant='ghost'>
-                    <LuEllipsisVertical />
+                    <EllipsisVertical />
                 </IconButton>
             </MenuTrigger>
             <MenuContent>

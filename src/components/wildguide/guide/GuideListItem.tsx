@@ -3,9 +3,8 @@ import { Guide } from '@/redux/api/wildguideApi';
 import { Flex, Heading, HStack, Icon, Show, Text, VStack } from '@chakra-ui/react';
 import { Link } from '@tanstack/react-router';
 import { t } from 'i18next';
+import { Lock, Star } from 'lucide-react';
 import { memo } from 'react';
-import { FaStar } from 'react-icons/fa';
-import { MdOutlineLock } from 'react-icons/md';
 
 export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ item: Guide }>) {
     return (
@@ -25,7 +24,7 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
                     <Show when={item.visibility === 'PRIVATE'}>
                         <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
                             <Icon size='md'>
-                                <MdOutlineLock />
+                                <Lock />
                             </Icon>
                         </Tooltip>
                     </Show>
@@ -36,7 +35,7 @@ export const GuideListItem = memo(function GuideListItem({ item }: Readonly<{ it
                     </Tooltip>
                     {item.starredByUser &&
                         <Icon size='md' color='fg.info'>
-                            <FaStar />
+                            <Star />
                         </Icon>}
                 </HStack>
                 <Flex maxWidth='100%' marginTop={-1}>

@@ -4,10 +4,9 @@ import { Taxon, useTaxaFindQuery } from '@/redux/api/inatApi';
 import { Entry, useFindEntriesQuery } from '@/redux/api/wildguideApi';
 import { Box, HStack, Input, Separator, Show, Spinner, Stack, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { CirclePlus, Search } from 'lucide-react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuSearch } from 'react-icons/lu';
-import { MdAddCircleOutline } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualList } from '../../custom/InfiniteVirtualList';
@@ -159,7 +158,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
         <Box>
             <Box id='grid-header'>
                 <Stack direction='row' justifyContent='space-between' gap={2} padding={2}>
-                    <InputGroup startElement={<LuSearch />}>
+                    <InputGroup startElement={<Search />}>
                         <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                     </InputGroup>
                     <HStack alignItems='flex-end' justifyContent='flex-end'>
@@ -178,7 +177,7 @@ export function EntryList({ guideId, triggerRefresh, handleRefreshComplete, guid
                                     whiteSpace='nowrap'
                                     padding={showLabels ? undefined : 0}
                                 >
-                                    <MdAddCircleOutline />
+                                    <CirclePlus />
                                     {showLabels &&
                                         <Text>
                                             {t('newEntry')}

@@ -2,9 +2,9 @@ import { DeleteButton } from '@/components/custom/DeleteButton';
 import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
 import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useFindGuideQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, useUpdateGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
 import { DialogRootProvider, Fieldset, HStack, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
+import { UsersRound } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuUsersRound } from 'react-icons/lu';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { FloatingInput } from '../../custom/FloatingInput';
 import { Button } from '../../ui/button';
@@ -153,7 +153,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                         whiteSpace='nowrap'
                         padding={showLabels ? undefined : 0}
                     >
-                        <LuUsersRound />
+                        <UsersRound />
                         {showLabels &&
                             <Text>
                                 {t('editGuideAccess')}
@@ -232,7 +232,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                             color='fg.success'
                                             variant='outline'
                                         >
-                                            <LuUsersRound />
+                                            <UsersRound />
                                             {t('editGuideAccessConfirm')}
                                         </Button>
                                     </HStack>

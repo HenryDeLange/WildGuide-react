@@ -3,18 +3,17 @@ import { useLoginMutation, User, useRegisterMutation } from '@/redux/api/wildgui
 import { useAppDispatch } from '@/redux/hooks';
 import { Box, Container, Fieldset, Heading, Image, Input, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { KeyRound, LogIn, UserPlus, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { FiLogIn, FiUserPlus } from 'react-icons/fi';
-import { LuKeyRound, LuUser } from 'react-icons/lu';
-import userImage from '../../assets/images/wildguide/user.jpg';
-import { NavLink } from '../custom/NavLink';
-import { Button } from '../ui/button';
-import { Field } from '../ui/field';
-import { InputGroup } from '../ui/input-group';
-import { PasswordInput } from '../ui/password-input';
-import { useHeights } from './hooks/uiHooks';
+import userImage from '../../../assets/images/wildguide/user.jpg';
+import { NavLink } from '../../custom/NavLink';
+import { Button } from '../../ui/button';
+import { Field } from '../../ui/field';
+import { InputGroup } from '../../ui/input-group';
+import { PasswordInput } from '../../ui/password-input';
+import { useHeights } from '../hooks/uiHooks';
 
 type Props = {
     registerMode?: boolean;
@@ -106,7 +105,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                         invalid={!!errors.username || loginIsError || registerIsError}
                                         errorText={errors.username?.message}
                                     >
-                                        <InputGroup flex='1' width='full' startElement={<LuUser />}>
+                                        <InputGroup flex='1' width='full' startElement={<UserRound />}>
                                             <Input
                                                 {...register('username', {
                                                     required: t('loginFormUsernameRequired'),
@@ -124,7 +123,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                             invalid={!!errors.email || loginIsError || registerIsError}
                                             errorText={errors.email?.message}
                                         >
-                                            <InputGroup flex='1' width='full' startElement={<LuUser />}>
+                                            <InputGroup flex='1' width='full' startElement={<UserRound />}>
                                                 <Input
                                                     {...register('email', {
                                                         required: t('loginFormEmailRequired'),
@@ -146,7 +145,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                         invalid={!!errors.password || loginIsError || registerIsError}
                                         errorText={errors.password?.message}
                                     >
-                                        <InputGroup flex='1' width='full' startElement={<LuKeyRound />}>
+                                        <InputGroup flex='1' width='full' startElement={<KeyRound />}>
                                             <PasswordInput
                                                 {...register('password', {
                                                     required: t('loginFormPasswordRequired'),
@@ -163,7 +162,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                             />
                                         </InputGroup>
                                         {registerMode &&
-                                            <InputGroup flex='1' width='full' startElement={<LuKeyRound />}>
+                                            <InputGroup flex='1' width='full' startElement={<KeyRound />}>
                                                 <PasswordInput
                                                     id='confirm-password'
                                                     value={confirmPassword ?? ''}
@@ -174,7 +173,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                         }
                                     </Field>
                                     <Button type='submit' width='full' loading={loginIsLoading || registerIsLoading}>
-                                        {registerMode ? <FiUserPlus /> : <FiLogIn />}
+                                        {registerMode ? <UserPlus /> : <LogIn />}
                                         {t(registerMode ? 'register' : 'login')}
                                     </Button>
                                 </Fieldset.Content>

@@ -45,7 +45,7 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
         }
     ] = useDeleteEntryMutation();
 
-    const { register, handleSubmit, formState: { errors }, reset, control } = useForm<EntryBase>();
+    const { register, handleSubmit, formState: { errors, isDirty }, reset, control } = useForm<EntryBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
@@ -92,7 +92,11 @@ export function EntryEdit({ guideId, entryId }: Readonly<Props>) {
                                 buttonText='editEntryDelete'
                                 popupText='editEntryDeleteDetails'
                             />
-                            <SaveButton titleKey='editEntryConfirm' loading={updateIsLoading || deleteIsLoading} />
+                            <SaveButton
+                                titleKey='editEntryConfirm'
+                                loading={updateIsLoading || deleteIsLoading}
+                                disabled={!isDirty}
+                            />
                         </HStack>
                     </HStack>
                     <Separator />

@@ -4,10 +4,9 @@ import { Guide, useFindGuidesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Input, Separator, Show, Spinner, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { CirclePlus, RefreshCcw, Search } from 'lucide-react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw, LuSearch } from 'react-icons/lu';
-import { MdAddCircleOutline } from 'react-icons/md';
 import { useDebounce } from 'use-debounce';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { InfiniteVirtualGrid } from '../../custom/InfiniteVirtualGrid';
@@ -123,7 +122,7 @@ export function GuideList() {
                                     onClick={handleCreate}
                                     whiteSpace='nowrap'
                                 >
-                                    <MdAddCircleOutline />
+                                    <CirclePlus />
                                     {showLabels &&
                                         <Text>
                                             {t('newGuide')}
@@ -138,9 +137,9 @@ export function GuideList() {
                                 onClick={handleRefresh}
                                 loading={isFetching}
                             >
-                                <LuRefreshCcw />
+                                <RefreshCcw />
                             </Button>
-                            <InputGroup startElement={<LuSearch />} minWidth={120}>
+                            <InputGroup startElement={<Search />} minWidth={120}>
                                 <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
                             </InputGroup>
                         </HStack>

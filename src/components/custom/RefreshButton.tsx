@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react';
+import { RefreshCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { LuRefreshCcw } from 'react-icons/lu';
 import { Button } from '../ui/button';
 
 type Props = {
@@ -20,7 +20,7 @@ export function RefreshButton({ handleRefresh, loading, hideLabel }: Readonly<Pr
             loading={loading}
             loadingText={t('loading')}
         >
-            <LuRefreshCcw />
+            <RefreshCcw />
             {!hideLabel &&
                 <Text>
                     {t('refresh')}

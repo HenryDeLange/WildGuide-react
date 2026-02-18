@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react';
+import { Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { MdEdit } from 'react-icons/md';
 import { Button } from '../ui/button';
 import { useShowButtonLabels } from '../wildguide/hooks/uiHooks';
 
@@ -21,7 +21,7 @@ export function EditButton({ titleKey, handleEdit }: Readonly<Props>) {
             onClick={handleEdit}
             padding={showLabels ? undefined : 0}
         >
-            <MdEdit />
+            <Edit />
             {showLabels &&
                 <Text>
                     {t(titleKey)}

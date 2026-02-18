@@ -43,7 +43,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
         }
     ] = useDeleteGuideMutation();
 
-    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<GuideBase>();
+    const { register, handleSubmit, formState: { errors, isDirty }, control, reset } = useForm<GuideBase>();
     useEffect(() => {
         if (isSuccess) {
             reset(data);
@@ -90,7 +90,11 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 buttonText='editGuideDelete'
                                 popupText='editGuideDeleteDetails'
                             />
-                            <SaveButton titleKey='editGuideConfirm' loading={updateIsLoading || deleteIsLoading} />
+                            <SaveButton
+                                titleKey='editGuideConfirm'
+                                loading={updateIsLoading || deleteIsLoading}
+                                disabled={!isDirty}
+                            />
                         </HStack>
                     </HStack>
                     <Separator />

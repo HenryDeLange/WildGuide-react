@@ -12,11 +12,9 @@ import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { useFindEntryQuery, useFindGuideQuery, useUpdateEntryMutation } from '@/redux/api/wildguideApi';
 import { Box, Heading, HStack, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text, useBreakpointValue } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { BookText, Globe, ImageIcon, ShieldX } from 'lucide-react';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BsGlobeEuropeAfrica } from 'react-icons/bs';
-import { LuBookText } from 'react-icons/lu';
-import { MdOutlineErrorOutline, MdOutlinePhoto } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { useHeights } from '../hooks/uiHooks';
 import { useIsOwner } from '../hooks/userHooks';
@@ -155,7 +153,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                             marginTop={0}
                                             focusVisibleRing='none'
                                         >
-                                            <MdOutlineErrorOutline />
+                                            <ShieldX />
                                         </IconButton>
                                     </ToggleTip>
                                 }
@@ -178,7 +176,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     _selected={{ bgColor: 'bg.subtle' }}
                                     padding={1}
                                 >
-                                    <LuBookText />
+                                    <BookText />
                                     <Text truncate>
                                         {t('entryTab')}
                                     </Text>
@@ -189,7 +187,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     _selected={{ bgColor: 'bg.subtle' }}
                                     padding={1}
                                 >
-                                    <BsGlobeEuropeAfrica />
+                                    <Globe />
                                     <Text truncate>
                                         {t('entryMapTab')}
                                     </Text>
@@ -200,7 +198,7 @@ export function Entry({ guideId, entryId }: Readonly<Props>) {
                                     _selected={{ bgColor: 'bg.subtle' }}
                                     padding={1}
                                 >
-                                    <MdOutlinePhoto />
+                                    <ImageIcon />
                                     <Text truncate>
                                         {t('entryPhotoTab')}
                                     </Text>

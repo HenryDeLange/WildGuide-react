@@ -1,6 +1,6 @@
 import { IconButton } from '@chakra-ui/react';
+import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { FaChevronLeft } from 'react-icons/fa';
 import { Tooltip } from '../ui/tooltip';
 
 type Props = {
@@ -18,7 +18,7 @@ export function BackButton({ titleKey, handleBack }: Readonly<Props>) {
                 color='fg.muted'
                 size='xs'
             >
-                <FaChevronLeft />
+                <ChevronLeft />
             </IconButton>
         </Tooltip>
     );

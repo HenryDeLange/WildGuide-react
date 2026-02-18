@@ -203,5 +203,22 @@
     "mapOverlayObservations": "Observations",
     "inaturalistLinkOnlyShowNew": "Only New",
     "photosToggleResearchGrade": "Research Grade",
-    "photosToggleProject": "Project"
+    "photosToggleProject": "Project",
+    "userProfile": "User Profile",
+    "editUserProfileTitle": "User Profile",
+    "editUserProfileBack": "Back to the home page",
+    "editUserProfileConfirm": "Update Profile",
+    "editUserProfileError": "Failed to update the User Profile!",
+    "editUserProfileDescription": "Description",
+    "editUserProfileDescriptionPlaceholder": "user profile description",
+    "editUserProfileImage": "Profile Image",
+    "editUserProfileImageUpload": "Upload Image",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": "",
+    "": ""
 }

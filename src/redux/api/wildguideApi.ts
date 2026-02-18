@@ -1,8 +1,9 @@
 import { wildguideBaseApi as api } from "./wildguideBaseApi";
 export const addTagTypes = [
+  "User Authentication",
   "Guides",
   "Entries",
-  "User Authentication",
+  "Files",
   "WildGuide Version",
 ] as const;
 const injectedRtkApi = api
@@ -11,6 +12,19 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
+      updateUserProfile: build.mutation<
+        UpdateUserProfileApiResponse,
+        UpdateUserProfileApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/users/profile`,
+          method: "PUT",
+          params: {
+            description: queryArg.description,
+          },
+        }),
+        invalidatesTags: ["User Authentication"],
+      }),
       findGuide: build.query<FindGuideApiResponse, FindGuideApiArg>({
         query: (queryArg) => ({ url: `/api/v1/guides/${queryArg.guideId}` }),
         providesTags: ["Guides"],
@@ -167,6 +181,14 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Entries"],
       }),
+      createFile: build.mutation<CreateFileApiResponse, CreateFileApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/upload`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Files"],
+      }),
       getVersion: build.query<GetVersionApiResponse, GetVersionApiArg>({
         query: () => ({ url: `/api/v1/version` }),
         providesTags: ["WildGuide Version"],
@@ -179,6 +201,18 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["User Authentication"],
+      }),
+      findFiles: build.query<FindFilesApiResponse, FindFilesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/users/${queryArg.userId}/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}`,
+        }),
+        providesTags: ["Files"],
+      }),
+      downloadFile: build.query<DownloadFileApiResponse, DownloadFileApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/users/${queryArg.userId}/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/${queryArg.fileId}/${queryArg.filename}`,
+        }),
+        providesTags: ["Files"],
       }),
       findGuideOwners: build.query<
         FindGuideOwnersApiResponse,
@@ -214,10 +248,21 @@ const injectedRtkApi = api
         query: () => ({ url: `/api/v1/guides/stars` }),
         providesTags: ["Guides"],
       }),
+      deleteFile: build.mutation<DeleteFileApiResponse, DeleteFileApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/${queryArg.fileId}/${queryArg.fileName}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Files"],
+      }),
     }),
     overrideExisting: false,
   });
 export { injectedRtkApi as wildguideApi };
+export type UpdateUserProfileApiResponse = /** status 200 OK */ UserInfo;
+export type UpdateUserProfileApiArg = {
+  description: string;
+};
 export type FindGuideApiResponse = /** status 200 OK */ Guide;
 export type FindGuideApiArg = {
   guideId: number;
@@ -305,11 +350,33 @@ export type CreateEntryApiArg = {
   guideId: number;
   entryBase: EntryBase;
 };
+export type CreateFileApiResponse = /** status 200 OK */ string;
+export type CreateFileApiArg = {
+  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategoryId: string;
+  body: {
+    file: Blob;
+  };
+};
 export type GetVersionApiResponse = /** status 200 OK */ Version;
 export type GetVersionApiArg = void;
 export type FindUserInfoApiResponse = /** status 200 OK */ UserInfo;
 export type FindUserInfoApiArg = {
   username: string;
+};
+export type FindFilesApiResponse = /** status 200 OK */ string[];
+export type FindFilesApiArg = {
+  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategoryId: string;
+  userId: string;
+};
+export type DownloadFileApiResponse = /** status 200 OK */ Blob;
+export type DownloadFileApiArg = {
+  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategoryId: string;
+  fileId: string;
+  filename: string;
+  userId: string;
 };
 export type FindGuideOwnersApiResponse = /** status 200 OK */ GuideLinkedUser[];
 export type FindGuideOwnersApiArg = {
@@ -327,6 +394,19 @@ export type FindEntriesScientificNamesApiArg = {
 };
 export type FindStarredGuidesApiResponse = /** status 200 OK */ Guide[];
 export type FindStarredGuidesApiArg = void;
+export type DeleteFileApiResponse = unknown;
+export type DeleteFileApiArg = {
+  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategoryId: string;
+  fileId: string;
+  fileName: string;
+};
+export type UserInfo = {
+  id: number;
+  username: string;
+  description?: string;
+  image?: string;
+};
 export type Guide = {
   name: string;
   summary?: string;
@@ -415,10 +495,6 @@ export type Version = {
   commitTime: string;
   buildTime: string;
 };
-export type UserInfo = {
-  id: number;
-  username: string;
-};
 export type GuideLinkedUser = {
   userId: number;
   username: string;
@@ -428,6 +504,7 @@ export type EntryScientificName = {
   inaturalistTaxon: number;
 };
 export const {
+  useUpdateUserProfileMutation,
   useFindGuideQuery,
   useUpdateGuideMutation,
   useDeleteGuideMutation,
@@ -447,10 +524,14 @@ export const {
   useMemberLeaveGuideMutation,
   useFindEntriesQuery,
   useCreateEntryMutation,
+  useCreateFileMutation,
   useGetVersionQuery,
   useFindUserInfoQuery,
+  useFindFilesQuery,
+  useDownloadFileQuery,
   useFindGuideOwnersQuery,
   useFindGuideMembersQuery,
   useFindEntriesScientificNamesQuery,
   useFindStarredGuidesQuery,
+  useDeleteFileMutation,
 } = injectedRtkApi;

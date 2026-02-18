@@ -4,10 +4,9 @@ import { useFindStarredGuidesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { Download, FileWarning } from 'lucide-react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LuFileWarning } from 'react-icons/lu';
-import { MdInstallDesktop } from 'react-icons/md';
 import homeImage from '../../assets/images/wildguide/home.jpg';
 import installImage from '../../assets/images/wildguide/install.jpg';
 import { NavLink } from '../custom/NavLink';
@@ -34,7 +33,7 @@ export function AppHome() {
             <Box id='page-header'>
                 <AlertRoot status='warning' variant='surface' marginY={4}>
                     <AlertIndicator>
-                        <LuFileWarning />
+                        <FileWarning />
                     </AlertIndicator>
                     <AlertContent>
                         <AlertTitle fontSize='md' fontWeight='bold'>
@@ -86,7 +85,7 @@ export function AppHome() {
                                 {t('pwaInstallDetails')}
                             </Text>
                             <Button variant='surface' onClick={handleInstallClick} size={{ base: 'xs', sm: 'sm', md: 'lg'}}>
-                                <MdInstallDesktop />
+                                <Download />
                                 {t('pwaInstall')}
                             </Button>
                         </VStack>

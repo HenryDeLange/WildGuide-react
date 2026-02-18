@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react';
+import { Share } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { LuShare2 } from 'react-icons/lu';
 import { Button } from '../ui/button';
 
 type Props = {
@@ -29,7 +29,7 @@ export function ShareButton({ value, hideLabel }: Readonly<Props>) {
             whiteSpace='nowrap'
             onClick={handleShare}
         >
-            <LuShare2 />
+            <Share />
             {!hideLabel &&
                 <Text>
                     {t('shareUrl')}

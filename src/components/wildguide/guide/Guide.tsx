@@ -9,11 +9,9 @@ import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useF
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { BookText, LayoutList, Lock, Star, StarOff } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import { LuBookText, LuLayoutList } from 'react-icons/lu';
-import { MdOutlineLock } from 'react-icons/md';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
 import { Tooltip } from '../../ui/tooltip';
 import { EntryList } from '../entry/EntryList';
@@ -115,7 +113,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     <Show when={data.visibility === 'PRIVATE'}>
                                         <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
                                             <Icon size='md'>
-                                                <MdOutlineLock />
+                                                <Lock />
                                             </Icon>
                                         </Tooltip>
                                     </Show>
@@ -129,7 +127,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             loading={createStarIsLoading || deleteStarIsLoading}
                                             color={data.starredByUser ? 'fg.info' : undefined}
                                         >
-                                            {data.starredByUser ? <FaStar /> : <FaRegStar />}
+                                            {data.starredByUser ? <Star /> : <StarOff />}
                                         </IconButton>
                                     }
                                 </HStack>
@@ -173,7 +171,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     _selected={{ bgColor: 'bg.subtle' }}
                                     padding={1}
                                 >
-                                    <LuBookText />
+                                    <BookText />
                                     <Text truncate>
                                         {t('guideTab')}
                                     </Text>
@@ -184,7 +182,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                     _selected={{ bgColor: 'bg.subtle' }}
                                     padding={1}
                                 >
-                                    <LuLayoutList />
+                                    <LayoutList />
                                     <Text truncate>
                                         {t('guideEntriesTab')}
                                     </Text>

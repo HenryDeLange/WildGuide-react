@@ -1,6 +1,5 @@
 import { Box, DialogRootProps, IconButton, useBreakpointValue } from '@chakra-ui/react';
-import { LuZoomIn, LuZoomOut } from 'react-icons/lu';
-import { TbZoomReset } from 'react-icons/tb';
+import { ScanSearch, ZoomIn, ZoomOut } from 'lucide-react';
 import { TransformComponent, TransformWrapper, useControls } from 'react-zoom-pan-pinch';
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogRoot, DialogTrigger } from '../ui/dialog';
 import { Attribution } from './Attribution';
@@ -23,7 +22,7 @@ export function ImageZoomPopup({ url, attribution }: Readonly<Props>) {
             <DialogTrigger asChild>
                 <Box position='absolute' top={1} right={1}>
                     <IconButton variant='ghost' size='sm' focusRing='none'>
-                        <LuZoomIn />
+                        <ZoomIn />
                     </IconButton>
                 </Box>
             </DialogTrigger>
@@ -59,13 +58,13 @@ function Controls() {
         <div className='tools'>
             <Box position='absolute' top={2} left={2}>
                 <IconButton variant='ghost' size='sm' onClick={() => zoomIn()}>
-                    <LuZoomIn />
+                    <ZoomIn />
                 </IconButton>
                 <IconButton variant='ghost' size='sm' onClick={() => zoomOut()}>
-                    <LuZoomOut />
+                    <ZoomOut />
                 </IconButton>
                 <IconButton variant='ghost' size='sm' onClick={() => resetTransform()}>
-                    <TbZoomReset />
+                    <ScanSearch />
                 </IconButton>
             </Box>
         </div>

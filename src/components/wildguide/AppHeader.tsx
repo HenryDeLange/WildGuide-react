@@ -1,19 +1,20 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
-import logo from '@/assets/images/wildguide/logo.png';
-import { authLogout, selectAuthUserId } from '@/auth/authSlice';
+import { authLogout, selectAuth, selectAuthUserId } from '@/auth/authSlice';
 import { ChangeLanguage } from '@/i18n/ChangeLanguage';
+import { useFindUserInfoQuery } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, CloseButton, DrawerContext, DrawerPositioner, Flex, Heading, HStack, IconButton, Image, Separator, Show, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
+import { Avatar, Box, CloseButton, DrawerContext, DrawerPositioner, Flex, Heading, HStack, IconButton, Image, Menu, Portal, Separator, Show, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { t } from 'i18next';
+import { LogIn, LogOut, Menu as MenuIcon, UserRoundPen } from 'lucide-react';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaGithub } from 'react-icons/fa';
-import { FiLogIn, FiLogOut } from 'react-icons/fi';
-import { MdOutlineMenu } from 'react-icons/md';
 import { NavLink } from '../custom/NavLink';
-import { ColorModeButton } from '../ui/color-mode';
+import { ColorModeButton, useColorModeValue } from '../ui/color-mode';
 import { DrawerBackdrop, DrawerBody, DrawerCloseTrigger, DrawerContent, DrawerFooter, DrawerHeader, DrawerRoot, DrawerTitle, DrawerTrigger } from '../ui/drawer';
+import { getServerFileUrl } from '../utils';
+import GitHubLogo from './../../assets/images/github/github.svg?react';
+import logo from '/logo.png';
 
 export function AppHeader() {
     const { t } = useTranslation();
@@ -23,26 +24,31 @@ export function AppHeader() {
     return (
         <Box id='app-header' as='header' bg={{ base: 'gray.100', _dark: 'gray.900' }} paddingY={2} paddingX={4}>
             <Flex alignItems='center' justifyContent='space-between' gap={4}>
-                <NavLink to='/'>
-                    <Stack direction='row' gap={{ base: 1, sm: 2 }} alignItems='center'>
-                        <Image
-                            alt='WildGuide Logo'
-                            src={logo}
-                            boxSize={10}
-                            borderRadius='full'
-                            fit='cover'
-                            loading='lazy'
-                        />
-                        <Heading size={{ base: 'lg', sm: '3xl' }} truncate>
-                            {t('appTitle')}
-                        </Heading>
-                    </Stack>
-                </NavLink>
+                <Flex gap={2}>
+                    {useMobileLayout &&
+                        <MobileMenu />
+                    }
+                    <NavLink to='/'>
+                        <Stack direction='row' gap={{ base: 1, sm: 2 }} alignItems='center'>
+                            <Image
+                                alt='WildGuide Logo'
+                                src={logo}
+                                boxSize={10}
+                                borderRadius='full'
+                                fit='cover'
+                                loading='lazy'
+                            />
+                            <Heading size={{ base: 'lg', sm: '3xl' }} truncate>
+                                {t('appTitle')}
+                            </Heading>
+                        </Stack>
+                    </NavLink>
+                </Flex>
                 {!useMobileLayout &&
                     <DesktopMenu />
                 }
                 {useMobileLayout &&
-                    <MobileMenu />
+                    <UserAvatar />
                 }
             </Flex>
         </Box>
@@ -51,6 +57,7 @@ export function AppHeader() {
 
 function DesktopMenu() {
     const { t } = useTranslation();
+    const userId = useAppSelector(selectAuthUserId);
     return (
         <>
             <Stack direction='row' gap={{ base: 2, sm: 6, md: 12 }} flex={3} alignItems='center' justifyContent='center'>
@@ -69,7 +76,10 @@ function DesktopMenu() {
                 <ChangeLanguage />
                 <ColorModeButton />
             </HStack>
-            <LoginLogoutControl />
+            {!userId &&
+                <LoginLogoutControl />
+            }
+            <UserAvatar />
         </>
     );
 }
@@ -81,7 +91,7 @@ function MobileMenu() {
             <DrawerBackdrop />
             <DrawerTrigger asChild>
                 <IconButton variant='ghost' focusVisibleRing='none'>
-                    <MdOutlineMenu />
+                    <MenuIcon />
                 </IconButton>
             </DrawerTrigger>
             <DrawerPositioner >
@@ -151,14 +161,14 @@ function LoginLogoutControl({ action }: { action?: () => void }) {
                         <Text color='fg.muted'>{t('register')}</Text>
                     </NavLink>
                     <NavLink to='/login' whiteSpace='nowrap' onClick={action}>
-                        <FiLogIn />
+                        <LogIn />
                         <Text fontWeight='semibold'>{t('login')}</Text>
                     </NavLink>
                 </HStack>
             </Show>
             <Show when={userId !== null}>
                 <NavLink to='/' whiteSpace='nowrap' onClick={handleLogout}>
-                    <FiLogOut />
+                    <LogOut />
                     <Text>{t('logout')}</Text>
                 </NavLink>
             </Show>
@@ -189,6 +199,7 @@ function InaturalistLink() {
 }
 
 function GitHubLink() {
+    const fillColor = useColorModeValue('#000', '#fff')
     return (
         <IconButton asChild variant='ghost' size='sm'>
             <a
@@ -197,8 +208,52 @@ function GitHubLink() {
                 target='_blank'
                 rel='noopener'
             >
-                <FaGithub />
+                <GitHubLogo fill={fillColor} />
             </a>
         </IconButton>
+    );
+}
+
+function UserAvatar() {
+    const auth = useAppSelector(selectAuth);
+    const { data } = useFindUserInfoQuery({
+        username: auth.username ?? ''
+    }, {
+        skip: !auth.userId
+    });
+    return (
+        <>
+            {auth.userId && data &&
+                <Menu.Root positioning={{ placement: 'bottom' }}>
+                    <Menu.Trigger rounded='full' focusRing='outside' cursor='pointer'>
+                        <Avatar.Root>
+                            <Avatar.Fallback name={data.username} />
+                            {data.image &&
+                                <Avatar.Image src={getServerFileUrl(data.image)} />
+                            }
+                        </Avatar.Root>
+                    </Menu.Trigger>
+                    <Portal>
+                        <Menu.Positioner>
+                            <Menu.Content padding={2} border='1px solid' borderColor='fg.subtle'>
+                                <Heading>
+                                    {data.username}
+                                </Heading>
+                                <Text color='fg.muted'>
+                                    {data.description}
+                                </Text>
+                                <Menu.Separator marginY={4} />
+                                <NavLink to='/user/profile'>
+                                    <UserRoundPen />
+                                    {t('userProfile')}
+                                </NavLink>
+                                <Menu.Separator marginY={4} />
+                                <LoginLogoutControl />
+                            </Menu.Content>
+                        </Menu.Positioner>
+                    </Portal>
+                </Menu.Root>
+            }
+        </>
     );
 }

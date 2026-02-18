@@ -1,9 +1,10 @@
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react-swc';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import compression from 'vite-plugin-compression';
 import { VitePWA } from 'vite-plugin-pwa';
+import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { version } from './package.json';
 
@@ -13,19 +14,33 @@ export default defineConfig({
         VITE_APP_VERSION: JSON.stringify(version)
     },
     plugins: [
+        tanstackRouter({ // Make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
+            target: 'react',
+            autoCodeSplitting: true
+        }),
         react(),
-        TanStackRouterVite(),
+        svgr(),
         tsconfigPaths(),
         visualizer(),
         compression({
             algorithm: 'brotliCompress',
             ext: '.br'
         }),
+        {
+            name: 'watch-public-folder',
+            configureServer(server) {
+                server.watcher.add('public/**');
+                server.watcher.on('change', () => {
+                    server.ws.send({ type: 'full-reload' });
+                });
+            }
+        },
         VitePWA({
-            registerType: 'autoUpdate',
             devOptions: {
                 enabled: true
             },
+            registerType: 'autoUpdate',
+            strategies: 'generateSW',
             manifest: {
                 name: 'WildGuide',
                 short_name: 'WildGuide',

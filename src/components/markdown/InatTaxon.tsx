@@ -1,9 +1,9 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useTaxonFindQuery } from '@/redux/api/inatApi';
 import { Box, Heading, HStack, IconButton, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
+import { ArrowBigLeft, ArrowBigRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import { Attribution } from '../custom/Attribution';
 import { ImageZoomPopup } from '../custom/ImageZoomPopup';
 import { uppercaseFirst } from '../utils';
@@ -108,7 +108,7 @@ export function InatTaxon({ id, summary }: Readonly<Props>) {
                                         onClick={() => setPhotoNumber(Math.max(0, photoNumber - 1))}
                                         disabled={photoNumber <= 0}
                                     >
-                                        <FaAngleLeft />
+                                        <ArrowBigLeft />
                                     </IconButton>
                                     <IconButton
                                         size='2xs'
@@ -117,7 +117,7 @@ export function InatTaxon({ id, summary }: Readonly<Props>) {
                                         onClick={() => setPhotoNumber(Math.min(totalPhotos - 1, photoNumber + 1))}
                                         disabled={photoNumber >= totalPhotos - 1}
                                     >
-                                        <FaAngleRight />
+                                        <ArrowBigRight />
                                     </IconButton>
                                 </>
                             }
