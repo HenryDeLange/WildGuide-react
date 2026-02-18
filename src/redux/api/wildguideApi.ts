@@ -350,7 +350,9 @@ export type CreateEntryApiArg = {
   guideId: number;
   entryBase: EntryBase;
 };
-export type CreateFileApiResponse = /** status 200 OK */ string;
+export type CreateFileApiResponse = /** status 200 OK */ {
+  [key: string]: string;
+};
 export type CreateFileApiArg = {
   fileCategory: "ENTRY" | "GUIDE" | "USER";
   fileCategoryId: string;

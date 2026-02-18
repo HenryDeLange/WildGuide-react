@@ -14,12 +14,13 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
-import { Route as UserProfileRouteImport } from './routes/user/profile'
 import { Route as GuidesCreateRouteImport } from './routes/guides/create'
 import { Route as GuidesGuideIdRouteImport } from './routes/guides/$guideId'
-import { Route as UserProfileEditRouteImport } from './routes/user/profile_.edit'
+import { Route as UserProfileIndexRouteImport } from './routes/user/profile/index'
+import { Route as UserProfileUsernameRouteImport } from './routes/user/profile/$username'
 import { Route as GuidesGuideIdEditRouteImport } from './routes/guides/$guideId_.edit'
 import { Route as GuidesGuideIdEntriesIndexRouteImport } from './routes/guides/$guideId_/entries/index'
+import { Route as UserProfileUsernameEditRouteImport } from './routes/user/profile/$username_.edit'
 import { Route as GuidesGuideIdEntriesCreateRouteImport } from './routes/guides/$guideId_/entries/create'
 import { Route as GuidesGuideIdEntriesEntryIdRouteImport } from './routes/guides/$guideId_/entries/$entryId'
 import { Route as GuidesGuideIdEntriesEntryIdEditRouteImport } from './routes/guides/$guideId_/entries/$entryId_.edit'
@@ -49,11 +50,6 @@ const GuidesIndexRoute = GuidesIndexRouteImport.update({
   path: '/guides/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserProfileRoute = UserProfileRouteImport.update({
-  id: '/user/profile',
-  path: '/user/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GuidesCreateRoute = GuidesCreateRouteImport.update({
   id: '/guides/create',
   path: '/guides/create',
@@ -64,9 +60,14 @@ const GuidesGuideIdRoute = GuidesGuideIdRouteImport.update({
   path: '/guides/$guideId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserProfileEditRoute = UserProfileEditRouteImport.update({
-  id: '/user/profile_/edit',
-  path: '/user/profile/edit',
+const UserProfileIndexRoute = UserProfileIndexRouteImport.update({
+  id: '/user/profile/',
+  path: '/user/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserProfileUsernameRoute = UserProfileUsernameRouteImport.update({
+  id: '/user/profile/$username',
+  path: '/user/profile/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesGuideIdEditRoute = GuidesGuideIdEditRouteImport.update({
@@ -80,6 +81,11 @@ const GuidesGuideIdEntriesIndexRoute =
     path: '/guides/$guideId/entries/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const UserProfileUsernameEditRoute = UserProfileUsernameEditRouteImport.update({
+  id: '/user/profile/$username_/edit',
+  path: '/user/profile/$username/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesGuideIdEntriesCreateRoute =
   GuidesGuideIdEntriesCreateRouteImport.update({
     id: '/guides/$guideId_/entries/create',
@@ -106,12 +112,13 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
-  '/user/profile': typeof UserProfileRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
-  '/user/profile/edit': typeof UserProfileEditRoute
+  '/user/profile/$username': typeof UserProfileUsernameRoute
+  '/user/profile/': typeof UserProfileIndexRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/user/profile/$username/edit': typeof UserProfileUsernameEditRoute
   '/guides/$guideId/entries/': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
@@ -122,12 +129,13 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
-  '/user/profile': typeof UserProfileRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
-  '/user/profile/edit': typeof UserProfileEditRoute
+  '/user/profile/$username': typeof UserProfileUsernameRoute
+  '/user/profile': typeof UserProfileIndexRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/user/profile/$username/edit': typeof UserProfileUsernameEditRoute
   '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId/entries/$entryId/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
@@ -139,12 +147,13 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/guides/$guideId': typeof GuidesGuideIdRoute
   '/guides/create': typeof GuidesCreateRoute
-  '/user/profile': typeof UserProfileRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId_/edit': typeof GuidesGuideIdEditRoute
-  '/user/profile_/edit': typeof UserProfileEditRoute
+  '/user/profile/$username': typeof UserProfileUsernameRoute
+  '/user/profile/': typeof UserProfileIndexRoute
   '/guides/$guideId_/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId_/entries/create': typeof GuidesGuideIdEntriesCreateRoute
+  '/user/profile/$username_/edit': typeof UserProfileUsernameEditRoute
   '/guides/$guideId_/entries/': typeof GuidesGuideIdEntriesIndexRoute
   '/guides/$guideId_/entries/$entryId_/edit': typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
@@ -157,12 +166,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
-    | '/user/profile'
     | '/guides/'
     | '/guides/$guideId/edit'
-    | '/user/profile/edit'
+    | '/user/profile/$username'
+    | '/user/profile/'
     | '/guides/$guideId/entries/$entryId'
     | '/guides/$guideId/entries/create'
+    | '/user/profile/$username/edit'
     | '/guides/$guideId/entries/'
     | '/guides/$guideId/entries/$entryId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -173,12 +183,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
-    | '/user/profile'
     | '/guides'
     | '/guides/$guideId/edit'
-    | '/user/profile/edit'
+    | '/user/profile/$username'
+    | '/user/profile'
     | '/guides/$guideId/entries/$entryId'
     | '/guides/$guideId/entries/create'
+    | '/user/profile/$username/edit'
     | '/guides/$guideId/entries'
     | '/guides/$guideId/entries/$entryId/edit'
   id:
@@ -189,12 +200,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/guides/$guideId'
     | '/guides/create'
-    | '/user/profile'
     | '/guides/'
     | '/guides/$guideId_/edit'
-    | '/user/profile_/edit'
+    | '/user/profile/$username'
+    | '/user/profile/'
     | '/guides/$guideId_/entries/$entryId'
     | '/guides/$guideId_/entries/create'
+    | '/user/profile/$username_/edit'
     | '/guides/$guideId_/entries/'
     | '/guides/$guideId_/entries/$entryId_/edit'
   fileRoutesById: FileRoutesById
@@ -206,12 +218,13 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   GuidesGuideIdRoute: typeof GuidesGuideIdRoute
   GuidesCreateRoute: typeof GuidesCreateRoute
-  UserProfileRoute: typeof UserProfileRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
-  UserProfileEditRoute: typeof UserProfileEditRoute
+  UserProfileUsernameRoute: typeof UserProfileUsernameRoute
+  UserProfileIndexRoute: typeof UserProfileIndexRoute
   GuidesGuideIdEntriesEntryIdRoute: typeof GuidesGuideIdEntriesEntryIdRoute
   GuidesGuideIdEntriesCreateRoute: typeof GuidesGuideIdEntriesCreateRoute
+  UserProfileUsernameEditRoute: typeof UserProfileUsernameEditRoute
   GuidesGuideIdEntriesIndexRoute: typeof GuidesGuideIdEntriesIndexRoute
   GuidesGuideIdEntriesEntryIdEditRoute: typeof GuidesGuideIdEntriesEntryIdEditRoute
 }
@@ -253,13 +266,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/profile': {
-      id: '/user/profile'
-      path: '/user/profile'
-      fullPath: '/user/profile'
-      preLoaderRoute: typeof UserProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/guides/create': {
       id: '/guides/create'
       path: '/guides/create'
@@ -274,11 +280,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesGuideIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/profile_/edit': {
-      id: '/user/profile_/edit'
-      path: '/user/profile/edit'
-      fullPath: '/user/profile/edit'
-      preLoaderRoute: typeof UserProfileEditRouteImport
+    '/user/profile/': {
+      id: '/user/profile/'
+      path: '/user/profile'
+      fullPath: '/user/profile/'
+      preLoaderRoute: typeof UserProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/profile/$username': {
+      id: '/user/profile/$username'
+      path: '/user/profile/$username'
+      fullPath: '/user/profile/$username'
+      preLoaderRoute: typeof UserProfileUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$guideId_/edit': {
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/guides/$guideId/entries'
       fullPath: '/guides/$guideId/entries/'
       preLoaderRoute: typeof GuidesGuideIdEntriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/profile/$username_/edit': {
+      id: '/user/profile/$username_/edit'
+      path: '/user/profile/$username/edit'
+      fullPath: '/user/profile/$username/edit'
+      preLoaderRoute: typeof UserProfileUsernameEditRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides/$guideId_/entries/create': {
@@ -326,12 +346,13 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   GuidesGuideIdRoute: GuidesGuideIdRoute,
   GuidesCreateRoute: GuidesCreateRoute,
-  UserProfileRoute: UserProfileRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
-  UserProfileEditRoute: UserProfileEditRoute,
+  UserProfileUsernameRoute: UserProfileUsernameRoute,
+  UserProfileIndexRoute: UserProfileIndexRoute,
   GuidesGuideIdEntriesEntryIdRoute: GuidesGuideIdEntriesEntryIdRoute,
   GuidesGuideIdEntriesCreateRoute: GuidesGuideIdEntriesCreateRoute,
+  UserProfileUsernameEditRoute: UserProfileUsernameEditRoute,
   GuidesGuideIdEntriesIndexRoute: GuidesGuideIdEntriesIndexRoute,
   GuidesGuideIdEntriesEntryIdEditRoute: GuidesGuideIdEntriesEntryIdEditRoute,
 }

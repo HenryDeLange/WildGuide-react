@@ -1,15 +1,15 @@
 import { ProtectedRoute } from '@/components/custom/ProtectedRoute';
-import { Profile } from '@/components/wildguide/user/Profile';
+import { ProfileEdit } from '@/components/wildguide/user/ProfileEdit';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/user/profile')({
+export const Route = createFileRoute('/user/profile/$username_/edit')({
     component: Component
 });
 
 function Component() {
     return (
         <ProtectedRoute>
-            <Profile />
+            <ProfileEdit />
         </ProtectedRoute>
     );
 }

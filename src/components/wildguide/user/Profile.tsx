@@ -11,16 +11,19 @@ import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function Profile() {
-    const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/user/profile' });
+type Props = {
+    username: string;
+}
 
-    const username = useAppSelector(selectAuthUsername);
+export function Profile({ username }: Props) {
+    const { t } = useTranslation();
+    const navigate = useNavigate({ from: '/user/profile/$username' });
+
+    const authUsername = useAppSelector(selectAuthUsername);
 
     const {
         data,
         isLoading,
-        isSuccess,
         isError,
         error
     } = useFindUserInfoQuery({
@@ -29,7 +32,9 @@ export function Profile() {
         skip: !username
     });
 
-    const handleEdit = useCallback(() => navigate({ to: '/user/profile/edit' }), [navigate]);
+    const allowEdit = username.toLowerCase() === authUsername?.toLowerCase();
+
+    const handleEdit = useCallback(() => navigate({ to: '/user/profile/$username/edit', params: { username } }), [navigate, username]);
 
     const handleBack = useCallback(() => navigate({ to: '/', replace: true }), [navigate]);
 
@@ -54,10 +59,12 @@ export function Profile() {
                                 justifyContent='flex-end'
                                 justifySelf='flex-end'
                             >
-                                <EditButton
-                                    titleKey='editUserProfileEdit'
-                                    handleEdit={handleEdit}
-                                />
+                                {allowEdit &&
+                                    <EditButton
+                                        titleKey='editUserProfile'
+                                        handleEdit={handleEdit}
+                                    />
+                                }
                             </HStack>
                         </HStack>
                         <Separator />

@@ -4,20 +4,22 @@ import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
 import { SaveButton } from '@/components/custom/SaveButton';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
-import { UpdateUserProfileApiArg, useCreateFileMutation, useFindUserInfoQuery, useUpdateUserProfileMutation } from '@/redux/api/wildguideApi';
-import { useAppSelector } from '@/redux/hooks';
+import { UpdateUserProfileApiArg, useCreateFileMutation, useDeleteFileMutation, useFindUserInfoQuery, useUpdateUserProfileMutation, wildguideApi } from '@/redux/api/wildguideApi';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Container, Fieldset, FileUpload, Float, Heading, HStack, Separator, Show, Spinner, Text, Textarea, useFileUploadContext } from '@chakra-ui/react';
+import { DevTool } from '@hookform/devtools';
 import { useNavigate } from '@tanstack/react-router';
 import { FileImage, X } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-type FormType = UpdateUserProfileApiArg & { image: Blob; };
+type FormType = UpdateUserProfileApiArg & { image?: File; };
 
 export function ProfileEdit() {
     const { t } = useTranslation();
-    const navigate = useNavigate({ from: '/user/profile/edit' });
+    const navigate = useNavigate({ from: '/user/profile/$username/edit' });
+    const dispatch = useAppDispatch();
 
     const username = useAppSelector(selectAuthUsername);
     const userId = useAppSelector(selectAuthUserId);
@@ -37,6 +39,7 @@ export function ProfileEdit() {
     const [
         doUpdateProfile, {
             isLoading: updateIsLoading,
+            isSuccess: updateIsSuccess,
             isError: updateIsError
         }
     ] = useUpdateUserProfileMutation();
@@ -44,32 +47,69 @@ export function ProfileEdit() {
     const [
         doCreateFile, {
             isLoading: createFileIsLoading,
+            isSuccess: createFileIsSuccess,
             isError: createFileIsError
         }
     ] = useCreateFileMutation();
 
-    const { handleSubmit, formState: { errors, isDirty }, reset, control } = useForm<FormType>();
+    const [
+        doDeleteFile, {
+            isLoading: deleteFileIsLoading,
+            isSuccess: deleteFileIsSuccess,
+            isError: deleteFileIsError
+        }
+    ] = useDeleteFileMutation();
+
+    const { handleSubmit, formState: { errors, isDirty, isSubmitting }, reset, control } = useForm<FormType>();
     useEffect(() => {
         if (isSuccess) {
-            reset({ description: data.description });
+            reset({
+                description: data.description,
+                image: undefined
+            });
         }
     }, [data, isSuccess, reset]);
 
-    const onSubmit = handleSubmit(async (data) => {
-        doUpdateProfile({ description: data.description });
-        
-        if (data.image) {
-            const formData = new FormData();
-            formData.append('file', data.image);
-            
-            doCreateFile({
-                fileCategory: 'USER',
-                fileCategoryId: userId!.toString(),
-                body: formData as any
-            });
+    const onSubmit = handleSubmit(async (formValues) => {
+        try {
+            console.log('Submitting profile update', { hasImage: !!formValues.image });
+            // Description
+            await doUpdateProfile({ description: formValues.description }).unwrap();
+            // Image
+            if (formValues.image) {
+                // create file and wait for the server response
+                const formData = new FormData();
+                formData.append('file', formValues.image);
+                const createRes = await doCreateFile({
+                    fileCategory: 'USER',
+                    fileCategoryId: userId!.toString(),
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    body: formData as any
+                }).unwrap();
+                console.log('Create file response', createRes);
+                // delete previous image (if any)
+                if (data?.image) {
+                    const urlParts = data.image.split('/');
+                    try {
+                        await doDeleteFile({
+                            fileCategory: 'USER',
+                            fileCategoryId: userId!.toString(),
+                            fileId: urlParts[urlParts.length - 2],
+                            fileName: urlParts[urlParts.length - 1]
+                        }).unwrap();
+                        console.log('Deleted previous user file');
+                    } catch (delErr) {
+                        console.error('Failed to delete previous file', delErr);
+                    }
+                }
+                dispatch(wildguideApi.util.invalidateTags(['User Authentication']));
+            }
+            // Navigate back after success
+            handleBack();
         }
-
-        handleBack();
+        catch (err) {
+            console.error('Profile update/upload failed', err);
+        }
     });
 
     const handleBack = useCallback(() => navigate({ to: '/user/profile' }), [navigate]);
@@ -96,8 +136,8 @@ export function ProfileEdit() {
                         >
                             <SaveButton
                                 titleKey='editUserProfileConfirm'
-                                loading={isLoading}
-                                disabled={!isDirty}
+                                loading={isSubmitting || updateIsLoading || createFileIsLoading || deleteFileIsLoading}
+                                disabled={!isDirty || isSubmitting || updateIsLoading || createFileIsLoading || deleteFileIsLoading}
                             />
                         </HStack>
                     </HStack>
@@ -115,7 +155,7 @@ export function ProfileEdit() {
                             </Fieldset.ErrorText>
                             <Field
                                 label={<Text fontSize='md'>{t('editUserProfileImage')}</Text>}
-                                invalid={!!errors.image || isError}
+                                invalid={!!errors.image || createFileIsError}
                                 errorText={errors.image?.message}
                             >
                                 <Controller
@@ -125,10 +165,7 @@ export function ProfileEdit() {
                                         <FileUpload.Root
                                             accept='image/*'
                                             onFileChange={(details) => {
-                                                const file = details.acceptedFiles[0];
-                                                if (file) {
-                                                    field.onChange(file as Blob);
-                                                }
+                                                field.onChange(details.acceptedFiles?.[0] ?? undefined);
                                             }}
                                         >
                                             <FileUpload.HiddenInput />
@@ -138,14 +175,14 @@ export function ProfileEdit() {
                                                     {t('editUserProfileImageUpload')}
                                                 </Button>
                                             </FileUpload.Trigger>
-                                            <FileUploadList />
+                                            <FileUploadList disabled={field.disabled || createFileIsLoading} />
                                         </FileUpload.Root>
                                     )}
                                 />
                             </Field>
                             <Field
                                 label={<Text fontSize='md'>{t('editUserProfileDescription')}</Text>}
-                                invalid={!!errors.description || isError}
+                                invalid={!!errors.description || updateIsError}
                                 errorText={errors.description?.message}
                             >
                                 <Controller
@@ -164,13 +201,18 @@ export function ProfileEdit() {
                             </Field>
                         </Fieldset.Content>
                     </Fieldset.Root>
+                    <DevTool control={control} placement='bottom-right' />
                 </form>
             </Show>
         </Container>
     );
 }
 
-function FileUploadList() {
+type FileUploadListProps = {
+    disabled?: boolean;
+}
+
+function FileUploadList({ disabled }: FileUploadListProps) {
     const fileUpload = useFileUploadContext()
     const files = fileUpload.acceptedFiles
     if (files.length === 0)
@@ -186,11 +228,17 @@ function FileUploadList() {
                     key={file.name}
                 >
                     <FileUpload.ItemPreviewImage />
-                    <Float placement='top-end'>
-                        <FileUpload.ItemDeleteTrigger boxSize='4' layerStyle='fill.solid'>
-                            <X />
-                        </FileUpload.ItemDeleteTrigger>
-                    </Float>
+                    {!disabled &&
+                        <Float placement='top-end'>
+                            <FileUpload.ItemDeleteTrigger
+                                boxSize='4'
+                                layerStyle='fill.muted'
+                                disabled={disabled}
+                            >
+                                <X />
+                            </FileUpload.ItemDeleteTrigger>
+                        </Float>
+                    }
                 </FileUpload.Item>
             ))}
         </FileUpload.ItemGroup>
