@@ -17,6 +17,7 @@ import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as UserProfileRouteImport } from './routes/user/profile'
 import { Route as GuidesCreateRouteImport } from './routes/guides/create'
 import { Route as GuidesGuideIdRouteImport } from './routes/guides/$guideId'
+import { Route as UserProfileEditRouteImport } from './routes/user/profile_.edit'
 import { Route as GuidesGuideIdEditRouteImport } from './routes/guides/$guideId_.edit'
 import { Route as GuidesGuideIdEntriesIndexRouteImport } from './routes/guides/$guideId_/entries/index'
 import { Route as GuidesGuideIdEntriesCreateRouteImport } from './routes/guides/$guideId_/entries/create'
@@ -63,6 +64,11 @@ const GuidesGuideIdRoute = GuidesGuideIdRouteImport.update({
   path: '/guides/$guideId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserProfileEditRoute = UserProfileEditRouteImport.update({
+  id: '/user/profile_/edit',
+  path: '/user/profile/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuidesGuideIdEditRoute = GuidesGuideIdEditRouteImport.update({
   id: '/guides/$guideId_/edit',
   path: '/guides/$guideId/edit',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/user/profile': typeof UserProfileRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
+  '/user/profile/edit': typeof UserProfileEditRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
   '/guides/$guideId/entries/': typeof GuidesGuideIdEntriesIndexRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/user/profile': typeof UserProfileRoute
   '/guides': typeof GuidesIndexRoute
   '/guides/$guideId/edit': typeof GuidesGuideIdEditRoute
+  '/user/profile/edit': typeof UserProfileEditRoute
   '/guides/$guideId/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId/entries/create': typeof GuidesGuideIdEntriesCreateRoute
   '/guides/$guideId/entries': typeof GuidesGuideIdEntriesIndexRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/user/profile': typeof UserProfileRoute
   '/guides/': typeof GuidesIndexRoute
   '/guides/$guideId_/edit': typeof GuidesGuideIdEditRoute
+  '/user/profile_/edit': typeof UserProfileEditRoute
   '/guides/$guideId_/entries/$entryId': typeof GuidesGuideIdEntriesEntryIdRoute
   '/guides/$guideId_/entries/create': typeof GuidesGuideIdEntriesCreateRoute
   '/guides/$guideId_/entries/': typeof GuidesGuideIdEntriesIndexRoute
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/user/profile'
     | '/guides/'
     | '/guides/$guideId/edit'
+    | '/user/profile/edit'
     | '/guides/$guideId/entries/$entryId'
     | '/guides/$guideId/entries/create'
     | '/guides/$guideId/entries/'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/user/profile'
     | '/guides'
     | '/guides/$guideId/edit'
+    | '/user/profile/edit'
     | '/guides/$guideId/entries/$entryId'
     | '/guides/$guideId/entries/create'
     | '/guides/$guideId/entries'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/user/profile'
     | '/guides/'
     | '/guides/$guideId_/edit'
+    | '/user/profile_/edit'
     | '/guides/$guideId_/entries/$entryId'
     | '/guides/$guideId_/entries/create'
     | '/guides/$guideId_/entries/'
@@ -197,6 +209,7 @@ export interface RootRouteChildren {
   UserProfileRoute: typeof UserProfileRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   GuidesGuideIdEditRoute: typeof GuidesGuideIdEditRoute
+  UserProfileEditRoute: typeof UserProfileEditRoute
   GuidesGuideIdEntriesEntryIdRoute: typeof GuidesGuideIdEntriesEntryIdRoute
   GuidesGuideIdEntriesCreateRoute: typeof GuidesGuideIdEntriesCreateRoute
   GuidesGuideIdEntriesIndexRoute: typeof GuidesGuideIdEntriesIndexRoute
@@ -261,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesGuideIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/profile_/edit': {
+      id: '/user/profile_/edit'
+      path: '/user/profile/edit'
+      fullPath: '/user/profile/edit'
+      preLoaderRoute: typeof UserProfileEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guides/$guideId_/edit': {
       id: '/guides/$guideId_/edit'
       path: '/guides/$guideId/edit'
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   UserProfileRoute: UserProfileRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   GuidesGuideIdEditRoute: GuidesGuideIdEditRoute,
+  UserProfileEditRoute: UserProfileEditRoute,
   GuidesGuideIdEntriesEntryIdRoute: GuidesGuideIdEntriesEntryIdRoute,
   GuidesGuideIdEntriesCreateRoute: GuidesGuideIdEntriesCreateRoute,
   GuidesGuideIdEntriesIndexRoute: GuidesGuideIdEntriesIndexRoute,

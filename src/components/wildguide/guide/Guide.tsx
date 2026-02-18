@@ -9,7 +9,7 @@ import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useF
 import { useAppSelector } from '@/redux/hooks';
 import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { BookText, LayoutList, Lock, Star, StarOff } from 'lucide-react';
+import { BookText, LayoutList, Lock, Star } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorDisplay } from '../../custom/ErrorDisplay';
@@ -125,9 +125,10 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             variant='plain'
                                             onClick={handleStar}
                                             loading={createStarIsLoading || deleteStarIsLoading}
-                                            color={data.starredByUser ? 'fg.info' : undefined}
+                                            color={data.starredByUser ? 'fg.info' : 'fg.muted'}
+                                            fill='fg.info'
                                         >
-                                            {data.starredByUser ? <Star /> : <StarOff />}
+                                            {data.starredByUser ? <Star  fill='inherit' /> : <Star />}
                                         </IconButton>
                                     }
                                 </HStack>

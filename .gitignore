@@ -135,3 +135,9 @@ stats.html
 # Ignore Licenses Information
 licenses-summary.txt
 licenses.csv
+
+# Ignore PWA dev worker
+dev-dist/
+
+# Ignore TanStack Router
+.tanstack

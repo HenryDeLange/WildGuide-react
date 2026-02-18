@@ -17,7 +17,7 @@ export function SaveButton({ titleKey, loading, disabled }: Readonly<Props>) {
             size='lg'
             variant='ghost'
             whiteSpace='nowrap'
-            color={disabled ? 'fg.info' : 'fg.success'}
+            color={disabled ? 'fg.muted' : 'fg.success'}
             loading={loading}
             disabled={disabled}
         >

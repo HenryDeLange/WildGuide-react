@@ -11,5 +11,6 @@
 - TODO: Setup custom theme
 - TODO: Major refactor to disentangle chakra-ui from the app layout/logic, into reusable/replaceable components
 - TODO: Add easy view/link to wiki entry (prefer the one linked on the iNat taxon)
+- TODO: Add keyboard shortcuts for things like save, etc.
 - BUG: On the map the scrollWheelZoom setting does not prevent mobile touch panning
 - BUG: On mobile its not possible to use the iNat Taxon Select popup from the Markdown Help popup

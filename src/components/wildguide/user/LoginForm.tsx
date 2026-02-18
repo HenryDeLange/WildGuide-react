@@ -105,7 +105,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                         invalid={!!errors.username || loginIsError || registerIsError}
                                         errorText={errors.username?.message}
                                     >
-                                        <InputGroup flex='1' width='full' startElement={<UserRound />}>
+                                        <InputGroup flex='1' width='full' startElement={<UserRound size={16} />}>
                                             <Input
                                                 {...register('username', {
                                                     required: t('loginFormUsernameRequired'),
@@ -123,7 +123,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                             invalid={!!errors.email || loginIsError || registerIsError}
                                             errorText={errors.email?.message}
                                         >
-                                            <InputGroup flex='1' width='full' startElement={<UserRound />}>
+                                            <InputGroup flex='1' width='full' startElement={<UserRound size={16} />}>
                                                 <Input
                                                     {...register('email', {
                                                         required: t('loginFormEmailRequired'),
@@ -145,7 +145,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                         invalid={!!errors.password || loginIsError || registerIsError}
                                         errorText={errors.password?.message}
                                     >
-                                        <InputGroup flex='1' width='full' startElement={<KeyRound />}>
+                                        <InputGroup flex='1' width='full' startElement={<KeyRound size={16} />}>
                                             <PasswordInput
                                                 {...register('password', {
                                                     required: t('loginFormPasswordRequired'),
@@ -162,7 +162,7 @@ export function LoginForm({ registerMode }: Readonly<Props>) {
                                             />
                                         </InputGroup>
                                         {registerMode &&
-                                            <InputGroup flex='1' width='full' startElement={<KeyRound />}>
+                                            <InputGroup flex='1' width='full' startElement={<KeyRound size={16} />}>
                                                 <PasswordInput
                                                     id='confirm-password'
                                                     value={confirmPassword ?? ''}
