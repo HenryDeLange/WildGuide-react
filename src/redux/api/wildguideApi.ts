@@ -3,6 +3,7 @@ export const addTagTypes = [
   "User Authentication",
   "Guides",
   "Entries",
+  "Icons",
   "Files",
   "WildGuide Version",
 ] as const;
@@ -84,6 +85,20 @@ const injectedRtkApi = api
           body: queryArg.userLogin,
         }),
         invalidatesTags: ["User Authentication"],
+      }),
+      downloadIcon: build.query<DownloadIconApiResponse, DownloadIconApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/icons/${queryArg.iconCategory}/${queryArg.iconCategoryId}`,
+        }),
+        providesTags: ["Icons"],
+      }),
+      createIcon: build.mutation<CreateIconApiResponse, CreateIconApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/icons/${queryArg.iconCategory}/${queryArg.iconCategoryId}`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Icons"],
       }),
       findGuides: build.query<FindGuidesApiResponse, FindGuidesApiArg>({
         query: (queryArg) => ({
@@ -181,9 +196,15 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Entries"],
       }),
+      findFiles: build.query<FindFilesApiResponse, FindFilesApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}`,
+        }),
+        providesTags: ["Files"],
+      }),
       createFile: build.mutation<CreateFileApiResponse, CreateFileApiArg>({
         query: (queryArg) => ({
-          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/upload`,
+          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}`,
           method: "POST",
           body: queryArg.body,
         }),
@@ -201,18 +222,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ["User Authentication"],
-      }),
-      findFiles: build.query<FindFilesApiResponse, FindFilesApiArg>({
-        query: (queryArg) => ({
-          url: `/api/v1/users/${queryArg.userId}/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}`,
-        }),
-        providesTags: ["Files"],
-      }),
-      downloadFile: build.query<DownloadFileApiResponse, DownloadFileApiArg>({
-        query: (queryArg) => ({
-          url: `/api/v1/users/${queryArg.userId}/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/${queryArg.fileId}/${queryArg.filename}`,
-        }),
-        providesTags: ["Files"],
       }),
       findGuideOwners: build.query<
         FindGuideOwnersApiResponse,
@@ -247,6 +256,12 @@ const injectedRtkApi = api
       >({
         query: () => ({ url: `/api/v1/guides/stars` }),
         providesTags: ["Guides"],
+      }),
+      downloadFile: build.query<DownloadFileApiResponse, DownloadFileApiArg>({
+        query: (queryArg) => ({
+          url: `/api/v1/files/${queryArg.fileCategory}/${queryArg.fileCategoryId}/${queryArg.fileId}/${queryArg.filename}`,
+        }),
+        providesTags: ["Files"],
       }),
       deleteFile: build.mutation<DeleteFileApiResponse, DeleteFileApiArg>({
         query: (queryArg) => ({
@@ -302,6 +317,21 @@ export type LoginApiResponse = /** status 200 OK */ Tokens;
 export type LoginApiArg = {
   userLogin: UserLogin;
 };
+export type DownloadIconApiResponse = /** status 200 OK */ Blob;
+export type DownloadIconApiArg = {
+  iconCategory: "USER" | "GUIDE";
+  iconCategoryId: number;
+};
+export type CreateIconApiResponse = /** status 200 OK */ {
+  [key: string]: string;
+};
+export type CreateIconApiArg = {
+  iconCategory: "USER" | "GUIDE";
+  iconCategoryId: number;
+  body: {
+    file: Blob;
+  };
+};
 export type FindGuidesApiResponse = /** status 200 OK */ PagedGuide;
 export type FindGuidesApiArg = {
   page?: number;
@@ -350,11 +380,16 @@ export type CreateEntryApiArg = {
   guideId: number;
   entryBase: EntryBase;
 };
+export type FindFilesApiResponse = /** status 200 OK */ string[];
+export type FindFilesApiArg = {
+  fileCategory: "USER" | "GUIDE" | "ENTRY";
+  fileCategoryId: string;
+};
 export type CreateFileApiResponse = /** status 200 OK */ {
   [key: string]: string;
 };
 export type CreateFileApiArg = {
-  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategory: "USER" | "GUIDE" | "ENTRY";
   fileCategoryId: string;
   body: {
     file: Blob;
@@ -365,20 +400,6 @@ export type GetVersionApiArg = void;
 export type FindUserInfoApiResponse = /** status 200 OK */ UserInfo;
 export type FindUserInfoApiArg = {
   username: string;
-};
-export type FindFilesApiResponse = /** status 200 OK */ string[];
-export type FindFilesApiArg = {
-  fileCategory: "ENTRY" | "GUIDE" | "USER";
-  fileCategoryId: string;
-  userId: string;
-};
-export type DownloadFileApiResponse = /** status 200 OK */ Blob;
-export type DownloadFileApiArg = {
-  fileCategory: "ENTRY" | "GUIDE" | "USER";
-  fileCategoryId: string;
-  fileId: string;
-  filename: string;
-  userId: string;
 };
 export type FindGuideOwnersApiResponse = /** status 200 OK */ GuideLinkedUser[];
 export type FindGuideOwnersApiArg = {
@@ -396,9 +417,16 @@ export type FindEntriesScientificNamesApiArg = {
 };
 export type FindStarredGuidesApiResponse = /** status 200 OK */ Guide[];
 export type FindStarredGuidesApiArg = void;
+export type DownloadFileApiResponse = /** status 200 OK */ Blob;
+export type DownloadFileApiArg = {
+  fileCategory: "USER" | "GUIDE" | "ENTRY";
+  fileCategoryId: string;
+  fileId: string;
+  filename: string;
+};
 export type DeleteFileApiResponse = unknown;
 export type DeleteFileApiArg = {
-  fileCategory: "ENTRY" | "GUIDE" | "USER";
+  fileCategory: "USER" | "GUIDE" | "ENTRY";
   fileCategoryId: string;
   fileId: string;
   fileName: string;
@@ -407,7 +435,6 @@ export type UserInfo = {
   id: number;
   username: string;
   description?: string;
-  image?: string;
 };
 export type Guide = {
   name: string;
@@ -516,6 +543,8 @@ export const {
   useRegisterMutation,
   useRefreshMutation,
   useLoginMutation,
+  useDownloadIconQuery,
+  useCreateIconMutation,
   useFindGuidesQuery,
   useCreateGuideMutation,
   useCreateGuideStarMutation,
@@ -526,14 +555,14 @@ export const {
   useMemberLeaveGuideMutation,
   useFindEntriesQuery,
   useCreateEntryMutation,
+  useFindFilesQuery,
   useCreateFileMutation,
   useGetVersionQuery,
   useFindUserInfoQuery,
-  useFindFilesQuery,
-  useDownloadFileQuery,
   useFindGuideOwnersQuery,
   useFindGuideMembersQuery,
   useFindEntriesScientificNamesQuery,
   useFindStarredGuidesQuery,
+  useDownloadFileQuery,
   useDeleteFileMutation,
 } = injectedRtkApi;

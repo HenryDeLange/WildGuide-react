@@ -2,6 +2,7 @@ import inatLogo from '@/assets/images/inaturalist/inat-logo-subtle.png';
 import { authLogout, selectAuth, selectAuthUserId } from '@/auth/authSlice';
 import { ChangeLanguage } from '@/i18n/ChangeLanguage';
 import { useFindUserInfoQuery } from '@/redux/api/wildguideApi';
+import { useDownloadIconBlobQuery, wildguideApiExtended } from '@/redux/api/wildguideApiExtended';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Avatar, Box, CloseButton, DrawerContext, DrawerPositioner, Flex, Heading, HStack, IconButton, Image, Menu, Portal, Separator, Show, Stack, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
@@ -12,15 +13,13 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from '../custom/NavLink';
 import { ColorModeButton, useColorModeValue } from '../ui/color-mode';
 import { DrawerBackdrop, DrawerBody, DrawerCloseTrigger, DrawerContent, DrawerFooter, DrawerHeader, DrawerRoot, DrawerTitle, DrawerTrigger } from '../ui/drawer';
-import { getServerFileUrl } from '../utils';
 import GitHubLogo from './../../assets/images/github/github.svg?react';
 import logo from '/logo.png';
 
 export function AppHeader() {
     const { t } = useTranslation();
-
     const useMobileLayout = useBreakpointValue({ base: true, md: false });
-
+    const userId = useAppSelector(selectAuthUserId);
     return (
         <Box id='app-header' as='header' bg={{ base: 'gray.100', _dark: 'gray.900' }} paddingY={2} paddingX={4}>
             <Flex alignItems='center' justifyContent='space-between' gap={4}>
@@ -47,9 +46,9 @@ export function AppHeader() {
                 {!useMobileLayout &&
                     <DesktopMenu />
                 }
-                {useMobileLayout &&
-                    <UserAvatar />
-                }
+                {useMobileLayout && (
+                    userId ? <UserAvatar /> : <LoginControl variant='small' />
+                )}
             </Flex>
         </Box>
     );
@@ -77,7 +76,7 @@ function DesktopMenu() {
                 <ColorModeButton />
             </HStack>
             {!userId &&
-                <LoginLogoutControl />
+                <LoginControl />
             }
             <UserAvatar />
         </>
@@ -90,7 +89,7 @@ function MobileMenu() {
         <DrawerRoot placement='start' size='xs'>
             <DrawerBackdrop />
             <DrawerTrigger asChild>
-                <IconButton variant='ghost' focusVisibleRing='none'>
+                <IconButton variant='ghost' focusVisibleRing='none' marginLeft={-2}>
                     <MenuIcon />
                 </IconButton>
             </DrawerTrigger>
@@ -106,7 +105,7 @@ function MobileMenu() {
                         <DrawerContext>
                             {(store) => (
                                 <>
-                                    <LoginLogoutControl action={() => store.setOpen(false)} />
+                                    <LoginControl action={() => store.setOpen(false)} />
                                     <Separator marginY={4} />
                                     <VStack gap={6} alignItems='flex-start' width='full'>
                                         <NavLink
@@ -144,33 +143,22 @@ function MobileMenu() {
     );
 }
 
-function LoginLogoutControl({ action }: { action?: () => void }) {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+function LoginControl({ action, variant = 'full' }: { action?: () => void; variant?: 'full' | 'small'; }) {
     const userId = useAppSelector(selectAuthUserId);
-    const handleLogout = useCallback(() => {
-        dispatch(authLogout());
-        navigate({ to: '/' });
-        action?.();
-    }, [action, dispatch, navigate]);
     return (
         <Box justifyContent='flex-end'>
             <Show when={userId === null}>
                 <HStack gap={4}>
-                    <NavLink to='/register' whiteSpace='nowrap' onClick={action}>
-                        <Text color='fg.muted'>{t('register')}</Text>
-                    </NavLink>
+                    {variant === 'full' &&
+                        <NavLink to='/register' whiteSpace='nowrap' onClick={action}>
+                            <Text color='fg.muted'>{t('register')}</Text>
+                        </NavLink>
+                    }
                     <NavLink to='/login' whiteSpace='nowrap' onClick={action}>
                         <LogIn />
                         <Text fontWeight='semibold'>{t('login')}</Text>
                     </NavLink>
                 </HStack>
-            </Show>
-            <Show when={userId !== null}>
-                <NavLink to='/' whiteSpace='nowrap' onClick={handleLogout}>
-                    <LogOut />
-                    <Text>{t('logout')}</Text>
-                </NavLink>
             </Show>
         </Box>
     );
@@ -215,12 +203,32 @@ function GitHubLink() {
 }
 
 function UserAvatar() {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const auth = useAppSelector(selectAuth);
     const { data } = useFindUserInfoQuery({
         username: auth.username ?? ''
     }, {
         skip: !auth.userId
     });
+    const {
+        data: userIcon,
+        isFetching: userIconIsFetching,
+        isError: userIconIsError
+    } = useDownloadIconBlobQuery({
+        iconCategory: 'USER',
+        iconCategoryId: auth.userId ?? -1
+    }, {
+        skip: !auth.userId
+    });
+    const handleProfile = useCallback(() => {
+        navigate({ to: '/user/profile' });
+    }, [navigate]);
+    const handleLogout = useCallback(() => {
+        dispatch(authLogout());
+        dispatch(wildguideApiExtended.util.invalidateTags(['Icons']));
+        navigate({ to: '/' });
+    }, [dispatch, navigate]);
     return (
         <>
             {auth.userId && data &&
@@ -228,27 +236,29 @@ function UserAvatar() {
                     <Menu.Trigger rounded='full' focusRing='outside' cursor='pointer'>
                         <Avatar.Root>
                             <Avatar.Fallback name={data.username} />
-                            {data.image &&
-                                <Avatar.Image src={getServerFileUrl(data.image)} />
+                            {!userIconIsError && !userIconIsFetching && userIcon &&
+                                <Avatar.Image src={userIcon} />
                             }
                         </Avatar.Root>
                     </Menu.Trigger>
                     <Portal>
                         <Menu.Positioner>
-                            <Menu.Content padding={2} border='1px solid' borderColor='fg.subtle'>
-                                <Heading>
+                            <Menu.Content border='1px solid' borderColor='fg.subtle'>
+                                <Heading textAlign='center'>
                                     {data.username}
                                 </Heading>
-                                <Text color='fg.muted'>
+                                <Text textAlign='center' color='fg.muted'>
                                     {data.description}
                                 </Text>
-                                <Menu.Separator marginY={4} />
-                                <NavLink to='/user/profile'>
+                                <Menu.Separator />
+                                <Menu.Item value='profile' cursor='pointer' onClick={handleProfile}>
                                     <UserRoundPen />
                                     {t('userProfile')}
-                                </NavLink>
-                                <Menu.Separator marginY={4} />
-                                <LoginLogoutControl />
+                                </Menu.Item>
+                                <Menu.Item value='logout' cursor='pointer' onClick={handleLogout}>
+                                    <LogOut />
+                                    {t('logout')}
+                                </Menu.Item>
                             </Menu.Content>
                         </Menu.Positioner>
                     </Portal>

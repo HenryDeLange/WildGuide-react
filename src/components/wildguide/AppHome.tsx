@@ -4,7 +4,7 @@ import { useFindStarredGuidesQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
 import { AlertContent, AlertDescription, AlertIndicator, AlertRoot, AlertTitle, Box, Button, Container, Heading, HStack, Image, Separator, Show, Skeleton, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { Download, FileWarning } from 'lucide-react';
+import { Download, TriangleAlert } from 'lucide-react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import homeImage from '../../assets/images/wildguide/home.jpg';
@@ -33,7 +33,7 @@ export function AppHome() {
             <Box id='page-header'>
                 <AlertRoot status='warning' variant='surface' marginY={4}>
                     <AlertIndicator>
-                        <FileWarning />
+                        <TriangleAlert />
                     </AlertIndicator>
                     <AlertContent>
                         <AlertTitle fontSize='md' fontWeight='bold'>

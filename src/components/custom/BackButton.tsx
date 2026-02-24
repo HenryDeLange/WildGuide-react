@@ -16,9 +16,11 @@ export function BackButton({ titleKey, handleBack }: Readonly<Props>) {
                 variant='ghost'
                 onClick={handleBack}
                 color='fg.muted'
-                size='xs'
+                size='md'
+                margin={-4}
+                marginRight={-1}
             >
-                <ChevronLeft />
+                <ChevronLeft strokeWidth={4} />
             </IconButton>
         </Tooltip>
     );

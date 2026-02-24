@@ -4,10 +4,9 @@ import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
 import { SaveButton } from '@/components/custom/SaveButton';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
-import { UpdateUserProfileApiArg, useCreateFileMutation, useDeleteFileMutation, useFindUserInfoQuery, useUpdateUserProfileMutation, wildguideApi } from '@/redux/api/wildguideApi';
+import { UpdateUserProfileApiArg, useCreateIconMutation, useFindUserInfoQuery, useUpdateUserProfileMutation, wildguideApi } from '@/redux/api/wildguideApi';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Box, Container, Fieldset, FileUpload, Float, Heading, HStack, Separator, Show, Spinner, Text, Textarea, useFileUploadContext } from '@chakra-ui/react';
-import { DevTool } from '@hookform/devtools';
 import { useNavigate } from '@tanstack/react-router';
 import { FileImage, X } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
@@ -39,26 +38,16 @@ export function ProfileEdit() {
     const [
         doUpdateProfile, {
             isLoading: updateIsLoading,
-            isSuccess: updateIsSuccess,
             isError: updateIsError
         }
     ] = useUpdateUserProfileMutation();
 
     const [
-        doCreateFile, {
-            isLoading: createFileIsLoading,
-            isSuccess: createFileIsSuccess,
-            isError: createFileIsError
+        doCreateIcon, {
+            isLoading: createIconIsLoading,
+            isError: createIconIsError
         }
-    ] = useCreateFileMutation();
-
-    const [
-        doDeleteFile, {
-            isLoading: deleteFileIsLoading,
-            isSuccess: deleteFileIsSuccess,
-            isError: deleteFileIsError
-        }
-    ] = useDeleteFileMutation();
+    ] = useCreateIconMutation();
 
     const { handleSubmit, formState: { errors, isDirty, isSubmitting }, reset, control } = useForm<FormType>();
     useEffect(() => {
@@ -72,43 +61,31 @@ export function ProfileEdit() {
 
     const onSubmit = handleSubmit(async (formValues) => {
         try {
-            console.log('Submitting profile update', { hasImage: !!formValues.image });
-            // Description
-            await doUpdateProfile({ description: formValues.description }).unwrap();
             // Image
             if (formValues.image) {
-                // create file and wait for the server response
+                // Upload the new profile image
                 const formData = new FormData();
                 formData.append('file', formValues.image);
-                const createRes = await doCreateFile({
-                    fileCategory: 'USER',
-                    fileCategoryId: userId!.toString(),
+                await doCreateIcon({
+                    iconCategory: 'USER',
+                    iconCategoryId: userId!,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     body: formData as any
                 }).unwrap();
-                console.log('Create file response', createRes);
-                // delete previous image (if any)
-                if (data?.image) {
-                    const urlParts = data.image.split('/');
-                    try {
-                        await doDeleteFile({
-                            fileCategory: 'USER',
-                            fileCategoryId: userId!.toString(),
-                            fileId: urlParts[urlParts.length - 2],
-                            fileName: urlParts[urlParts.length - 1]
-                        }).unwrap();
-                        console.log('Deleted previous user file');
-                    } catch (delErr) {
-                        console.error('Failed to delete previous file', delErr);
-                    }
+                // Manually refresh the user data if the description wasn't changed
+                if (data?.description === formValues.description) {
+                    dispatch(wildguideApi.util.invalidateTags(['User Authentication']));
                 }
-                dispatch(wildguideApi.util.invalidateTags(['User Authentication']));
+            }
+            // Description
+            if (data?.description !== formValues.description) {
+                await doUpdateProfile({ description: formValues.description }).unwrap();
             }
             // Navigate back after success
             handleBack();
         }
         catch (err) {
-            console.error('Profile update/upload failed', err);
+            console.error('Update Profile failed!', err);
         }
     });
 
@@ -136,15 +113,15 @@ export function ProfileEdit() {
                         >
                             <SaveButton
                                 titleKey='editUserProfileConfirm'
-                                loading={isSubmitting || updateIsLoading || createFileIsLoading || deleteFileIsLoading}
-                                disabled={!isDirty || isSubmitting || updateIsLoading || createFileIsLoading || deleteFileIsLoading}
+                                loading={isSubmitting || updateIsLoading || createIconIsLoading}
+                                disabled={!isDirty || isSubmitting || updateIsLoading || createIconIsLoading}
                             />
                         </HStack>
                     </HStack>
                     <Separator />
                     <Fieldset.Root
-                        invalid={updateIsError || createFileIsError}
-                        disabled={isLoading || updateIsLoading || createFileIsLoading}
+                        invalid={updateIsError || createIconIsError}
+                        disabled={isLoading || updateIsLoading || createIconIsLoading}
                         paddingTop={4}
                     >
                         <Fieldset.Content gap={6}>
@@ -155,7 +132,7 @@ export function ProfileEdit() {
                             </Fieldset.ErrorText>
                             <Field
                                 label={<Text fontSize='md'>{t('editUserProfileImage')}</Text>}
-                                invalid={!!errors.image || createFileIsError}
+                                invalid={!!errors.image || createIconIsError}
                                 errorText={errors.image?.message}
                             >
                                 <Controller
@@ -175,7 +152,7 @@ export function ProfileEdit() {
                                                     {t('editUserProfileImageUpload')}
                                                 </Button>
                                             </FileUpload.Trigger>
-                                            <FileUploadList disabled={field.disabled || createFileIsLoading} />
+                                            <FileUploadList disabled={field.disabled || createIconIsLoading} />
                                         </FileUpload.Root>
                                     )}
                                 />
@@ -201,7 +178,7 @@ export function ProfileEdit() {
                             </Field>
                         </Fieldset.Content>
                     </Fieldset.Root>
-                    <DevTool control={control} placement='bottom-right' />
+                    {/* <DevTool control={control} placement='bottom-right' /> */}
                 </form>
             </Show>
         </Container>

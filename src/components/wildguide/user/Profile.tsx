@@ -2,11 +2,10 @@ import { selectAuthUsername } from '@/auth/authSlice';
 import { BackButton } from '@/components/custom/BackButton';
 import { EditButton } from '@/components/custom/EditButton';
 import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
-import { SummaryBox } from '@/components/custom/SummaryBox';
-import { getServerFileUrl } from '@/components/utils';
+import { getServerIconUrl } from '@/components/utils';
 import { useFindUserInfoQuery } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Container, Heading, HStack, Image, Separator, Show, Spinner, VStack } from '@chakra-ui/react';
+import { Box, Container, Heading, HStack, Image, Separator, Show, Spinner, Text, VStack } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -72,8 +71,19 @@ export function Profile({ username }: Props) {
                             <Heading size='3xl'>
                                 {data.username}
                             </Heading>
-                            <Image src={getServerFileUrl(data.image)} />
-                            <SummaryBox summary={data.description} />
+                            <Image
+                                src={getServerIconUrl('USER', data.id)}
+                                boxSize={{ base: 100, md: 200 }}
+                                rounded='lg'
+                                // borderRadius={12}
+                                // border='1px solid'
+                                // borderColor='fg.subtle'
+                                // padding={1}
+                                onError={(e) => (e.currentTarget.style.display = 'none')}
+                            />
+                            <Text>
+                                {data.description}
+                            </Text>
                         </VStack>
                     </>
                 }

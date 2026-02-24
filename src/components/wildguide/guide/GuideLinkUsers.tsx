@@ -1,7 +1,8 @@
 import { DeleteButton } from '@/components/custom/DeleteButton';
 import { RadioCardItem, RadioCardRoot } from '@/components/ui/radio-card';
+import { getServerIconUrl } from '@/components/utils';
 import { Guide, useFindGuideMembersQuery, useFindGuideOwnersQuery, useFindGuideQuery, useMemberJoinGuideMutation, useMemberLeaveGuideMutation, useOwnerJoinGuideMutation, useOwnerLeaveGuideMutation, useUpdateGuideMutation, wildguideApi } from '@/redux/api/wildguideApi';
-import { DialogRootProvider, Fieldset, HStack, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
+import { DialogRootProvider, Fieldset, HStack, Image, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
 import { UsersRound } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -126,13 +127,13 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         }
     }, [accessType, doMemberLeave, doOwnerLeave, guideId]);
 
-    const handleVisibilityChange = useCallback(({ value }: { value: Guide['visibility'] }) => {
-        if (guideData) {
+    const handleVisibilityChange = useCallback(({ value }: { value: string | null }) => {
+        if (guideData && value) {
             doUpdateGuide({
                 guideId,
                 guideBase: {
                     ...guideData,
-                    visibility: value
+                    visibility: value as Guide['visibility']
                 }
             });
         }
@@ -197,7 +198,11 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                 <Field label={<Text fontSize='md'>{t('editGuideAccessMembershipType')}</Text>}>
                                     <RadioCardRoot
                                         defaultValue='OWNER'
-                                        onValueChange={({ value }: { value: AccessTypes }) => setAccessType(value)}
+                                        onValueChange={({ value }) => {
+                                            if (value) {
+                                                setAccessType(value as AccessTypes);
+                                            }
+                                        }}
                                         width='full'
                                     >
                                         <HStack align='stretch'>
@@ -250,6 +255,16 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                             <Tag
                                                 key={user.userId}
                                                 size='lg'
+                                                startElement={
+                                                    <Image
+                                                        src={getServerIconUrl('USER', user.userId)}
+                                                        boxSize={{ base: 4 }}
+                                                        // borderRadius={12}
+                                                        // border='1px solid'
+                                                        // borderColor='fg.subtle'
+                                                        // padding={1}
+                                                    />
+                                                }
                                             >
                                                 {user.username}
                                                 {(accessType === 'MEMBER' || (accessType === 'OWNER' && users.length > 1)) &&
