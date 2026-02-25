@@ -1,24 +1,22 @@
 import { selectAuthUserId, selectAuthUsername } from '@/auth/authSlice';
 import { BackButton } from '@/components/custom/BackButton';
 import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
+import { FileUploadList } from '@/components/custom/FileUploadList';
 import { SaveButton } from '@/components/custom/SaveButton';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
-import { UpdateUserProfileApiArg, useCreateIconMutation, useFindUserInfoQuery, useUpdateUserProfileMutation, wildguideApi } from '@/redux/api/wildguideApi';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Box, Container, Fieldset, FileUpload, Float, Heading, HStack, Separator, Show, Spinner, Text, Textarea, useFileUploadContext } from '@chakra-ui/react';
+import { UpdateUserProfileApiArg, useCreateIconMutation, useFindUserInfoQuery, useUpdateUserProfileMutation } from '@/redux/api/wildguideApi';
+import { useAppSelector } from '@/redux/hooks';
+import { Box, Container, Fieldset, FileUpload, Heading, HStack, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
-import { FileImage, X } from 'lucide-react';
+import { FileImage } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-type FormType = UpdateUserProfileApiArg & { image?: File; };
-
 export function ProfileEdit() {
     const { t } = useTranslation();
     const navigate = useNavigate({ from: '/user/profile/$username/edit' });
-    const dispatch = useAppDispatch();
 
     const username = useAppSelector(selectAuthUsername);
     const userId = useAppSelector(selectAuthUserId);
@@ -49,7 +47,7 @@ export function ProfileEdit() {
         }
     ] = useCreateIconMutation();
 
-    const { handleSubmit, formState: { errors, isDirty, isSubmitting }, reset, control } = useForm<FormType>();
+    const { handleSubmit, formState: { errors, isDirty, isSubmitting }, reset, control } = useForm<UpdateUserProfileApiArg & { image?: File; }>();
     useEffect(() => {
         if (isSuccess) {
             reset({
@@ -72,10 +70,6 @@ export function ProfileEdit() {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     body: formData as any
                 }).unwrap();
-                // Manually refresh the user data if the description wasn't changed
-                if (data?.description === formValues.description) {
-                    dispatch(wildguideApi.util.invalidateTags(['User Authentication']));
-                }
             }
             // Description
             if (data?.description !== formValues.description) {
@@ -183,41 +177,4 @@ export function ProfileEdit() {
             </Show>
         </Container>
     );
-}
-
-type FileUploadListProps = {
-    disabled?: boolean;
-}
-
-function FileUploadList({ disabled }: FileUploadListProps) {
-    const fileUpload = useFileUploadContext()
-    const files = fileUpload.acceptedFiles
-    if (files.length === 0)
-        return null
-    return (
-        <FileUpload.ItemGroup>
-            {files.map((file) => (
-                <FileUpload.Item
-                    w='auto'
-                    boxSize='20'
-                    p='2'
-                    file={file}
-                    key={file.name}
-                >
-                    <FileUpload.ItemPreviewImage />
-                    {!disabled &&
-                        <Float placement='top-end'>
-                            <FileUpload.ItemDeleteTrigger
-                                boxSize='4'
-                                layerStyle='fill.muted'
-                                disabled={disabled}
-                            >
-                                <X />
-                            </FileUpload.ItemDeleteTrigger>
-                        </Float>
-                    }
-                </FileUpload.Item>
-            ))}
-        </FileUpload.ItemGroup>
-    )
 }

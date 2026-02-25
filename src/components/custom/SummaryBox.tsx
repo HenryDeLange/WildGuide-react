@@ -15,6 +15,7 @@ export function SummaryBox({ summary }: Readonly<Props>) {
             borderRadius='sm'
             boxShadow='sm'
             borderColor='border'
+            width='100%'
         >
             <Text fontSize='lg'>
                 {summary}

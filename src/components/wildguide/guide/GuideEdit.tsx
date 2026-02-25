@@ -1,9 +1,11 @@
 import { BackButton } from '@/components/custom/BackButton';
+import { FileUploadList } from '@/components/custom/FileUploadList';
 import { SaveButton } from '@/components/custom/SaveButton';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
-import { GuideBase, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
-import { Box, Container, Fieldset, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
+import { GuideBase, useCreateIconMutation, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
+import { Box, Button, Container, Fieldset, FileUpload, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
+import { FileImage } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -43,18 +45,42 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
         }
     ] = useDeleteGuideMutation();
 
-    const { register, handleSubmit, formState: { errors, isDirty }, control, reset } = useForm<GuideBase>();
+    const [
+        doCreateIcon, {
+            isLoading: createIconIsLoading,
+            isError: createIconIsError
+        }
+    ] = useCreateIconMutation();
+
+    const { register, handleSubmit, formState: { errors, isDirty }, control, reset } = useForm<GuideBase & { image?: File; }>();
     useEffect(() => {
         if (isSuccess) {
-            reset(data);
+            reset({
+                ...data,
+                image: undefined
+            });
         }
     }, [data, isSuccess, reset]);
 
-    const onSubmit = handleSubmit(async (data) => {
-        doUpdate({ guideId, guideBase: data })
-            .unwrap().then(() => {
-                navigate({ to: '/guides/$guideId', replace: true });
-            });
+    const onSubmit = handleSubmit(async (formValues) => {
+        if (formValues.image) {
+            // Upload the new profile image
+            const formData = new FormData();
+            formData.append('file', formValues.image);
+            await doCreateIcon({
+                iconCategory: 'GUIDE',
+                iconCategoryId: guideId!,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                body: formData as any
+            }).unwrap();
+        }
+        // Description
+        if (data?.description !== formValues.description) {
+            await doUpdate({ guideId, guideBase: formValues })
+                .unwrap();
+        }
+        // Navigate back after success
+        navigate({ to: '/guides/$guideId', replace: true });
     });
 
     const handleBack = useCallback(() => navigate({ to: '/guides/$guideId', replace: true }), [navigate]);
@@ -132,6 +158,33 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                     placeholder={t('newGuideSummaryPlaceholder')}
                                     autoresize
                                     variant='outline'
+                                />
+                            </Field>
+                            <Field
+                                label={<Text fontSize='md'>{t('editUserProfileImage')}</Text>}
+                                invalid={!!errors.image || createIconIsError}
+                                errorText={errors.image?.message}
+                            >
+                                <Controller
+                                    control={control}
+                                    name='image'
+                                    render={({ field }) => (
+                                        <FileUpload.Root
+                                            accept='image/*'
+                                            onFileChange={(details) => {
+                                                field.onChange(details.acceptedFiles?.[0] ?? undefined);
+                                            }}
+                                        >
+                                            <FileUpload.HiddenInput />
+                                            <FileUpload.Trigger asChild>
+                                                <Button variant='outline' size='sm'>
+                                                    <FileImage />
+                                                    {t('editUserProfileImageUpload')}
+                                                </Button>
+                                            </FileUpload.Trigger>
+                                            <FileUploadList disabled={field.disabled || createIconIsLoading} />
+                                        </FileUpload.Root>
+                                    )}
                                 />
                             </Field>
                             <Field

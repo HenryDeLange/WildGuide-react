@@ -5,9 +5,10 @@ import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelecto
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { SummaryBox } from '@/components/custom/SummaryBox';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
+import { getServerIconUrl } from '@/components/utils';
 import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { useAppSelector } from '@/redux/hooks';
-import { Box, Heading, HStack, Icon, IconButton, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
+import { Box, Heading, HStack, Icon, IconButton, Image, Show, Spinner, Stack, TabsContent, TabsList, TabsRoot, TabsTrigger, Text } from '@chakra-ui/react';
 import { useNavigate } from '@tanstack/react-router';
 import { BookText, LayoutList, Lock, Star } from 'lucide-react';
 import { useCallback, useState } from 'react';
@@ -112,12 +113,18 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 <HStack>
                                     <Show when={data.visibility === 'PRIVATE'}>
                                         <Tooltip content={t('newGuideVisibilityHelpPRIVATE')} showArrow>
-                                            <Icon size='md'>
+                                            <Icon size='md' color='fg.info'>
                                                 <Lock />
                                             </Icon>
                                         </Tooltip>
                                     </Show>
-                                    <Heading size={{base: 'lg', sm: '2xl', md: '3xl'}} alignSelf='flex-start'>
+                                    <Image
+                                        src={getServerIconUrl('GUIDE', data.id)}
+                                        boxSize={{ base: 6, sm: 8, md: 10 }}
+                                        rounded='md'
+                                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                                    />
+                                    <Heading size={{ base: '2xl', sm: '3xl' }} alignSelf='flex-start'>
                                         {data.name}
                                     </Heading>
                                     {userId &&
@@ -128,7 +135,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             color={data.starredByUser ? 'fg.info' : 'fg.muted'}
                                             fill='fg.info'
                                         >
-                                            {data.starredByUser ? <Star  fill='inherit' /> : <Star />}
+                                            {data.starredByUser ? <Star fill='inherit' /> : <Star />}
                                         </IconButton>
                                     }
                                 </HStack>
@@ -199,7 +206,15 @@ export function Guide({ guideId }: Readonly<Props>) {
                                 padding={0}
                             >
                                 <Stack width='100%' gap={2} padding={2}>
-                                    <SummaryBox summary={data.summary} />
+                                    <HStack width='100%' alignItems='flex-start'>
+                                        <Image
+                                            src={getServerIconUrl('GUIDE', data.id)}
+                                            boxSize={{ base: 50, md: 100 }}
+                                            rounded='md'
+                                            onError={(e) => (e.currentTarget.style.display = 'none')}
+                                        />
+                                        <SummaryBox summary={data.summary} />
+                                    </HStack>
                                     <Stack>
                                         <InatLinkCard type='PROJECT' inatId={data.inaturalistProject} />
                                         <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
