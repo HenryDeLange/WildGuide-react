@@ -75,10 +75,6 @@ export function Profile({ username }: Props) {
                                 src={getServerIconUrl('USER', data.id)}
                                 boxSize={{ base: 100, md: 200 }}
                                 rounded='lg'
-                                // borderRadius={12}
-                                // border='1px solid'
-                                // borderColor='fg.subtle'
-                                // padding={1}
                                 onError={(e) => (e.currentTarget.style.display = 'none')}
                             />
                             <Text>

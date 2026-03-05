@@ -4,6 +4,8 @@ import { InatLinkCard } from '@/components/custom/InatLinkCard';
 import { InatSelector, InatSelectorTypes } from '@/components/custom/InatSelector';
 import { OptionsMenu } from '@/components/custom/OptionsMenu';
 import { SummaryBox } from '@/components/custom/SummaryBox';
+import { FileList } from '@/components/files/FileList';
+import { UploadFiles } from '@/components/files/UploadFiles';
 import { ExtendedMarkdown } from '@/components/markdown/ExtendedMarkdown';
 import { getServerIconUrl } from '@/components/utils';
 import { GuideBase, useCreateGuideStarMutation, useDeleteGuideStarMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
@@ -149,6 +151,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                             <>
                                                 <InatSelector type='PROJECT' select={handleInatLink} />
                                                 <InatSelector type='TAXON' select={handleInatLink} />
+                                                <UploadFiles guideId={guideId} />
                                                 <GuideLinkUsers guideId={guideId} />
                                                 <EditButton titleKey='editGuide' handleEdit={handleEdit} />
                                             </>
@@ -219,6 +222,7 @@ export function Guide({ guideId }: Readonly<Props>) {
                                         <InatLinkCard type='PROJECT' inatId={data.inaturalistProject} />
                                         <InatLinkCard type='TAXON' inatId={data.inaturalistTaxon} />
                                     </Stack>
+                                    <FileList guideId={guideId} />
                                     <ExtendedMarkdown content={data.description} />
                                 </Stack>
                             </TabsContent>

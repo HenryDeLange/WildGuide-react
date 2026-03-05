@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ExtendedMarkdown } from './ExtendedMarkdown';
 import { MarkdownInputSnippets } from './MarkdownInputSnippets';
 
+// TODO: Add support/example for: highlight, ui driven image annotations, 
+
 type Props = {
     value?: string;
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;

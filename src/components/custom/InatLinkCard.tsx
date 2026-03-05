@@ -1,6 +1,6 @@
 import inatLogo from '@/assets/images/inaturalist/inat-logo.png';
 import { useProjectFindQuery, useTaxonFindQuery } from '@/redux/api/inatApi';
-import { Box, Flex, Heading, HStack, IconButton, Image, Show, Skeleton, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, IconButton, Image, Link, Show, Skeleton, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { uppercaseFirst } from '../utils';
 import { Attribution } from './Attribution';
@@ -96,9 +96,20 @@ export function InatLinkCard({ type, inatId }: Readonly<Props>) {
                             height='60px'
                         />
                         <Box width='100%' overflow='hidden'>
-                            <Heading size='md' truncate>
-                                {data.title}
-                            </Heading>
+                            <Link
+                                aria-label='iNaturalist'
+                                href={`https://www.inaturalist.org/${type === 'PROJECT' ? 'projects' : 'taxa'}/${data.id}`}
+                                target='_blank'
+                                rel='noopener'
+                                focusRing='none'
+                                _focus={{
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                <Heading size='md' truncate >
+                                    {data.title}
+                                </Heading>
+                            </Link>
                             <Text fontStyle='italic' fontSize='xs' truncate>
                                 {data.subTitle}
                             </Text>

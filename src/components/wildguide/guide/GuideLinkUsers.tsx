@@ -144,7 +144,10 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
         || ownerLeaveIsLoading || memberLeaveIsLoading;
 
     return (
-        <Show when={!guideIsLoading && !ownerIsLoading && !memberIsLoading} fallback={<Spinner size='lg' margin={8} />}>
+        <Show
+            when={!guideIsLoading && !ownerIsLoading && !memberIsLoading}
+            fallback={<Spinner size='sm' alignSelf='center' marginX={showLabels ? 6 : undefined} />}
+        >
             <DialogRootProvider value={dialog} placement='center' lazyMount={true} size='lg'>
                 <DialogTrigger asChild>
                     <Button
@@ -259,10 +262,7 @@ export function GuideLinkUsers({ guideId }: Readonly<Props>) {
                                                     <Image
                                                         src={getServerIconUrl('USER', user.userId)}
                                                         boxSize={{ base: 4 }}
-                                                        // borderRadius={12}
-                                                        // border='1px solid'
-                                                        // borderColor='fg.subtle'
-                                                        // padding={1}
+                                                        onError={(e) => (e.currentTarget.style.display = 'none')}
                                                     />
                                                 }
                                             >

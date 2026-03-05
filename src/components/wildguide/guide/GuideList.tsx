@@ -107,6 +107,9 @@ export function GuideList() {
                             </Text>
                         }
                     </Box>
+                    <InputGroup startElement={<Search size={16} />} minWidth={120}>
+                        <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
+                    </InputGroup>
                     <Box flex='1' display='flex' justifyContent='flex-end'>
                         <HStack
                             wrap={{ base: 'wrap', sm: 'nowrap' }}
@@ -139,9 +142,6 @@ export function GuideList() {
                             >
                                 <RefreshCcw />
                             </Button>
-                            <InputGroup startElement={<Search />} minWidth={120}>
-                                <Input type='search' size='md' value={filter ?? ''} onChange={handleSearch} />
-                            </InputGroup>
                         </HStack>
                     </Box>
                 </HStack>

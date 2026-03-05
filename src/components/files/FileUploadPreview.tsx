@@ -5,7 +5,7 @@ type Props = {
     disabled?: boolean;
 }
 
-export function FileUploadList({ disabled }: Props) {
+export function FileUploadPreview({ disabled }: Props) {
     const fileUpload = useFileUploadContext()
     const files = fileUpload.acceptedFiles
     if (files.length === 0)

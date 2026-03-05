@@ -11,6 +11,7 @@ import homeImage from '../../assets/images/wildguide/home.jpg';
 import installImage from '../../assets/images/wildguide/install.jpg';
 import { NavLink } from '../custom/NavLink';
 import { Tag } from '../ui/tag';
+import { getServerIconUrl } from '../utils';
 import { useHeights } from './hooks/uiHooks';
 
 export function AppHome() {
@@ -57,9 +58,16 @@ export function AppHome() {
                             {data.map(starredGuide => (
                                 <Tag
                                     key={starredGuide.id}
-                                    size='lg'
+                                    size='xl'
                                     cursor='pointer'
                                     onClick={() => navigate({ to: '/guides/$guideId', params: { guideId: starredGuide.id.toString() } })}
+                                    startElement={
+                                        <Image
+                                            src={getServerIconUrl('GUIDE', starredGuide.id)}
+                                            boxSize={{ base: 5 }}
+                                            onError={(e) => (e.currentTarget.style.display = 'none')}
+                                        />
+                                    }
                                 >
                                     {starredGuide.name}
                                 </Tag>
@@ -84,7 +92,7 @@ export function AppHome() {
                             <Text fontSize='xs' color='fg.muted'>
                                 {t('pwaInstallDetails')}
                             </Text>
-                            <Button variant='surface' onClick={handleInstallClick} size={{ base: 'xs', sm: 'sm', md: 'lg'}}>
+                            <Button variant='surface' onClick={handleInstallClick} size={{ base: 'xs', sm: 'sm', md: 'lg' }}>
                                 <Download />
                                 {t('pwaInstall')}
                             </Button>

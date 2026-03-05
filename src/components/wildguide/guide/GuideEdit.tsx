@@ -1,6 +1,6 @@
 import { BackButton } from '@/components/custom/BackButton';
-import { FileUploadList } from '@/components/custom/FileUploadList';
 import { SaveButton } from '@/components/custom/SaveButton';
+import { FileUploadPreview } from '@/components/files/FileUploadPreview';
 import { MarkdownInput } from '@/components/markdown/MarkdownInput';
 import { GuideBase, useCreateIconMutation, useDeleteGuideMutation, useFindGuideQuery, useUpdateGuideMutation } from '@/redux/api/wildguideApi';
 import { Box, Button, Container, Fieldset, FileUpload, Heading, HStack, Input, Separator, Show, Spinner, Text, Textarea } from '@chakra-ui/react';
@@ -63,8 +63,8 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
     }, [data, isSuccess, reset]);
 
     const onSubmit = handleSubmit(async (formValues) => {
+        // Upload the new profile image
         if (formValues.image) {
-            // Upload the new profile image
             const formData = new FormData();
             formData.append('file', formValues.image);
             await doCreateIcon({
@@ -74,8 +74,8 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                 body: formData as any
             }).unwrap();
         }
-        // Description
-        if (data?.description !== formValues.description) {
+        // Update the Guide
+        if (JSON.stringify(data) !== JSON.stringify(formValues)) {
             await doUpdate({ guideId, guideBase: formValues })
                 .unwrap();
         }
@@ -147,21 +147,7 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                 />
                             </Field>
                             <Field
-                                label={<Text fontSize='md'>{t('newGuideSummary')}</Text>}
-                                invalid={!!errors.summary || isError}
-                                errorText={errors.summary?.message}
-                            >
-                                <Textarea
-                                    {...register('summary', {
-                                        maxLength: { value: 256, message: t('newGuideSummaryInvalid') }
-                                    })}
-                                    placeholder={t('newGuideSummaryPlaceholder')}
-                                    autoresize
-                                    variant='outline'
-                                />
-                            </Field>
-                            <Field
-                                label={<Text fontSize='md'>{t('editUserProfileImage')}</Text>}
+                                label={<Text fontSize='md'>{t('newGuideImage')}</Text>}
                                 invalid={!!errors.image || createIconIsError}
                                 errorText={errors.image?.message}
                             >
@@ -179,12 +165,26 @@ export function GuideEdit({ guideId }: Readonly<Props>) {
                                             <FileUpload.Trigger asChild>
                                                 <Button variant='outline' size='sm'>
                                                     <FileImage />
-                                                    {t('editUserProfileImageUpload')}
+                                                    {t('newGuideImageUpload')}
                                                 </Button>
                                             </FileUpload.Trigger>
-                                            <FileUploadList disabled={field.disabled || createIconIsLoading} />
+                                            <FileUploadPreview disabled={field.disabled || createIconIsLoading} />
                                         </FileUpload.Root>
                                     )}
+                                />
+                            </Field>
+                            <Field
+                                label={<Text fontSize='md'>{t('newGuideSummary')}</Text>}
+                                invalid={!!errors.summary || isError}
+                                errorText={errors.summary?.message}
+                            >
+                                <Textarea
+                                    {...register('summary', {
+                                        maxLength: { value: 256, message: t('newGuideSummaryInvalid') }
+                                    })}
+                                    placeholder={t('newGuideSummaryPlaceholder')}
+                                    autoresize
+                                    variant='outline'
                                 />
                             </Field>
                             <Field

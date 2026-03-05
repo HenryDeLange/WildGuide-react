@@ -1,8 +1,8 @@
 import { selectAuthUserId, selectAuthUsername } from '@/auth/authSlice';
 import { BackButton } from '@/components/custom/BackButton';
 import { ErrorDisplay } from '@/components/custom/ErrorDisplay';
-import { FileUploadList } from '@/components/custom/FileUploadList';
 import { SaveButton } from '@/components/custom/SaveButton';
+import { FileUploadPreview } from '@/components/files/FileUploadPreview';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { UpdateUserProfileApiArg, useCreateIconMutation, useFindUserInfoQuery, useUpdateUserProfileMutation } from '@/redux/api/wildguideApi';
@@ -146,7 +146,7 @@ export function ProfileEdit() {
                                                     {t('editUserProfileImageUpload')}
                                                 </Button>
                                             </FileUpload.Trigger>
-                                            <FileUploadList disabled={field.disabled || createIconIsLoading} />
+                                            <FileUploadPreview disabled={field.disabled || createIconIsLoading} />
                                         </FileUpload.Root>
                                     )}
                                 />
