@@ -1,8 +1,7 @@
 import { useCreateFileMutation, useDeleteFileMutation, useFindFilesQuery } from '@/redux/api/wildguideApi';
 import { Box, DialogRootProvider, Fieldset, FileUpload, Heading, HStack, IconButton, ScrollArea, Separator, Show, Spinner, Text, useDialog } from '@chakra-ui/react';
 import { FileImage, Files, Trash } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorDisplay } from '../custom/ErrorDisplay';
 import { Button } from '../ui/button';
@@ -26,10 +25,12 @@ export function UploadFiles({ guideId }: Readonly<Props>) {
     const {
         data,
         isLoading,
-        isSuccess,
         isError,
         error
-    } = useFindFilesQuery({ fileCategory: 'GUIDE', fileCategoryId: guideId.toString() });
+    } = useFindFilesQuery({
+        fileCategory: 'GUIDE',
+        fileCategoryId: guideId.toString()
+    });
 
     const [
         doCreateFile, {
@@ -48,16 +49,6 @@ export function UploadFiles({ guideId }: Readonly<Props>) {
         }
     ] = useDeleteFileMutation();
 
-    const { register, handleSubmit, formState: { errors, isDirty }, control, reset } = useForm<{ image?: File; }>();
-    useEffect(() => {
-        if (isSuccess) {
-            reset({
-                ...data,
-                image: undefined
-            });
-        }
-    }, [data, isSuccess, reset]);
-
     const handleCreate = useCallback((file: File) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -69,9 +60,15 @@ export function UploadFiles({ guideId }: Readonly<Props>) {
         });
     }, [doCreateFile, guideId]);
 
-    const handleDelete = useCallback((fileId: number) => () => {
-
-    }, []);
+    const handleDelete = useCallback((fileUrl: string) => () => {
+        const urlParts = fileUrl.split('/');
+        doDeleteFile({
+            fileCategory: 'GUIDE',
+            fileCategoryId: guideId.toString(),
+            fileId: urlParts[urlParts.length - 2],
+            fileName: urlParts[urlParts.length - 1]
+        });
+    }, [doDeleteFile, guideId]);
 
     return (
         <Show
@@ -108,8 +105,7 @@ export function UploadFiles({ guideId }: Readonly<Props>) {
                             <Fieldset.Content gap={6}>
                                 <Field
                                     label={<Text fontSize='md'>{t('editGuideFile')}</Text>}
-                                    invalid={!!errors.image || createFileIsError}
-                                    errorText={errors.image?.message}
+                                    invalid={createFileIsError}
                                     helperText={createFileIsSuccess ? t('editGuideFileUploaded') : undefined}
                                 >
                                     <FileUpload.Root
@@ -143,13 +139,17 @@ export function UploadFiles({ guideId }: Readonly<Props>) {
                                                                 size='sm'
                                                                 variant='ghost'
                                                                 _hover={{ color: 'fg.error' }}
+                                                                onClick={handleDelete(file)}
+                                                                loading={deleteFileIsLoading}
                                                             >
                                                                 <Trash />
                                                             </IconButton>
                                                         </Tooltip>
-                                                        <a href={getServerFileUrl(file)}>
-                                                            <Text>{file.split('/').pop()}</Text>
-                                                        </a>
+                                                        <Tooltip content={getServerFileUrl(file)} openDelay={2000} closeDelay={150}>
+                                                            <a href={getServerFileUrl(file)}>
+                                                                <Text>{file.split('/').pop()}</Text>
+                                                            </a>
+                                                        </Tooltip>
                                                     </HStack>
                                                 ))}
                                             </ScrollArea.Content>
